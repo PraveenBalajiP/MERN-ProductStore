@@ -3,9 +3,11 @@
     display:flex;
     justify-content:space-between;
     align-items:center;
+    border-radius:100px;
     position:sticky;
     top:0px;
     backdrop-filter:blur(20px);
+    z-index:100;
 }
 
 .logo{
@@ -47,16 +49,24 @@ i{
     align-items:center;
 }
 
+.nav-links,.theme-link,.user-links{
+    border:2px solid var(--nav_color);
+    border-radius:50px;
+}
+
 .nav-items,.toggle-action,.user-action{
     border:2px solid var(--nav_color);
     border-radius:100px;
     transition:0.3s;
+    background-color:var(--nav_color);
+    margin:3px;
 }
 
 .nav-items button,.user-setup button{
     padding:10px 20px;
     border-radius:20px;
     margin:4px 5px 4px 5px;
+    cursor:pointer;
 }
 
 .nav-items button:hover,.user-setup button:hover{

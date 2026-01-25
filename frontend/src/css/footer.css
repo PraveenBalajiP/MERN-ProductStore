@@ -1,0 +1,39 @@
+.footer{
+    background-color:var(--background_color_tertiary);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:30px 100px 0px 50px;
+}
+
+.footer-title{
+    font-size:1.2rem;
+}
+
+.footer-section-1{
+    display:flex;
+    justify-content:space-between;
+}
+
+.footer-section-2{
+    position:relative;
+    top:-30px;
+}
+
+a{
+    padding:7px;
+    padding-top:10px;
+    font-size:1.5rem;
+    cursor:pointer;
+}
+
+a>i:hover{
+    transform:scale(1.2);
+    transition:0.5s;
+}
+
+.footer-end{
+    font-family:'Poppins';
+    text-align:center;
+    margin-top:20px;
+}

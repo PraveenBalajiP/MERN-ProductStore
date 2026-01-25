@@ -1,12 +1,18 @@
 :root {
-  --background_color: hsla(0, 0%, 100%, 0.925);
-  --text_color: hsl(0, 0%, 0%);
-  --nav_color: hsl(0, 0%, 71%);
+  --background_color_primary: hsla(0, 0%, 100%, 0.925);
+  --background_color_secondary: hsla(0, 0%, 100%, 0.85);
+  --background_color_tertiary: hsla(0, 0%, 40%, 0.75);
+  --text_color_1: hsl(0, 0%, 0%);
+  --text_color_2: hsl(0, 0%, 20%);
+  --nav_color: hsl(0, 0%, 80%);
 }
 
 [data-theme="dark"] {
-  --background_color: hsl(0, 0%, 0%);
-  --text_color: hsl(0, 0%, 95%);
+  --background_color_primary: hsl(0, 0%, 0%);
+  --background_color_secondary: hsl(0, 0%, 5%);
+  --background_color_tertiary: hsla(0, 0%, 10%);
+  --text_color_1: hsl(0, 0%, 95%);
+  --text_color_2: hsl(0, 0%, 73%);
   --nav_color: hsl(220, 15%, 15%);
 }
 
@@ -15,7 +21,7 @@ body{
     padding:0px;
     box-sizing:border-box;
     font-family:'Poppins', sans-serif;
-    background-color: var(--background_color);
-    color: var(--text_color);
+    background-color: var(--background_color_primary);
+    color: var(--text_color_1);
     transition:0.5s;
 }

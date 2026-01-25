@@ -1,6 +1,7 @@
 import {useState,useEffect} from 'react';
 import {Routes,Route} from 'react-router-dom';
 import NavBar from './common_components/navbar';
+import Footer from "./common_components/footer";
 import Home from './components/Home';
 /*
 import About from './components/About';
@@ -35,6 +36,7 @@ function App(){
           <Route path="/feedback" element={<Feedback/>}/>
           */}
         </Routes>
+        <Footer/>
     </>
     
   );

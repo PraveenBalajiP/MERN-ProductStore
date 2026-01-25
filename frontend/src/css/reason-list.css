@@ -1,0 +1,25 @@
+.reason-card{
+    border:2px solid var(--nav_color);
+    border-radius:20px;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    background-color:var(--background_color_primary)
+}
+
+.reason-card h2{
+    font-size:2rem;
+    margin-bottom:10px;
+}
+
+.reason-card p{
+    font-size:1.2rem;
+    color:var(--text_color_2);
+}
+
+.reason-card:hover{
+    box-shadow:0 4px 8px hsla(0, 1%, 37%, 0.205);
+    transform:translateY(-5px) scale(1.01);
+    transition:0.5s;
+}

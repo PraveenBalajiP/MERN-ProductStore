@@ -1,0 +1,115 @@
+.home{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    background-color:var(--background-color);
+}
+
+.home-caption{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:50px;
+}
+
+.para-1{
+    text-align:center;
+    font-size:3.5rem;
+    line-height:1.2em;
+    padding:5% 15% 0% 15%;
+    background-color:var(--nav-color);
+}
+
+.para-2{
+    text-align:center;
+    font-size:3.5rem;
+    line-height:1.2em;
+    padding:0% 15% 0% 15%;
+}
+
+.para-1,
+.para-2{
+    opacity:0;
+    transform:translateY(15px);
+    animation:reveal 1.8s ease forwards;
+}
+
+.para-2{
+    animation-delay:1.2s;
+}
+
+@keyframes reveal{
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.start-section{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-top:30px;
+}
+
+.start-border{
+    border:2px solid var(--nav_color);
+    border-radius:50px;
+}
+
+.start-btn{
+    padding:15px 50px;
+    font-size:1.3rem;
+    border-radius:50px;
+    background-color:var(--nav_color);
+    color:var(--button_text_color);
+    cursor:pointer;
+    transition:0.3s;
+    margin:2px;
+}
+
+.home-reason{
+    font-size:3rem;
+    margin-top:50px;
+    background-color:var(--background_color_secondary);
+}
+
+.home-how{
+    font-size:3rem;
+    margin-top:50px;
+    background-color:var(--background_color_primary);
+}
+
+.home-reason p{
+    line-height:1.5em;
+    padding:20px;
+}
+
+.reason-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(400px,1fr));
+    gap:30px;
+    padding:20px;
+    margin:10px;
+}
+
+.work-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(600px,1fr));
+    gap:30px;
+    padding:30px;
+    margin:10px;
+}
+
+.start-border:hover{
+    transform:scale(1.05);
+    transition:0.5s;
+    background-color:hsla(207, 62%, 50%, 0.88);
+}
+
+.start-border:active{
+    transform:scale(0.95);
+    transition:0.5s;
+    background-color:hsla(207, 62%, 50%, 0.88);
+}

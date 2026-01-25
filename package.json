@@ -17,5 +17,11 @@
   "bugs": {
     "url": "https://github.com/PraveenBalajiP/MERN-ProductStore/issues"
   },
-  "homepage": "https://github.com/PraveenBalajiP/MERN-ProductStore#readme"
+  "homepage": "https://github.com/PraveenBalajiP/MERN-ProductStore#readme",
+  "devDependencies": {
+    "@types/node": "^25.0.10",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18"
+  }
 }
