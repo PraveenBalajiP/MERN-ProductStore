@@ -1,5 +1,21 @@
+:root {
+  --background_color: hsla(0, 0%, 100%, 0.925);
+  --text_color: hsl(0, 0%, 0%);
+  --nav_color: hsl(0, 0%, 71%);
+}
+
+[data-theme="dark"] {
+  --background_color: hsl(0, 0%, 0%);
+  --text_color: hsl(0, 0%, 95%);
+  --nav_color: hsl(220, 15%, 15%);
+}
+
 body{
-    padding:0px;
     margin:0px;
+    padding:0px;
     box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+    background-color: var(--background_color);
+    color: var(--text_color);
+    transition:0.5s;
 }

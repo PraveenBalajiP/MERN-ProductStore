@@ -1,9 +1,14 @@
-import { Button, HStack } from "@chakra-ui/react"
+import NavBar from '../common_components/navbar';
 
-const Home = () => {
-  return (
-    <HStack justifyContent="center" height="100vh" bg="gray.100"/>
-  )
+function Home(){
+  return(
+    <div className="home">
+      
+      <div className="home-content">
+          
+      </div>
+    </div>
+  );
 }
 
-export default Home
+export default Home;

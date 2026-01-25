@@ -1,4 +1,6 @@
+import {useState,useEffect} from 'react';
 import {Routes,Route} from 'react-router-dom';
+import NavBar from './common_components/navbar';
 import Home from './components/Home';
 /*
 import About from './components/About';
@@ -12,20 +14,29 @@ import Feedback from './components/Feedback';
 */
 
 function App(){
+  const [theme,setTheme]=useState("light");
+  
+  useEffect(()=>{
+    document.documentElement.setAttribute("data-theme", theme);
+  },[theme])
   return(
-    <Routes>
-      <Route path="/" element={<Home/>}/>
-      {/*
-      <Route path="/about" element={<About/>}/>
-      <Route path="/register" element={<Register/>}/>
-      <Route path="/login" element={<Login/>}/>
-      <Route path="/contact" element={<Contact/>}/>
-      <Route path="/add-product" element={<AddProduct/>}/>
-      <Route path="/product/:id" element={<ProductDetails/>}/>
-      <Route path="/cart" element={<Cart/>}/>
-      <Route path="/feedback" element={<Feedback/>}/>
-      */}
-    </Routes>
+    <>
+      <NavBar theme={theme} setTheme={setTheme}/>
+        <Routes>
+          <Route path="/" element={<Home/>}/>
+          {/*
+          <Route path="/about" element={<About/>}/>
+          <Route path="/register" element={<Register/>}/>
+          <Route path="/login" element={<Login/>}/>
+          <Route path="/contact" element={<Contact/>}/>
+          <Route path="/add-product" element={<AddProduct/>}/>
+          <Route path="/product/:id" element={<ProductDetails/>}/>
+          <Route path="/cart" element={<Cart/>}/>
+          <Route path="/feedback" element={<Feedback/>}/>
+          */}
+        </Routes>
+    </>
+    
   );
 }
 

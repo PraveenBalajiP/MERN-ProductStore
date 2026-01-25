@@ -1,0 +1,65 @@
+.navbar{
+    padding:15px 30px 15px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0px;
+    backdrop-filter:blur(20px);
+}
+
+.logo{
+    height:40px;
+}
+
+.nav-items{
+    display:flex;
+    gap:15px;
+}
+
+.user-setup{
+    display:flex;
+    gap:15px;
+}
+
+i{
+    margin-right:8px;
+}
+
+.fa-solid.fa-house-chimney{
+    margin-bottom:4px;
+}
+
+.fa-solid.fa-moon,.fa-solid.fa-sun{
+    margin:0px;
+}
+
+.fa-solid.fa-moon{
+    font-size:16px;
+    margin:2px;
+}
+
+.fa-solid.fa-sun{
+    font-size:16px;
+}
+.home-btn,.about-btn,.browse-btn,.sell-btn{
+    display:flex;
+    align-items:center;
+}
+
+.nav-items,.toggle-action,.user-action{
+    border:2px solid var(--nav_color);
+    border-radius:100px;
+    transition:0.3s;
+}
+
+.nav-items button,.user-setup button{
+    padding:10px 20px;
+    border-radius:20px;
+    margin:4px 5px 4px 5px;
+}
+
+.nav-items button:hover,.user-setup button:hover{
+    background-color:hsla(207, 62%, 50%, 0.18);
+    transition:0.4s;
+}
