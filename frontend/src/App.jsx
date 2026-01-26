@@ -15,7 +15,7 @@ import Feedback from './components/Feedback';
 */
 
 function App(){
-  const [theme,setTheme]=useState("light");
+  const [theme,setTheme]=useState(localStorage.getItem("theme")||"light");
   
   useEffect(()=>{
     document.documentElement.setAttribute("data-theme", theme);

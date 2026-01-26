@@ -3,10 +3,14 @@ import '../css/navbar.css';
 
 function NavBar({theme,setTheme}){
     function toggleTheme(){
-        if(theme==="light")
+        if(theme==="light"){
             setTheme("dark")
-        else
+            localStorage.setItem("theme","dark");
+        }
+        else{
             setTheme("light")
+            localStorage.setItem("theme","light");
+        }
     }
     return(
         <div className="navbar">
