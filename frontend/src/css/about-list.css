@@ -1,0 +1,22 @@
+.about-card{
+    padding:20px;
+    display:block;
+    width:100%;
+    background-color:var(--background_color_primary);
+}
+
+.about-card h2{
+    font-size:2.5rem;
+    margin-top:30px;
+    margin-bottom:10px;
+    background-color:var(--background_color_primary);
+}
+
+.about-card p{
+    border:2px solid var(--nav_color);
+    border-radius:20px;
+    padding:20px;
+    font-size:1.2rem;
+    color:var(--text_color_2);
+    background-color:var(--background_color_tertiary);
+}

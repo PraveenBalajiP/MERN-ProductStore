@@ -8,6 +8,7 @@
     top:0px;
     backdrop-filter:blur(20px);
     z-index:100;
+    font-size:1em;
 }
 
 .logo{
@@ -17,6 +18,15 @@
 .nav-items{
     display:flex;
     gap:15px;
+}
+
+.nav-items a {
+    display:flex;
+    align-items:center;
+    line-height:0;
+    font-size:1em;
+    padding:2px;
+    margin:0px;
 }
 
 .user-setup{
@@ -44,6 +54,7 @@ i{
 .fa-solid.fa-sun{
     font-size:16px;
 }
+
 .home-btn,.about-btn,.browse-btn,.sell-btn{
     display:flex;
     align-items:center;
@@ -59,7 +70,8 @@ i{
     border-radius:100px;
     transition:0.3s;
     background-color:var(--nav_color);
-    margin:3px;
+    margin:3px; 
+    padding:0px;
 }
 
 .nav-items button,.user-setup button{
