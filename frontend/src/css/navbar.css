@@ -149,7 +149,7 @@ i{
 }
 
 .mobile-nav-items button:hover{
-    background-color:var(--background_color_tertiary);
+    background-color:var(--nav_color);
 }
 
 .mobile-nav-items button:hover i{

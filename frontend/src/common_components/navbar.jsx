@@ -51,12 +51,12 @@ function NavBar({theme,setTheme}){
         {mobileNav && 
         <div className="mobile-nav">
             <div className="mobile-nav-items" >
-                <Link to="/"><button className="mobile-home-btn"><i class="fa-solid fa-house-chimney"></i>Home</button></Link>
-                <Link to="/about"><button className="mobile-about-btn"><i class="fa-solid fa-address-card"></i>About</button></Link>
-                <Link to="/browse"><button className="mobile-browse-btn"><i class="fa-solid fa-cart-shopping"></i>Browse</button></Link>
-                <Link to="/sell"><button className="mobile-sell-btn"><i class="fa-solid fa-circle-check"></i>Sell</button></Link>
-                <Link to="/signup"><button className="mobile-signup-btn"><i class="fa-solid fa-arrow-up-from-bracket"></i>Sign Up</button></Link>
-                <Link to="/signin"><button className="mobile-login-btn"><i class="fa-solid fa-right-to-bracket"></i>Sign In</button></Link>
+                <Link to="/"><button className="mobile-home-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-house-chimney"></i>Home</button></Link>
+                <Link to="/about"><button className="mobile-about-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-address-card"></i>About</button></Link>
+                <Link to="/browse"><button className="mobile-browse-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-cart-shopping"></i>Browse</button></Link>
+                <Link to="/sell"><button className="mobile-sell-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-circle-check"></i>Sell</button></Link>
+                <Link to="/signup"><button className="mobile-signup-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-arrow-up-from-bracket"></i>Sign Up</button></Link>
+                <Link to="/signin"><button className="mobile-login-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-right-to-bracket"></i>Sign In</button></Link>
             </div>
         </div>}
     </> 
