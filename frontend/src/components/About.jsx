@@ -22,15 +22,9 @@ function About(){
     ]
     return(
         <div className="about-page">
-            <div className="about">
-                {about.map(indi_about=>{
-                    return(<AboutList key={indi_about.title} title={indi_about.title} content={indi_about.content}/>);
-                })}
-            </div>
-            <div className="images">
-                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f" alt="About Image 1" className="about-image"/>
-                <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980" alt="About Image 2" className="about-image"/>
-            </div>
+            {about.map(indi_about=>{
+                return(<AboutList key={indi_about.title} title={indi_about.title} content={indi_about.content}/>);
+            })}
         </div>
     );
 }

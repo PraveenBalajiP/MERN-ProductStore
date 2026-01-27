@@ -3,12 +3,20 @@
     display:flex;
     justify-content:space-between;
     align-items:center;
-    border-radius:100px;
+    border-radius:0px 0px 25px 25px;
     position:sticky;
     top:0px;
     backdrop-filter:blur(20px);
     z-index:100;
     font-size:1em;
+    max-width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .navbar {
+        padding: 10px 15px;
+        gap: 10px;
+    }
 }
 
 .logo{
@@ -27,6 +35,10 @@
     font-size:1em;
     padding:2px;
     margin:0px;
+}
+
+.menu-btn,.side-menu{
+    display:none;
 }
 
 .user-setup{
@@ -55,17 +67,21 @@ i{
     font-size:16px;
 }
 
+.fa-solid.fa-bars{
+    margin:0px;
+}
+
 .home-btn,.about-btn,.browse-btn,.sell-btn{
     display:flex;
     align-items:center;
 }
 
-.nav-links,.theme-link,.user-links{
+.nav-links,.theme-link,.user-links,.side-menu{
     border:2px solid var(--nav_color);
     border-radius:50px;
 }
 
-.nav-items,.toggle-action,.user-action{
+.nav-items,.toggle-action,.user-action,.menu-action{
     border:2px solid var(--nav_color);
     border-radius:100px;
     transition:0.3s;
@@ -84,4 +100,90 @@ i{
 .nav-items button:hover,.user-setup button:hover{
     background-color:hsla(207, 62%, 50%, 0.18);
     transition:0.4s;
+}
+
+.mobile-nav-items{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    position:relative;
+    top:100px;
+
+}
+
+.mobile-nav{
+    margin:0px;
+    padding:0px;
+    display:flex;
+    justify-content:flex-end;
+    display:none;
+}
+
+.mobile-nav-items button{
+    padding:15px;
+    border-radius:20px;
+    transition:0.3s;
+    width:100%;
+    text-align:left;
+}
+
+.mobile-nav-items{
+    display:flex;
+    border:1px solid white;
+    font-size:1.1em;
+    background-color:transparent;
+    backdrop-filter:blur(100px);
+    position:fixed;
+    top:100px;
+    z-index:999;
+    width:30%;
+    right:0px;
+    border-radius:30px;
+    padding: 10px;
+    max-width: 100%;
+}
+
+.mobile-nav-items i{
+    margin-right:20px;
+    transition:0.3s;
+}
+
+.mobile-nav-items button:hover{
+    background-color:var(--background_color_tertiary);
+}
+
+.mobile-nav-items button:hover i{
+    font-size:1.25em;
+    transition:0.3s
+}
+
+@media screen and (max-width:1150px){
+    .nav-items,.user-links{
+        display:none;
+    }
+    .menu-btn,.side-menu{
+        display:inline;
+    }
+    .mobile-nav{
+        display:inline;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .mobile-nav-items {
+        width: 50%;
+        font-size: 1em;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .mobile-nav-items {
+        width: 70%;
+        font-size: 0.95em;
+        padding: 8px;
+    }
+    
+    .mobile-nav-items button {
+        padding: 12px;
+    }
 }

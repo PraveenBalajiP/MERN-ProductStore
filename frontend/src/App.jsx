@@ -1,4 +1,5 @@
 import {useState,useEffect} from 'react';
+import Lenis from "@studio-freight/lenis";
 import {Routes,Route} from 'react-router-dom';
 import NavBar from './common_components/navbar';
 import Footer from "./common_components/footer";
@@ -20,6 +21,25 @@ function App(){
   useEffect(()=>{
     document.documentElement.setAttribute("data-theme", theme);
   },[theme])
+
+  useEffect(()=>{
+    const lenis=new Lenis({
+      duration:0.5,
+      smoothWheel:true,
+      smoothTouch:true,
+      easing:(t)=>1-Math.pow(1-t,4),
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+    return()=>{
+      lenis.destroy();
+    };
+    },[]);
+
   return(
     <>
       <NavBar theme={theme} setTheme={setTheme}/>

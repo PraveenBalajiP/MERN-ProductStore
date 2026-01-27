@@ -16,12 +16,19 @@
   --nav_color: hsl(220, 15%, 15%);
 }
 
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 body{
     margin:0px;
     padding:0px;
-    box-sizing:border-box;
     font-family:'Poppins', sans-serif;
     background-color: var(--background_color_primary);
     color: var(--text_color_1);
     transition:0.5s;
+    overflow-x: hidden;
 }
+

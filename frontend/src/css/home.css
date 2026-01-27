@@ -10,14 +10,22 @@
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    padding:50px;
+    padding:50px 20px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+@media screen and (max-width: 768px) {
+    .home-caption {
+        padding: 30px 10px;
+    }
 }
 
 .para-1{
     text-align:center;
     font-size:3.5rem;
     line-height:1.2em;
-    padding:5% 15% 0% 15%;
+    padding:5% 10% 0% 10%;
     background-color:var(--nav-color);
 }
 
@@ -25,7 +33,15 @@
     text-align:center;
     font-size:3.5rem;
     line-height:1.2em;
-    padding:0% 15% 0% 15%;
+    padding:0% 10% 0% 10%;
+}
+
+@media screen and (max-width: 768px) {
+    .para-1,
+    .para-2 {
+        font-size: 2rem;
+        padding: 5% 5% 0% 5%;
+    }
 }
 
 .para-1,
@@ -73,17 +89,33 @@
     font-size:3rem;
     margin-top:50px;
     background-color:var(--background_color_secondary);
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .home-how{
     font-size:3rem;
     margin-top:50px;
     background-color:var(--background_color_primary);
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .home-reason p{
     line-height:1.5em;
     padding:20px;
+}
+
+@media screen and (max-width: 768px) {
+    .home-reason,
+    .home-how {
+        font-size: 2rem;
+        margin-top: 30px;
+    }
+    
+    .home-reason p {
+        padding: 15px;
+    }
 }
 
 .reason-cards{
@@ -92,6 +124,16 @@
     gap:30px;
     padding:20px;
     margin:10px;
+    max-width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .reason-cards {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 15px;
+        margin: 5px;
+    }
 }
 
 .work-cards{
@@ -100,6 +142,16 @@
     gap:30px;
     padding:30px;
     margin:10px;
+    max-width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .work-cards {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 15px;
+        margin: 5px;
+    }
 }
 
 .start-border:hover{
