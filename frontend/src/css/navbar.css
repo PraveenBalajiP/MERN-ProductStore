@@ -154,7 +154,7 @@ i{
 
 .mobile-nav-items button:hover i{
     font-size:1.25em;
-    transition:0.3s
+    transition:0.3s;
 }
 
 @media screen and (max-width:1150px){
@@ -169,21 +169,39 @@ i{
     }
 }
 
-@media screen and (max-width: 768px) {
-    .mobile-nav-items {
+@media screen and (max-width: 768px){
+    .mobile-nav-items{
         width: 50%;
         font-size: 1em;
     }
 }
 
-@media screen and (max-width: 480px) {
-    .mobile-nav-items {
+@media screen and (max-width: 480px){
+    .mobile-nav-items{
         width: 70%;
         font-size: 0.95em;
         padding: 8px;
     }
     
-    .mobile-nav-items button {
+    .mobile-nav-items button{
         padding: 12px;
+    }
+}
+
+@keyframes slideIn{
+    0%{
+        transform: translateX(100%);
+    }
+    100%{
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut{
+    0%{
+        transform: translateX(0%);
+    }
+    100%{
+        transform: translateX(100%);
     }
 }

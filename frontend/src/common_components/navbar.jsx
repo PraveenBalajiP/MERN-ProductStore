@@ -1,10 +1,23 @@
-import {useState} from 'react';
+import {useState,useEffect,useRef} from 'react';
 import {Link} from 'react-router-dom';
 import logo from '../assets/PS-logo.png';
 import '../css/navbar.css';
 
 function NavBar({theme,setTheme}){
     const [mobileNav,setMobileNav]=useState(false);
+    const menuRef=useRef();
+
+    useEffect(()=>{
+        function handleAnimation(){
+            if(mobileNav){
+                menuRef.current.style.animation="slideIn 0.7s forwards";
+            }
+            else{
+                menuRef.current.style.animation="slideOut 0.7s forwards";
+            }
+        }
+        handleAnimation();
+    },[mobileNav])
 
     function toggleTheme(){
         if(theme==="light"){
@@ -48,9 +61,8 @@ function NavBar({theme,setTheme}){
                 </div>
             </div>
         </div>
-        {mobileNav && 
         <div className="mobile-nav">
-            <div className="mobile-nav-items" >
+            <div className="mobile-nav-items" ref={menuRef}>
                 <Link to="/"><button className="mobile-home-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-house-chimney"></i>Home</button></Link>
                 <Link to="/about"><button className="mobile-about-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-address-card"></i>About</button></Link>
                 <Link to="/browse"><button className="mobile-browse-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-cart-shopping"></i>Browse</button></Link>
@@ -58,7 +70,7 @@ function NavBar({theme,setTheme}){
                 <Link to="/signup"><button className="mobile-signup-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-arrow-up-from-bracket"></i>Sign Up</button></Link>
                 <Link to="/signin"><button className="mobile-login-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-right-to-bracket"></i>Sign In</button></Link>
             </div>
-        </div>}
+        </div>
     </> 
     );
 }
