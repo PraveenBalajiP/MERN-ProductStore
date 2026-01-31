@@ -91,6 +91,9 @@
     background-color:var(--background_color_secondary);
     max-width: 100%;
     overflow: hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
 }
 
 .home-how{
@@ -99,6 +102,9 @@
     background-color:var(--background_color_primary);
     max-width: 100%;
     overflow: hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
 }
 
 .home-reason p{
@@ -125,6 +131,8 @@
     padding:20px;
     margin:10px;
     max-width: 100%;
+    align-items:start;
+    width:100%;
 }
 
 @media screen and (max-width: 768px) {
@@ -143,6 +151,8 @@
     padding:30px;
     margin:10px;
     max-width: 100%;
+    align-items:start;
+    width:100%;
 }
 
 @media screen and (max-width: 768px) {

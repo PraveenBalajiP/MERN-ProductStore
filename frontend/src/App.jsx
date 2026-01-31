@@ -5,9 +5,9 @@ import NavBar from './common_components/navbar';
 import Footer from "./common_components/footer";
 import Home from './components/Home';
 import About from './components/About';
-import Signup from './components/signup';
-/*
+import Signup from './components/Signup';
 import Login from './components/Login';
+/*
 import Contact from './components/Contact';
 import AddProduct from './components/AddProduct';
 import ProductDetails from './components/ProductDetails';
@@ -47,8 +47,8 @@ function App(){
           <Route path="/" element={<Home/>}/>
           <Route path="/about" element={<About/>}/>
           <Route path="/signup" element={<Signup/>}/>
-          {/*
           <Route path="/login" element={<Login/>}/>
+          {/*
           <Route path="/contact" element={<Contact/>}/>
           <Route path="/add-product" element={<AddProduct/>}/>
           <Route path="/product/:id" element={<ProductDetails/>}/>

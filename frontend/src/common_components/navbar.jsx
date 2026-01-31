@@ -56,7 +56,7 @@ function NavBar({theme,setTheme}){
                 <div className="user-links">
                     <div className="user-action">
                         <Link to="/signup"><button className="signup-btn">Sign Up</button></Link>
-                        <Link to="/signin"><button className="login-btn">Log In</button></Link>
+                        <Link to="/login"><button className="login-btn">Log In</button></Link>
                     </div>
                 </div>
             </div>

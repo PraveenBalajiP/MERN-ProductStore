@@ -1,7 +1,8 @@
 :root {
   --background_color_primary: hsla(0, 0%, 100%, 0.925);
   --background_color_secondary: hsla(0, 0%, 100%, 0.85);
-  --background_color_tertiary: hsla(0, 0%, 40%, 0.75);
+  --background_color_tertiary: hsla(0, 0%, 80%, 0.60);
+  --background_color_quaternary: hsla(0, 0%, 90%, 0.596);
   --text_color_1: hsl(0, 0%, 0%);
   --text_color_2: hsl(0, 0%, 20%);
   --nav_color: hsl(0, 0%, 80%);
