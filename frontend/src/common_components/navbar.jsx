@@ -68,7 +68,7 @@ function NavBar({theme,setTheme}){
                 <Link to="/browse"><button className="mobile-browse-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-cart-shopping"></i>Browse</button></Link>
                 <Link to="/sell"><button className="mobile-sell-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-circle-check"></i>Sell</button></Link>
                 <Link to="/signup"><button className="mobile-signup-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-arrow-up-from-bracket"></i>Sign Up</button></Link>
-                <Link to="/signin"><button className="mobile-login-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-right-to-bracket"></i>Sign In</button></Link>
+                <Link to="/login"><button className="mobile-login-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-right-to-bracket"></i>Sign In</button></Link>
             </div>
         </div>
     </> 

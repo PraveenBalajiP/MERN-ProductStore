@@ -116,3 +116,112 @@ font-weight:500;
 .switch-link a:hover{
     text-decoration:underline;
 }
+
+@media screen and (max-width: 768px) {
+    .login-page h2{
+        font-size:1.5rem;
+        padding:20px;
+        padding-bottom:20px;
+    }
+    
+    .form{
+        width:95%;
+        margin-bottom:40px;
+    }
+    
+    label{
+        font-size:1rem;
+        padding:8px;
+    }
+    
+    .login-form input{
+        font-size:1rem;
+        padding:10px;
+        margin-bottom:12px;
+    }
+    
+    section{
+        padding:15px;
+        margin:20px 0px;
+        border-radius:15px;
+    }
+    
+    .email-phone{
+        flex-direction:column;
+        gap:10px;
+    }
+    
+    .email-phone input,
+    .email-phone select{
+        width:100%;
+    }
+    
+    #choice{
+        font-size:1rem;
+        padding:10px;
+    }
+    
+    .submit-btn{
+        padding:12px;
+        font-size:1.1rem;
+        margin-top:30px;
+        margin-bottom:15px;
+    }
+    
+    .switch-link{
+        font-size:0.95rem;
+        margin-top:15px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .login-page h2{
+        font-size:1.3rem;
+        padding:15px;
+        padding-bottom:15px;
+    }
+    
+    .form{
+        width:100%;
+        margin-bottom:30px;
+        padding:0px 5px;
+    }
+    
+    label{
+        font-size:0.95rem;
+        padding:6px;
+    }
+    
+    .login-form input{
+        font-size:0.95rem;
+        padding:8px;
+        margin-bottom:10px;
+    }
+    
+    section{
+        padding:12px;
+        margin:15px 0px;
+        border-radius:15px;
+    }
+    
+    .email-phone{
+        gap:8px;
+    }
+    
+    #choice{
+        font-size:0.95rem;
+        padding:8px;
+    }
+    
+    .submit-btn{
+        padding:10px;
+        font-size:1rem;
+        margin-top:20px;
+        margin-bottom:10px;
+    }
+    
+    .switch-link{
+        font-size:0.9rem;
+        margin-top:10px;
+    }
+}

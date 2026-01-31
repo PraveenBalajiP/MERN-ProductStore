@@ -12,7 +12,7 @@ function Home(){
       </div>
       <div className="start-section">
         <div className="start-border">
-          <button className="start-btn">Get Started</button>
+          <button className="start-btn"><a href="/login">Get Started</a></button>
         </div>
       </div>
       <div className="home-reason">
