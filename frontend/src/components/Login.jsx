@@ -1,9 +1,21 @@
-import{useState}from"react";
+import{useState,useEffect}from"react";
 import"../css/login.css";
 
 function Login(){
     const[contact,setContact]=useState("select");
     const[placeholder,setPlaceholder]=useState("Please select Email/Phone Number");
+
+    const [phone,setPhone]=useState("");
+    const [email,setEmail]=useState("");
+    const [password,setPassword]=useState("");
+    const [userData,setUserData]=useState({});
+
+    useEffect(()=>{
+        setUserData({
+            contact:contact==="email"?email:phone,
+            password:password
+        })
+    },[phone,email,password]);
 
     const handleChange=(e)=>{
         const v=e.target.value;
@@ -26,10 +38,20 @@ function Login(){
                                 <option value="email">Email</option>
                                 <option value="phone">Phone Number</option>
                             </select>
-                            <input id="sel_choice" type={contact==="email"?"email":"tel"} placeholder={placeholder} required/>
+                            <input  id="sel_choice" 
+                                    type={contact==="email"?"email":"tel"} 
+                                    placeholder={placeholder} 
+                                    value={contact==="email"?email:phone}
+                                    onChange={(event)=>contact==="email"?setEmail(event.target.value):setPhone(event.target.value)}
+                                    required/>
                         </div>
                         <label htmlFor="password">Password</label>
-                        <input id="password" type="password" placeholder="Enter Password" required/>
+                        <input  id="password" 
+                                type="password" 
+                                placeholder="Enter Password" 
+                                value={password}
+                                onChange={(event)=>setPassword(event.target.value)}
+                                required/>
                         <button type="submit" className="submit-btn">Login</button>
                         <p className="switch-link">Don’t have an account? <a href="/signup">Sign Up</a></p>
                     </section>

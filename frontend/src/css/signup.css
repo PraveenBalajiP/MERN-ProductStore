@@ -3,7 +3,6 @@
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    scroll-behavior:smooth;
 }
 
 .signup-page h2{
@@ -68,6 +67,7 @@ label{
 }
 
 section{
+    scroll-margin-top:200px;
     display:flex;
     flex-direction:column;
     justify-content:center;
@@ -80,6 +80,7 @@ section{
 
 .nav-item:hover{
     background-color:var(--background_color_tertiary);
+    border-radius:100px;
 }
 
 #choice{
