@@ -1,4 +1,5 @@
 import{useState,useEffect}from"react";
+import axios from"axios";
 import"../css/login.css";
 
 function Login(){
@@ -24,6 +25,15 @@ function Login(){
         else if(v==="phone")setPlaceholder("Please Enter your Phone Number");
         else setPlaceholder("Please select Email/Phone Number");
     };
+
+    function Login(){
+        try{
+            axios.post("http://localhost:5000/api/users/login",userData);
+        }
+        catch(error){
+            console.error("Error during login:", error);
+        }
+    }
 
     return(
         <div className="login-page">
@@ -52,7 +62,9 @@ function Login(){
                                 value={password}
                                 onChange={(event)=>setPassword(event.target.value)}
                                 required/>
-                        <button type="submit" className="submit-btn">Login</button>
+                        <button type="submit" 
+                                className="submit-btn"
+                                onClick={Login}>Login</button>
                         <p className="switch-link">Don’t have an account? <a href="/signup">Sign Up</a></p>
                     </section>
                 </form>

@@ -1,5 +1,5 @@
 {
-  "name": "vite-project",
+  "name": "product-store",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,6 +13,7 @@
     "@chakra-ui/react": "^3.31.0",
     "@emotion/react": "^11.14.0",
     "@tailwindcss/vite": "^4.1.18",
+    "axios": "^1.13.4",
     "bcrypt": "^6.0.0",
     "next-themes": "^0.4.6",
     "ogl": "^1.0.11",

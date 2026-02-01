@@ -1,4 +1,7 @@
-import {useState,useEffect} from "react";
+import {useState,useEffect,useRef} from "react";
+import nav_menu from "../content/signup.js";
+import {validateEmail,validatePhone} from "../../error_handlers/contact.js";
+import axios from "axios";
 import "../css/signup.css";
 
 function Signup(){
@@ -15,6 +18,31 @@ function Signup(){
     const [fullAddress,setFullAddress]=useState("");
     const [checkBox,setCheckBox]=useState(false);
     const [userData,setUserData]=useState({});
+
+    const [users_list,setUsersList]=useState([]);
+    const errorContact=useRef();
+
+    useEffect(()=>{
+        async function users(){
+        try{
+            const response=await axios.get("http://localhost:5000/api/users");
+            setUsersList(response.data);
+        }
+        catch(error){
+            console.error("Error fetching users:", error);
+            }
+        }
+        users();
+    },[])
+
+    function SignUp(){
+        try{
+            axios.post("http://localhost:5000/api/users/signup",userData);
+        }
+        catch(error){
+            console.error("Error during signup:", error);
+        }
+    }
 
     useEffect(()=>{
         if(contact==="email"){
@@ -38,13 +66,28 @@ function Signup(){
             consent:checkBox
         });
     },[name,phone,email,password,fullAddress,checkBox]);
-    
-    const nav_menu=[
-        {name:"Personal Details",link:"#personal"},
-        {name:"Security",link:"#security"},
-        {name:"Location",link:"#location"},
-        {name:"Consent",link:"#consent"},
-    ]
+
+    useEffect(()=>{
+        if(!users_list.length || contact==="select") return;
+        if(contact==="email"){
+            const result=validateEmail(email,users_list);
+            if(result.valid===false){
+                errorContact.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+            }
+            else{
+                errorContact.current.style.borderColor="var(--background_color_tertiary)";
+            }
+        }
+        else if(contact==="phone"){
+            const result=validatePhone(phone,users_list);
+            if(result.valid===false){
+                errorContact.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+            }
+            else{
+                errorContact.current.style.borderColor="var(--background_color_tertiary)";
+            }
+        }
+    },[phone,email,contact,users_list]);
 
     return(
         <div className="signup-page">
@@ -57,7 +100,7 @@ function Signup(){
                 ))}
             </div>  
             <div className="form">
-                <form className="signup-form">
+                <form className="signup-form" onSubmit={(event)=>event.preventDefault()}>
                 <h3>Personal Details</h3>
                 <section id="personal">
                     <label htmlFor="name">Name</label>
@@ -69,16 +112,20 @@ function Signup(){
                             required/>
                     <label htmlFor="choice">Choose Email/Phone Number</label>
                     <div className="email-phone">
-                        <select id="choice" name="choice" onChange={(event)=>setContact(event.target.value)}>
-                            <option value="select" selected>--Select--</option>
+                        <select id="choice" 
+                                name="choice" 
+                                value={contact}
+                                onChange={(event)=>setContact(event.target.value)}>
+                            <option value="select">--Select--</option>
                             <option value="email">Email</option>
                             <option value="phone">Phone Number</option>
                         </select>
-                        <input  id="sel_choice" 
+                        <input  id="sel-choice" 
                                 type={contact==="email"?"email":"tel"} 
                                 placeholder={placeholder} 
                                 value={contact==="email"?email:phone}
                                 onChange={(event)=>contact==="email"?setEmail(event.target.value):setPhone(event.target.value)}
+                                ref={errorContact}
                                 required/>
                     </div>
                 </section>
@@ -128,7 +175,8 @@ function Signup(){
                 </section>
             </form>
             <button type="submit" 
-                    className="submit-btn">Sign Up</button>
+                    className="submit-btn"
+                    onClick={SignUp}>Sign Up</button>
             </div>
         </div>
     );

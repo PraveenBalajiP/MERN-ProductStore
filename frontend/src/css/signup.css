@@ -92,6 +92,10 @@ section{
     box-sizing:border-box;
 }
 
+#sel-choice{
+    border:1px solid var(--background_color_tertiary);
+}
+
 .email-phone{
     display:flex;
     flex-direction:row;
