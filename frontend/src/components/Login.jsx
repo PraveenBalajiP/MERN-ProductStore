@@ -1,15 +1,17 @@
-import{useState,useEffect}from"react";
+import{useState,useEffect,useRef}from"react";
 import axios from"axios";
 import"../css/login.css";
 
 function Login(){
     const[contact,setContact]=useState("select");
-    const[placeholder,setPlaceholder]=useState("Please select Email/Phone Number");
+    const[placeholder,setPlaceholder]=useState("Select");
 
     const [phone,setPhone]=useState("");
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
     const [userData,setUserData]=useState({});
+
+    const displayRef=useRef();
 
     useEffect(()=>{
         setUserData({
@@ -17,6 +19,24 @@ function Login(){
             password:password
         })
     },[phone,email,password]);
+
+    useEffect(()=>{
+        if(contact==="email"){
+            setPlaceholder("Please Enter your Email");
+        }
+        else if(contact==="phone"){
+            setPlaceholder("Please Enter your Phone Number");
+        }
+    },[contact])
+
+    useEffect(()=>{
+        if(contact==="select"){
+            displayRef.current.style.visibility="hidden";
+        }
+        else{
+            displayRef.current.style.visibility="visible";
+        }
+    },[contact])
 
     const handleChange=(e)=>{
         const v=e.target.value;
@@ -53,6 +73,7 @@ function Login(){
                                     placeholder={placeholder} 
                                     value={contact==="email"?email:phone}
                                     onChange={(event)=>contact==="email"?setEmail(event.target.value):setPhone(event.target.value)}
+                                    ref={displayRef}
                                     required/>
                         </div>
                         <label htmlFor="password">Password</label>

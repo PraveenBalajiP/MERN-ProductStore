@@ -20,7 +20,9 @@ function Signup(){
     const [userData,setUserData]=useState({});
 
     const [users_list,setUsersList]=useState([]);
+    const [passwordError,setPasswordError]=useState("");
     const errorContact=useRef();
+    const password_Error=useRef();
 
     useEffect(()=>{
         async function users(){
@@ -89,6 +91,42 @@ function Signup(){
         }
     },[phone,email,contact,users_list]);
 
+    useEffect(()=>{
+        if(contact==="select"){
+            errorContact.current.style.visibility="hidden";
+        }
+        else{
+            errorContact.current.style.visibility="visible";
+        }
+    },[contact])
+
+    useEffect(()=>{
+        if(password.length<6){
+            setPasswordError("Password must be at least 6 characters long.");
+            password_Error.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+        }
+        else if(!/[A-Z]/.test(password)){
+            setPasswordError("Password must contain at least one uppercase letter.");
+            password_Error.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+        }
+        else if(!/[a-z]/.test(password)){
+            setPasswordError("Password must contain at least one lowercase letter.");
+            password_Error.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+        }
+        else if(!/[0-9]/.test(password)){
+            setPasswordError("Password must contain at least one digit.");
+            password_Error.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+        }
+        else if(!/[!@#$%^&*]/.test(password)){
+            setPasswordError("Password must contain at least one special character (!@#$%^&*).");
+            password_Error.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+        }
+        else{
+            setPasswordError("");
+            password_Error.current.style.borderColor="var(--background_color_tertiary)";
+        }
+    },[password])
+
     return(
         <div className="signup-page">
             <h2>Sign Up</h2>
@@ -137,7 +175,9 @@ function Signup(){
                             placeholder="Enter Password" 
                             value={password}
                             onChange={(event)=>setPassword(event.target.value)}
+                            ref={password_Error}
                             required/>
+                    <span className="error-password">{passwordError}</span>
                 </section>
                 <h3>Location</h3>
                 <section id="location">

@@ -51,6 +51,10 @@ font-size:1em;
 box-sizing:border-box;
 }
 
+#sel-choice{
+    visibility:none;
+}
+
 .email-phone{
 display:flex;
 flex-direction:row;
