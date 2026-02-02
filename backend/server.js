@@ -16,6 +16,17 @@ app.get("/api/users",async (req,res)=>{
     res.json(users);
 });
 
+app.post("/api/users/signup",async (req,res)=>{
+    const user=new User(req.body);
+    try{
+        const savedUser=await user.save();
+        res.status(201).json({message:"User registered successfully"});
+    }
+    catch(error){
+        res.status(400).json({message:error.message});
+    }
+});
+
 app.listen(PORT,()=>{
     console.log(`Server running on port ${process.env.PORT}`);
     connectDB();

@@ -2,6 +2,7 @@ import {useState,useEffect,useRef} from "react";
 import nav_menu from "../content/signup.js";
 import {validateEmail,validatePhone} from "../../error_handlers/contact.js";
 import axios from "axios";
+import {useToast} from "chakra-ui/react";
 import "../css/signup.css";
 
 function Signup(){
@@ -24,6 +25,8 @@ function Signup(){
     const errorContact=useRef();
     const password_Error=useRef();
 
+    const toast=useToast();
+
     useEffect(()=>{
         async function users(){
         try{
@@ -40,6 +43,12 @@ function Signup(){
     function SignUp(){
         try{
             axios.post("http://localhost:5000/api/users/signup",userData);
+            toast({
+                title: "User registered successfully.",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
         }
         catch(error){
             console.error("Error during signup:", error);
