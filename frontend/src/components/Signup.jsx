@@ -21,8 +21,12 @@ function Signup(){
 
     const [users_list,setUsersList]=useState([]);
     const [passwordError,setPasswordError]=useState("");
+    const [confirmPassword,setConfirmPassword]=useState("");
+    const [matchedPassword,setMatchedPassword]=useState(false);
+    const [confirmPasswordError,setConfirmPasswordError]=useState("");
     const errorContact=useRef();
     const password_Error=useRef();
+    const confirmPassword_Error=useRef();
 
     useEffect(()=>{
         async function users(){
@@ -100,8 +104,13 @@ function Signup(){
         }
     },[contact])
 
+
     useEffect(()=>{
-        if(password.length<6){
+        if(password.length===0){
+            setPasswordError("");
+            password_Error.current.style.borderColor="var(--background_color_tertiary)";
+        }
+        else if(password.length<6){
             setPasswordError("Password must be at least 6 characters long.");
             password_Error.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
         }
@@ -117,7 +126,7 @@ function Signup(){
             setPasswordError("Password must contain at least one digit.");
             password_Error.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
         }
-        else if(!/[!@#$%^&*]/.test(password)){
+        else if(!/[!@#$%^&*]/.test(password) ){
             setPasswordError("Password must contain at least one special character (!@#$%^&*).");
             password_Error.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
         }
@@ -126,6 +135,25 @@ function Signup(){
             password_Error.current.style.borderColor="var(--background_color_tertiary)";
         }
     },[password])
+
+    useEffect(()=>{
+        if(!confirmPassword){
+            setConfirmPasswordError("");
+            confirmPassword_Error.current.style.borderColor="var(--background_color_tertiary)";
+            return;
+        }
+        if(password==confirmPassword){
+            setMatchedPassword(true);
+            setConfirmPasswordError("");
+            confirmPassword_Error.current.style.borderColor="var(--background_color_tertiary)";
+            confirmPassword_Error.current.style.borderColor="var(--background_color_tertiary)";
+        }
+        else{
+            setMatchedPassword(false);
+            setConfirmPasswordError("Passwords do not match.");
+            confirmPassword_Error.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+        }
+    },[password,confirmPassword])
 
     return(
         <div className="signup-page">
@@ -172,12 +200,21 @@ function Signup(){
                     <label htmlFor="password">Password</label>
                     <input  id="password" 
                             type="password" 
-                            placeholder="Enter Password" 
+                            placeholder="Enter Password"
                             value={password}
                             onChange={(event)=>setPassword(event.target.value)}
                             ref={password_Error}
                             required/>
                     <span className="error-password">{passwordError}</span>
+                    <label htmlFor="password">Confirm Password</label>
+                    <input  id="password" 
+                            type="password" 
+                            placeholder="Enter Password Again to Confirm" 
+                            value={confirmPassword}
+                            onChange={(event)=>setConfirmPassword(event.target.value)}
+                            ref={confirmPassword_Error}
+                            required/>
+                    <span className="confirm-error-password">{confirmPasswordError}</span>
                 </section>
                 <h3>Location</h3>
                 <section id="location">
