@@ -18,7 +18,7 @@ function Login(){
             contact:contact==="email"?email:phone,
             password:password
         })
-    },[phone,email,password]);
+    },[phone,email,password,contact]);
 
     useEffect(()=>{
         if(contact==="email"){
@@ -46,12 +46,17 @@ function Login(){
         else setPlaceholder("Please select Email/Phone Number");
     };
 
-    function Login(){
-        try{
-            axios.post("http://localhost:5000/api/users/login",userData);
+    async function handleLogin(){
+        if (contact==="select"){
+            alert("Please choose Email or Phone");
+            return;
+        }
+        try {
+            const res=await axios.post("http://localhost:5000/api/users/login",userData);
+            console.log(res.data.message);
         }
         catch(error){
-            console.error("Error during login:", error);
+            console.error("Login failed");
         }
     }
 
@@ -59,7 +64,7 @@ function Login(){
         <div className="login-page">
             <h2>Login</h2>
             <div className="form">
-                <form className="login-form">
+                <form className="login-form" onSubmit={(event)=>event.preventDefault()}>
                     <section>
                         <label htmlFor="choice">Choose Email/Phone Number</label>
                         <div className="email-phone">
@@ -85,7 +90,7 @@ function Login(){
                                 required/>
                         <button type="submit" 
                                 className="submit-btn"
-                                onClick={Login}>Login</button>
+                                onClick={handleLogin}>Login</button>
                         <p className="switch-link">Don’t have an account? <a href="/signup">Sign Up</a></p>
                     </section>
                 </form>

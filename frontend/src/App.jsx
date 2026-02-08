@@ -7,7 +7,7 @@ import Home from './components/Home';
 import About from './components/About';
 import Signup from './components/Signup';
 import Login from './components/Login';
-import { Toaster, toast } from "react-hot-toast";
+import {Toaster} from "react-hot-toast";
 import "./css/toast.css";
 
 /*
