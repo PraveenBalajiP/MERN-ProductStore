@@ -1,8 +1,23 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import User from '../models/users.models.js';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import authUser from '../middleware/authUser.js';
+
+dotenv.config();
 
 const routes=express.Router();
+
+function generateTokenAndCookie(id,res){
+    const token=jwt.sign({id},process.env.ACCESS_TOKEN_SECRET,{expiresIn:"1d"});
+    res.cookie("token",token,{
+        httpOnly:true,
+        secure:process.env.NODE_ENV==="production",
+        sameSite:"strict",
+        maxAge:24*60*60*1000
+    });
+}
 
 routes.post("/signup",async (req,res)=>{
     const {name,contact,password,address}=req.body;
@@ -25,6 +40,7 @@ routes.post("/signup",async (req,res)=>{
         else{
             await savedData.save();
             res.status(201).json({message:"User registered successfully"});
+            
         }
     }
     catch(error){
@@ -41,7 +57,7 @@ routes.get("/signup",async (req,res)=>{
     }
 })
 
-routes.post("/login",async (req,res)=>{
+routes.post("/login",authUser,async (req,res)=>{
     const {contact,password}=req.body;
     const user=await User.findOne({contact:contact});
     try{
