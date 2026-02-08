@@ -1,17 +1,19 @@
-.toast-success {
+.toast-success{
+    font-size:1.2em;
     border:none;
     border-radius:20px;
-    background-color:var(--nav_color) !important;
+    background-color:hsl(122, 39%, 49%) !important;
     font-family:'Poppins' !important;
-    color:var(--text_color_1) !important;
+    color:white !important;
     backdrop-filter:blur(20px) !important;
 }
 
-.toast-error {
+.toast-error{
+    font-size:1.2em;
     border:none;
     border-radius:20px;
-    background-color:var(--nav_color) !important;
+    background-color:hsl(4, 90%, 58%) !important;
     font-family:'Poppins' !important;
-    color:var(--text_color_1) !important;
+    color:white !important;
     backdrop-filter:blur(20px) !important;
 }

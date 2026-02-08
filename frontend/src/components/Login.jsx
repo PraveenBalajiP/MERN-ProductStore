@@ -1,5 +1,6 @@
 import{useState,useEffect,useRef}from"react";
 import axios from"axios";
+import { toast } from "react-hot-toast";
 import"../css/login.css";
 
 function Login(){
@@ -48,15 +49,15 @@ function Login(){
 
     async function handleLogin(){
         if (contact==="select"){
-            alert("Please choose Email or Phone");
+            toast.error("Please choose Email or Phone",{className:"toast-error"});
             return;
         }
         try {
-            const res=await axios.post("http://localhost:5000/api/users/login",userData);
-            console.log(res.data.message);
+            const response=await axios.post("http://localhost:5000/api/users/login",userData);
+            toast.success(`${response.data.message}`,{className:"toast-success"});
         }
         catch(error){
-            console.error("Login failed");
+            toast.error(`${error.response.data}`,{className:"toast-error"});
         }
     }
 

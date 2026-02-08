@@ -45,10 +45,10 @@ function Signup(){
     async function SignUp(){
         try{
             const response=await axios.post("http://localhost:5000/api/users/signup",userData);
-            toast.success("Saved!",{className:"toast-success"});
+            toast.success(`${response.data.message}`,{className:"toast-success"});
         }
         catch(error){
-            console.error("Error during signup:", error);
+            toast.error(`${error.response.data.message}`,{className:"toast-error"});
         }
     }
 

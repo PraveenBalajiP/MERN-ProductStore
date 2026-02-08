@@ -45,8 +45,8 @@ function App(){
 
   return(
     <>
-      <Toaster position="top-center"/>
       <NavBar theme={theme} setTheme={setTheme}/>
+        <Toaster position="bottom-center"/>
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/about" element={<About/>}/>
