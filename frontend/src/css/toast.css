@@ -1,0 +1,13 @@
+.toast-success {
+    border:none;
+    border-radius:20px;
+    background-color:var(--nav_color) !important;
+    font-family:'Poppins' !important;
+    color:var(--text_color_1) !important;
+    backdrop-filter:blur(20px) !important;
+}
+
+.toast-error {
+  border-left: 6px solid #ff0033;
+  animation: shake 0.35s ease;
+}

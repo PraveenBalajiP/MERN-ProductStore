@@ -7,6 +7,9 @@ import Home from './components/Home';
 import About from './components/About';
 import Signup from './components/Signup';
 import Login from './components/Login';
+import { Toaster, toast } from "react-hot-toast";
+import "./css/toast.css";
+
 /*
 import Contact from './components/Contact';
 import AddProduct from './components/AddProduct';
@@ -42,6 +45,7 @@ function App(){
 
   return(
     <>
+      <Toaster position="top-center"/>
       <NavBar theme={theme} setTheme={setTheme}/>
         <Routes>
           <Route path="/" element={<Home/>}/>

@@ -2,6 +2,7 @@ import {useState,useEffect,useRef} from "react";
 import nav_menu from "../content/signup.js";
 import {validateEmail,validatePhone} from "../../error_handlers/contact.js";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 import "../css/signup.css";
 
 function Signup(){
@@ -41,9 +42,10 @@ function Signup(){
         users();
     },[])
 
-    function SignUp(){
+    async function SignUp(){
         try{
-            axios.post("http://localhost:5000/api/users/signup",userData);
+            const response=await axios.post("http://localhost:5000/api/users/signup",userData);
+            toast.success("Saved!",{className:"toast-success"});
         }
         catch(error){
             console.error("Error during signup:", error);
