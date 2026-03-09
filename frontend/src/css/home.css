@@ -2,7 +2,7 @@
     display:flex;
     flex-direction:column;
     justify-content:center;
-    background-color:var(--background-color);
+    background-color:var(--background_color_primary);
 }
 
 .home-caption{
@@ -25,8 +25,8 @@
     text-align:center;
     font-size:3.5rem;
     line-height:1.2em;
-    padding:5% 10% 0% 10%;
-    background-color:var(--nav-color);
+    padding:5% 10% 0 10%;
+    color:var(--text_color_1);
 }
 
 .para-2{
@@ -70,19 +70,27 @@
 }
 
 .start-border{
-    border:2px solid var(--nav_color);
-    border-radius:50px;
+    border:2px solid var(--accent);
+    border-radius:999px;
+    background-color:var(--button_primary_bg);
 }
 
 .start-btn{
-    padding:15px 50px;
-    font-size:1.3rem;
-    border-radius:50px;
-    background-color:var(--nav_color);
+    padding:14px 40px;
+    font-size:1.125rem;
+    font-weight:500;
+    border-radius:999px;
+    background:transparent;
     color:var(--button_text_color);
     cursor:pointer;
-    transition:0.3s;
+    transition:background-color 0.2s ease, transform 0.15s ease;
     margin:2px;
+    border:none;
+}
+
+.start-btn a{
+    color:inherit;
+    text-decoration:none;
 }
 
 .home-reason{
@@ -107,9 +115,11 @@
     align-items:flex-start;
 }
 
-.home-reason p{
+.home-reason p,.home-how p{
     line-height:1.5em;
     padding:20px;
+    color:var(--text_color_1);
+    font-weight:600;
 }
 
 @media screen and (max-width: 768px) {
@@ -165,13 +175,11 @@
 }
 
 .start-border:hover{
-    transform:scale(1.05);
-    transition:0.5s;
-    background-color:hsla(207, 62%, 50%, 0.88);
+    background-color:var(--button_primary_hover);
+    transform:scale(1.02);
+    transition:background-color 0.2s ease, transform 0.15s ease;
 }
 
 .start-border:active{
-    transform:scale(0.95);
-    transition:0.5s;
-    background-color:hsla(207, 62%, 50%, 0.88);
+    transform:scale(0.98);
 }

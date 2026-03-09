@@ -32,11 +32,12 @@
 }
 
 .about-card p{
-    border:2px solid var(--nav_color);
-    border-radius:20px;
+    border:1px solid var(--card_border);
+    border-radius:12px;
     padding:20px;
-    font-size:1.2rem;
+    font-size:1rem;
     color:var(--text_color_2);
     background-color:var(--background_color_tertiary);
     flex:1;
+    line-height:1.5;
 }

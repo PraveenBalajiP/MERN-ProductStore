@@ -8,8 +8,10 @@ scroll-behavior:smooth;
 
 .login-page h2{
 font-size:2rem;
+font-weight:600;
 padding:30px;
 padding-bottom:40px;
+color:var(--text_color_1);
 }
 
 .login-form{
@@ -17,16 +19,19 @@ display:flex;
 flex-direction:column;
 }
 
-label{
+.login-page label{
 font-size:1.2em;
 padding:10px 10px;
+color:var(--text_color_1);
 }
 
 .login-form input{
 font-size:1.2em;
 padding:10px;
-border-radius:20px;
+border-radius:12px;
+border:1px solid var(--border_color);
 background-color:var(--background_color_tertiary);
+color:var(--text_color_1);
 outline:none;
 text-indent:10px;
 }
@@ -35,18 +40,19 @@ section{
 display:flex;
 flex-direction:column;
 justify-content:center;
-border:2px solid var(--background_color_secondary);
-padding:20px;
-margin:30px 0px;
-border-radius:20px;
+border:1px solid var(--border_color);
+padding:24px;
+margin:30px 0;
+border-radius:12px;
 background-color:var(--background_color_secondary);
 }
 
 #choice{
-border:1px solid var(--background_color_tertiary);
-border-radius:20px;
-margin:0px;
+border:1px solid var(--border_color);
+border-radius:12px;
+margin:0;
 background-color:var(--background_color_tertiary);
+color:var(--text_color_1);
 font-size:1em;
 box-sizing:border-box;
 }
@@ -75,14 +81,15 @@ width:30%;
 }
 
 .submit-btn{
-padding:10px;
-font-size:1.3rem;
-border:3px solid var(--nav_color);
-border-radius:20px;
-background-color:var(--nav_color);
-color:var(--text_color_1);
+padding:12px 24px;
+font-size:1.0625rem;
+font-weight:500;
+border:none;
+border-radius:10px;
+background-color:var(--button_primary_bg);
+color:var(--button_text_color);
 cursor:pointer;
-transition:0.3s;
+transition:background-color 0.2s ease, transform 0.15s ease;
 margin-top:50px;
 margin-bottom:20px;
 }
@@ -95,30 +102,28 @@ margin-bottom:50px;
 }
 
 .submit-btn:hover{
+background-color:var(--button_primary_hover);
 transform:scale(1.01);
-transition:0.5s;
-border-color:hsla(207,62%,50%,0.88);
 }
 
 .submit-btn:active{
-transform:scale(0.95);
-transition:0.5s;
-border-color:var(--background_color_primary);
+transform:scale(0.98);
 }
 
 .switch-link{
 text-align:center;
-margin-top:10px;
+margin-top:12px;
 }
 
 .switch-link a{
-color:hsla(207,90%,50%,0.88);
+color:var(--link_color);
 text-decoration:none;
 font-weight:500;
 }
 
 .switch-link a:hover{
-    text-decoration:underline;
+text-decoration:underline;
+color:var(--accent_hover);
 }
 
 @media screen and (max-width: 768px) {

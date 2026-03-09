@@ -1,19 +1,21 @@
 .toast-success{
-    font-size:1.2em;
+    font-size:1rem;
+    font-weight:500;
     border:none;
-    border-radius:20px;
-    background-color:hsl(122, 39%, 49%) !important;
-    font-family:'Poppins' !important;
-    color:white !important;
-    backdrop-filter:blur(20px) !important;
+    border-radius:10px;
+    background-color:#059669 !important;
+    font-family:inherit !important;
+    color:#fff !important;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15) !important;
 }
 
 .toast-error{
-    font-size:1.2em;
+    font-size:1rem;
+    font-weight:500;
     border:none;
-    border-radius:20px;
-    background-color:hsl(4, 90%, 58%) !important;
-    font-family:'Poppins' !important;
-    color:white !important;
-    backdrop-filter:blur(20px) !important;
+    border-radius:10px;
+    background-color:#dc2626 !important;
+    font-family:inherit !important;
+    color:#fff !important;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15) !important;
 }

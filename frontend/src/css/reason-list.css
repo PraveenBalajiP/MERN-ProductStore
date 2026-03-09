@@ -1,27 +1,32 @@
 .reason-card{
-    border:2px solid var(--nav_color);
-    border-radius:20px;
-    padding:20px;
+    border:1px solid var(--card_border);
+    border-radius:12px;
+    padding:24px;
     display:flex;
     flex-direction:column;
     justify-content:flex-start;
     align-items:flex-start;
-    background-color:var(--background_color_primary);
+    background-color:var(--card_bg);
+    box-shadow:var(--shadow_sm);
     height:100%;
+    transition:box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
 }
 
 .reason-card h2{
-    font-size:2rem;
+    font-size:1.5rem;
+    font-weight:600;
     margin-bottom:10px;
+    color:var(--text_color_1);
 }
 
 .reason-card p{
-    font-size:1.2rem;
+    font-size:1rem;
     color:var(--text_color_2);
+    line-height:1.5;
 }
 
 .reason-card:hover{
-    box-shadow:0 4px 8px hsla(0, 1%, 37%, 0.205);
-    transform:translateY(-5px) scale(1.01);
-    transition:0.5s;
+    box-shadow:var(--shadow_hover);
+    transform:translateY(-2px);
+    border-color:var(--border_color_strong);
 }
