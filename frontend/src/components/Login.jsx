@@ -1,6 +1,7 @@
 import{useState,useEffect,useRef}from"react";
 import axios from"axios";
 import { toast } from "react-hot-toast";
+import validator from "validator"
 import"../css/login.css";
 
 function Login(){
@@ -46,6 +47,23 @@ function Login(){
         else if(v==="phone")setPlaceholder("Please Enter your Phone Number");
         else setPlaceholder("Please select Email/Phone Number");
     };
+
+    useEffect(()=>{
+        if(contact==="email"){
+            if(!validator.isEmail(email))
+                displayRef.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+            else
+                displayRef.current.style.borderColor="var(--background_color_tertiary)";
+        }
+        else if(contact==="phone"){
+            if(!validator.isMobilePhone(phone,"any")){
+                displayRef.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+            }
+            else{
+                displayRef.current.style.borderColor="var(--background_color_tertiary)";
+            }
+        }
+    },[email,phone,contact])
 
     async function handleLogin(){
         if (contact==="select"){

@@ -2,6 +2,7 @@ import {useState,useEffect,useRef} from "react";
 import nav_menu from "../content/signup.js";
 import {validateEmail,validatePhone} from "../../error_handlers/contact.js";
 import axios from "axios";
+import validator from "validator";
 import { toast } from "react-hot-toast";
 import "../css/signup.css";
 
@@ -25,6 +26,7 @@ function Signup(){
     const [confirmPassword,setConfirmPassword]=useState("");
     const [matchedPassword,setMatchedPassword]=useState(false);
     const [confirmPasswordError,setConfirmPasswordError]=useState("");
+    const [inputContactError,setInputContactError]=useState("");
     const errorContact=useRef();
     const password_Error=useRef();
     const confirmPassword_Error=useRef();
@@ -32,7 +34,7 @@ function Signup(){
     useEffect(()=>{
         async function users(){
         try{
-            const response=await axios.get("http://localhost:5000/api/users");
+            const response=await axios.get("http://localhost:5000/api/users/signup");
             setUsersList(response.data);
         }
         catch(error){
@@ -78,21 +80,30 @@ function Signup(){
     useEffect(()=>{
         if(!users_list.length || contact==="select") return;
         if(contact==="email"){
-            const result=validateEmail(email,users_list);
-            if(result.valid===false){
+            if(!validator.isEmail(email)){
                 errorContact.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
             }
             else{
-                errorContact.current.style.borderColor="var(--background_color_tertiary)";
+                const result=validateEmail(email,users_list);
+                if(result.valid===false){
+                    errorContact.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+                    setInputContactError(result.message);
+                }
+                else{
+                    errorContact.current.style.borderColor="var(--background_color_tertiary)";
+                    setInputContactError("");
+                }
             }
         }
         else if(contact==="phone"){
             const result=validatePhone(phone,users_list);
-            if(result.valid===false){
+            if(!result.valid){
                 errorContact.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+                setInputContactError(result.message);
             }
             else{
                 errorContact.current.style.borderColor="var(--background_color_tertiary)";
+                setInputContactError("");
             }
         }
     },[phone,email,contact,users_list]);
@@ -188,13 +199,16 @@ function Signup(){
                             <option value="email">Email</option>
                             <option value="phone">Phone Number</option>
                         </select>
-                        <input  id="sel-choice" 
-                                type={contact==="email"?"email":"tel"} 
-                                placeholder={placeholder} 
-                                value={contact==="email"?email:phone}
-                                onChange={(event)=>contact==="email"?setEmail(event.target.value):setPhone(event.target.value)}
-                                ref={errorContact}
-                                required/>
+                        <div className="input-contact">
+                            <input  id="sel-choice" 
+                                    type={contact==="email"?"email":"tel"} 
+                                    placeholder={placeholder} 
+                                    value={contact==="email"?email:phone}
+                                    onChange={(event)=>contact==="email"?setEmail(event.target.value):setPhone(event.target.value)}
+                                    ref={errorContact}
+                                    required/>
+                            <p>{inputContactError}</p>
+                        </div>
                     </div>
                 </section>
                 <h3>Security</h3>
