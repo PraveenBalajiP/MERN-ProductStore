@@ -51,7 +51,7 @@
     justify-content:center;
     flex-direction:column;
     min-height:90vh;
-    gap:100px;;
+    gap:100px;
 }
 
 .start-section{
@@ -115,7 +115,6 @@
 .start-btn{
     padding:14px 40px;
     font-size:1.125rem;
-    font-weight:500;
     border-radius:999px;
     background:transparent;
     color:var(--button_text_color);
@@ -156,7 +155,6 @@
     line-height:1.5em;
     padding:20px;
     color:var(--text_color_1);
-    font-weight:600;
 }
 
 @media screen and (max-width: 768px) {

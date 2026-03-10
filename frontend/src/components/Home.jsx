@@ -19,7 +19,7 @@ function Home(){
           <div className="start-border">
             <button className="start-btn"><a href="/login">Get Started</a></button>
           </div>
-      </div>
+        </div>
       </div>
       <div className="home-reason">
         <p>Why choose Product Store?</p>

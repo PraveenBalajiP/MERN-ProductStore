@@ -104,8 +104,4 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Ensure paragraphs are never bold anywhere */
-/* Paragraphs: keep normal weight (no bold rules) */
-p{
-  font-weight: inherit;
-}
+/* Paragraphs: no explicit font-weight rules */
