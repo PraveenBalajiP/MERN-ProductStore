@@ -2,6 +2,7 @@ import{useState,useEffect,useRef}from"react";
 import axios from"axios";
 import { toast } from "react-hot-toast";
 import validator from "validator"
+import {useNavigate} from "react-router-dom";
 import"../css/login.css";
 
 function Login(){
@@ -14,6 +15,8 @@ function Login(){
     const [userData,setUserData]=useState({});
 
     const displayRef=useRef();
+
+    const navigate=useNavigate();
 
     useEffect(()=>{
         setUserData({
@@ -72,10 +75,12 @@ function Login(){
         }
         try {
             const response=await axios.post("http://localhost:5000/api/users/login",userData);
+            console.log(response);
             toast.success(`${response.data.message}`,{className:"toast-success"});
+            navigate("/user");
         }
         catch(error){
-            toast.error(`${error.response.data}`,{className:"toast-error"});
+            toast.error("Error!!",{className:"toast-error"});
         }
     }
 

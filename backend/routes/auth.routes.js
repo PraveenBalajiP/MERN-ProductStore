@@ -57,9 +57,10 @@ routes.get("/signup",async (req,res)=>{
     }
 })
 
-routes.post("/login",authUser,async (req,res)=>{
+routes.post("/login",async (req,res)=>{
     const {contact,password}=req.body;
     const user=await User.findOne({contact:contact});
+    console.log(user);
     try{
         if(!user){
             res.status(400).json({message:"No User Found, Kindly Sign Up before Logging In"});

@@ -1,14 +1,16 @@
-import {useState,useEffect} from 'react';
+import { useState,useEffect } from 'react';
 import Lenis from "@studio-freight/lenis";
-import {Routes,Route} from 'react-router-dom';
+import { Routes,Route } from 'react-router-dom';
 import NavBar from './common_components/navbar';
+import UserNav from './common_components/usernav';
 import Footer from "./common_components/footer";
 import Home from './components/Home';
 import About from './components/About';
 import Signup from './components/Signup';
 import Login from './components/Login';
-import {Toaster} from "react-hot-toast";
-import "./css/toast.css";
+import User from './components/User';
+import { Toaster } from "react-hot-toast";
+import './css/toast.css';
 
 /*
 import Contact from './components/Contact';
@@ -18,15 +20,32 @@ import Cart from './components/Cart';
 import Feedback from './components/Feedback';
 */
 
-function App(){
-  const [theme,setTheme]=useState(localStorage.getItem("theme")||"light");
-  
-  useEffect(()=>{
-    document.documentElement.setAttribute("data-theme", theme);
-  },[theme])
+function App() {
+  const [theme,setTheme]=useState(localStorage.getItem('theme') || 'light');
+  const [navSet,setNavSet]=useState(localStorage.getItem('nav') || 'nav');
 
-  useEffect(()=>{
-    const lenis=new Lenis({
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  },[theme]);
+
+  useEffect(() => {
+    localStorage.setItem('nav', navSet);
+  },[navSet]);
+
+  useEffect(() => {
+    const handleNavChange=()=>{
+      setNavSet(localStorage.getItem('nav') || 'nav');
+    };
+    window.addEventListener('storage',handleNavChange);
+    window.addEventListener('nav-change',handleNavChange);
+    return()=>{
+      window.removeEventListener('storage',handleNavChange);
+      window.removeEventListener('nav-change',handleNavChange);
+    };
+  },[]);
+
+  useEffect(() => {
+    const lenis = new Lenis({
       duration:0.5,
       smoothWheel:true,
       smoothTouch:true,
@@ -41,17 +60,22 @@ function App(){
     return()=>{
       lenis.destroy();
     };
-    },[]);
+  }, []);
 
-  return(
+  const navChoice=navSet==='usernav'? 
+      <UserNav theme={theme} setTheme={setTheme} />:
+      <NavBar theme={theme} setTheme={setTheme} />;
+
+  return (
     <>
-      <NavBar theme={theme} setTheme={setTheme}/>
-        <Toaster position="bottom-center"/>
-        <Routes>
-          <Route path="/" element={<Home/>}/>
-          <Route path="/about" element={<About/>}/>
-          <Route path="/signup" element={<Signup/>}/>
-          <Route path="/login" element={<Login/>}/>
+      {navChoice}
+      <Toaster position="bottom-center" />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/user" element={<User />} />
           {/*
           <Route path="/contact" element={<Contact/>}/>
           <Route path="/add-product" element={<AddProduct/>}/>
@@ -59,10 +83,9 @@ function App(){
           <Route path="/cart" element={<Cart/>}/>
           <Route path="/feedback" element={<Feedback/>}/>
           */}
-        </Routes>
-        <Footer/>
+      </Routes>
+      <Footer/>
     </>
-    
   );
 }
 

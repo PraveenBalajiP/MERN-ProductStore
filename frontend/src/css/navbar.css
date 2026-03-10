@@ -79,7 +79,7 @@ i{
     align-items:center;
 }
 
-.nav-links,.theme-link,.user-links,.side-menu{
+.nav-links,.theme-link,.user-links,.side-menu,.profile-action{
     border:1px solid var(--border_color);
     border-radius:999px;
     background-color:var(--background_color_tertiary);
@@ -93,6 +93,7 @@ i{
     margin:2px;
     padding:0;
 }
+
 
 .nav-items button,.user-setup button{
     padding:8px 16px;

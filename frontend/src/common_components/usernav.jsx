@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 import logo from '../assets/PS-logo.png';
 import '../css/navbar.css';
 
-function NavBar({theme,setTheme}){
+function UserNav({theme,setTheme}){
     const [mobileNav,setMobileNav]=useState(false);
     const menuRef=useRef();
 
@@ -55,8 +55,7 @@ function NavBar({theme,setTheme}){
                 </div>
                 <div className="user-links">
                     <div className="user-action">
-                        <Link to="/signup"><button className="signup-btn">Sign Up</button></Link>
-                        <Link to="/login"><button className="login-btn">Log In</button></Link>
+                        <Link to="/profile"><button className="profile-btn"><i class="fa-solid fa-user"></i></button></Link>
                     </div>
                 </div>
             </div>
@@ -67,12 +66,10 @@ function NavBar({theme,setTheme}){
                 <Link to="/about"><button className="mobile-about-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-address-card"></i>About</button></Link>
                 <Link to="/browse"><button className="mobile-browse-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-cart-shopping"></i>Browse</button></Link>
                 <Link to="/sell"><button className="mobile-sell-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-circle-check"></i>Sell</button></Link>
-                <Link to="/signup"><button className="mobile-signup-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-arrow-up-from-bracket"></i>Sign Up</button></Link>
-                <Link to="/login"><button className="mobile-login-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-right-to-bracket"></i>Sign In</button></Link>
             </div>
         </div>
     </> 
     );
 }
 
-export default NavBar;
+export default UserNav;
