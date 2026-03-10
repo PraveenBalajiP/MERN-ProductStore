@@ -4,12 +4,12 @@
     padding:24px;
     display:flex;
     flex-direction:column;
-    justify-content:flex-start;
-    align-items:flex-start;
+    justify-content:center;
     background-color:var(--card_bg);
     box-shadow:var(--shadow_sm);
     height:100%;
     transition:box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    
 }
 
 .reason-card h2{
@@ -21,7 +21,6 @@
 .reason-card p{
     font-size:1.25rem;
     color:var(--text_color_2);
-    line-height:1.5;
 }
 
 .reason-card:hover{

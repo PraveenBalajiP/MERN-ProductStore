@@ -151,7 +151,7 @@
     align-items:flex-start;
 }
 
-.home-reason p,.home-how p{
+.home-reason > p,.home-how > p{
     line-height:1.5em;
     padding:20px;
     color:var(--text_color_1);
