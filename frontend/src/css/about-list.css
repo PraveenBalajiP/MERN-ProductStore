@@ -35,7 +35,7 @@
     border:1px solid var(--card_border);
     border-radius:12px;
     padding:20px;
-    font-size:1rem;
+    font-size:1.25rem;
     color:var(--text_color_2);
     background-color:var(--background_color_tertiary);
     flex:1;

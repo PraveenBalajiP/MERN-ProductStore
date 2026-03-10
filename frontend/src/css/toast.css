@@ -1,6 +1,5 @@
 .toast-success{
     font-size:1rem;
-    font-weight:500;
     border:none;
     border-radius:10px;
     background-color:#059669 !important;
@@ -11,7 +10,6 @@
 
 .toast-error{
     font-size:1rem;
-    font-weight:500;
     border:none;
     border-radius:10px;
     background-color:#dc2626 !important;

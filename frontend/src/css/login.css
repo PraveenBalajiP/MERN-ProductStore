@@ -8,7 +8,6 @@ scroll-behavior:smooth;
 
 .login-page h2{
 font-size:2rem;
-font-weight:600;
 padding:30px;
 padding-bottom:40px;
 color:var(--text_color_1);
@@ -83,7 +82,6 @@ width:30%;
 .submit-btn{
 padding:12px 24px;
 font-size:1.0625rem;
-font-weight:500;
 border:none;
 border-radius:10px;
 background-color:var(--button_primary_bg);
@@ -118,7 +116,6 @@ margin-top:12px;
 .switch-link a{
 color:var(--link_color);
 text-decoration:none;
-font-weight:500;
 }
 
 .switch-link a:hover{
