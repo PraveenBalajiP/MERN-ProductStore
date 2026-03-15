@@ -1,12 +1,13 @@
 import {useState,useEffect} from "react";
-import {useNavigate,Link} from "react-router-dom";
+import {useNavigate,Link,Outlet,useParams} from "react-router-dom";
 import axios from "axios";
 import "../css/user.css";
 
 function User(){
     const [sideBoardOpen,setSideBoardOpen]=useState(false);
     const navigate=useNavigate();
-    const userName=localStorage.getItem("userName")||"";
+    const {name}=useParams();
+    const userName=name || localStorage.getItem("userName")||"";
 
     useEffect(()=>{
         async function checkAuth(){
@@ -44,11 +45,14 @@ function User(){
                         <i className="fa-solid fa-bars"></i>}
             </button>
             <div className={`side-board ${sideBoardOpen ? 'open' : 'closed'}`}>
-                <Link to="/profile"><button className="profile-btn"><i className="fa-solid fa-user"></i>Profile</button></Link>
-                <Link to="/wishlist"><button className="wishlist-btn"><i className="fa-solid fa-heart"></i>Wishlist</button></Link>
-                <Link to="/orders"><button className="orders-btn"><i className="fa-solid fa-box"></i>Orders</button></Link>
-                <Link to="/settings"><button className="settings-btn"><i className="fa-solid fa-gear"></i>Settings</button></Link>
+                <Link to={`/users/${userName}/profile`}><button className="profile-btn"><i className="fa-solid fa-user"></i>Profile</button></Link>
+                <Link to={`/users/${userName}/wishlist`}><button className="wishlist-btn"><i className="fa-solid fa-heart"></i>Wishlist</button></Link>
+                <Link to={`/users/${userName}/orders`}><button className="orders-btn"><i className="fa-solid fa-box"></i>Orders</button></Link>
+                <Link to={`/users/${userName}/settings`}><button className="settings-btn"><i className="fa-solid fa-gear"></i>Settings</button></Link>
                 <button className="logout-btn" onClick={handleLogout}><i className="fa-solid fa-right-from-bracket"></i>Logout</button>
+            </div>
+            <div className="user-content">
+                <Outlet />
             </div>
         </>
     );
