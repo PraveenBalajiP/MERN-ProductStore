@@ -72,7 +72,13 @@ routes.post("/login",async (req,res)=>{
             }
             else{
                 generateTokenAndCookie(user._id,res);
-                res.status(200).json({message:"Login Successful"});
+                console.log({...user,message:"Login Successful"});
+                const userData={
+                    name:user.name.toLowerCase(),
+                    contact:user.contact,
+                    message:"Login Successful"
+                }
+                res.status(200).json(userData);
             }
         }
     }

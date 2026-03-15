@@ -75,9 +75,10 @@ function Login(){
         }
         try {
             const response=await axios.post("http://localhost:5000/api/users/login",userData);
-            console.log(response);
             toast.success(`${response.data.message}`,{className:"toast-success"});
-            navigate("/user");
+                localStorage.setItem("isLoggedIn","true");
+                window.dispatchEvent(new Event("auth-change"));
+            navigate(`/users/${response.data.name}`);
         }
         catch(error){
             toast.error("Error!!",{className:"toast-error"});

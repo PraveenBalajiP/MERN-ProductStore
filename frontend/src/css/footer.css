@@ -11,9 +11,17 @@
     margin-bottom:0px;
 }
 
+.footer.footer-users{
+    margin-top:0px;
+}
+
 @media screen and (max-width: 768px) {
     .footer {
         padding: 20px 15px 0px 15px;
+    }
+
+    .footer.footer-users{
+        margin-top:16px;
     }
 }
 

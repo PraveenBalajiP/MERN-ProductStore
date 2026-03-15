@@ -1,23 +1,25 @@
-import {useState,useEffect,useRef} from 'react';
-import {Link} from 'react-router-dom';
+import {useState,useEffect} from 'react';
+import {Link,useLocation} from 'react-router-dom';
 import logo from '../assets/PS-logo.png';
 import '../css/navbar.css';
 
 function NavBar({theme,setTheme}){
     const [mobileNav,setMobileNav]=useState(false);
-    const menuRef=useRef();
+    const [isLoggedIn,setIsLoggedIn]=useState(localStorage.getItem("isLoggedIn")==="true");
+    const location=useLocation();
+    const isUsersPage=location.pathname.startsWith('/users');
 
     useEffect(()=>{
-        function handleAnimation(){
-            if(mobileNav){
-                menuRef.current.style.animation="slideIn 0.7s forwards";
-            }
-            else{
-                menuRef.current.style.animation="slideOut 0.7s forwards";
-            }
-        }
-        handleAnimation();
-    },[mobileNav])
+        const syncAuthState=()=>{
+            setIsLoggedIn(localStorage.getItem("isLoggedIn")==="true");
+        };
+        window.addEventListener("storage",syncAuthState);
+        window.addEventListener("auth-change",syncAuthState);
+        return()=>{
+            window.removeEventListener("storage",syncAuthState);
+            window.removeEventListener("auth-change",syncAuthState);
+        };
+    },[])
 
     function toggleTheme(){
         if(theme==="light"){
@@ -54,7 +56,7 @@ function NavBar({theme,setTheme}){
                     </div>
                 </div>
                 <div className="user-links">
-                    <div className="user-action">
+                    <div className="user-action" style={{display:isUsersPage?"none":"block"}}>
                         <Link to="/signup"><button className="signup-btn">Sign Up</button></Link>
                         <Link to="/login"><button className="login-btn">Log In</button></Link>
                     </div>
@@ -62,13 +64,13 @@ function NavBar({theme,setTheme}){
             </div>
         </div>
         <div className="mobile-nav">
-            <div className="mobile-nav-items" ref={menuRef}>
+            <div className={`mobile-nav-items ${mobileNav ? 'open' : 'closed'}`}>
                 <Link to="/"><button className="mobile-home-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-house-chimney"></i>Home</button></Link>
                 <Link to="/about"><button className="mobile-about-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-address-card"></i>About</button></Link>
                 <Link to="/browse"><button className="mobile-browse-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-cart-shopping"></i>Browse</button></Link>
                 <Link to="/sell"><button className="mobile-sell-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-circle-check"></i>Sell</button></Link>
-                <Link to="/signup"><button className="mobile-signup-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-arrow-up-from-bracket"></i>Sign Up</button></Link>
-                <Link to="/login"><button className="mobile-login-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-right-to-bracket"></i>Sign In</button></Link>
+                {!isUsersPage && <Link to="/signup"><button className="mobile-signup-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-arrow-up-from-bracket"></i>Sign Up</button></Link>}
+                {!isUsersPage && <Link to="/login"><button className="mobile-login-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-right-to-bracket"></i>Sign In</button></Link>}
             </div>
         </div>
     </> 
