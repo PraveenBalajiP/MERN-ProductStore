@@ -74,10 +74,11 @@ function Login(){
             return;
         }
         try {
-            const response=await axios.post("http://localhost:5000/api/users/login",userData);
+            const response=await axios.post("http://localhost:5000/api/users/login",userData,{withCredentials:true});
             toast.success(`${response.data.message}`,{className:"toast-success"});
-                localStorage.setItem("isLoggedIn","true");
-                window.dispatchEvent(new Event("auth-change"));
+            localStorage.setItem("isLoggedIn","true");
+            localStorage.setItem("userName",response.data.name);
+            window.dispatchEvent(new Event("auth-change"));
             navigate(`/users/${response.data.name}`);
         }
         catch(error){

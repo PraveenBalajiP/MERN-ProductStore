@@ -1,17 +1,20 @@
 import {useState,useEffect} from 'react';
-import {Link,useLocation} from 'react-router-dom';
+import {Link,useLocation,useNavigate} from 'react-router-dom';
 import logo from '../assets/PS-logo.png';
 import '../css/navbar.css';
 
 function NavBar({theme,setTheme}){
     const [mobileNav,setMobileNav]=useState(false);
     const [isLoggedIn,setIsLoggedIn]=useState(localStorage.getItem("isLoggedIn")==="true");
+    const [userName,setUserName]=useState(localStorage.getItem("userName")||"");
     const location=useLocation();
+    const navigate=useNavigate();
     const isUsersPage=location.pathname.startsWith('/users');
 
     useEffect(()=>{
         const syncAuthState=()=>{
             setIsLoggedIn(localStorage.getItem("isLoggedIn")==="true");
+            setUserName(localStorage.getItem("userName")||"");
         };
         window.addEventListener("storage",syncAuthState);
         window.addEventListener("auth-change",syncAuthState);
@@ -20,6 +23,16 @@ function NavBar({theme,setTheme}){
             window.removeEventListener("auth-change",syncAuthState);
         };
     },[])
+
+    function navigateUser(){
+        if(isLoggedIn && userName){
+            navigate(`/users/${userName}`);
+        }
+        else{
+            navigate("/login");
+        }
+        setMobileNav(false);
+    }
 
     function toggleTheme(){
         if(theme==="light"){
@@ -40,8 +53,8 @@ function NavBar({theme,setTheme}){
                 <div className="nav-items">
                     <Link to="/"><button className="home-btn"><i class="fa-solid fa-house-chimney"></i>Home</button></Link>
                     <Link to="/about"><button className="about-btn"><i class="fa-solid fa-address-card"></i>About</button></Link>
-                    <Link to="/browse"><button className="browse-btn"><i class="fa-solid fa-cart-shopping"></i>Browse</button></Link>
-                    <Link to="/login"><button className="sell-btn"><i class="fa-solid fa-circle-check"></i>Sell</button></Link>
+                    <button className="browse-btn" onClick={navigateUser}><i class="fa-solid fa-cart-shopping"></i>Browse</button>
+                    <button className="sell-btn" onClick={navigateUser}><i class="fa-solid fa-circle-check"></i>Sell</button>
                 </div>
             </div>
             <div className="user-setup">
@@ -67,8 +80,8 @@ function NavBar({theme,setTheme}){
             <div className={`mobile-nav-items ${mobileNav ? 'open' : 'closed'}`}>
                 <Link to="/"><button className="mobile-home-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-house-chimney"></i>Home</button></Link>
                 <Link to="/about"><button className="mobile-about-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-address-card"></i>About</button></Link>
-                <Link to="/browse"><button className="mobile-browse-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-cart-shopping"></i>Browse</button></Link>
-                <Link to="/sell"><button className="mobile-sell-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-circle-check"></i>Sell</button></Link>
+                <button className="browse-btn" onClick={navigateUser}><i class="fa-solid fa-cart-shopping"></i>Browse</button>
+                <button className="sell-btn" onClick={navigateUser}><i class="fa-solid fa-circle-check"></i>Sell</button>
                 {!isUsersPage && <Link to="/signup"><button className="mobile-signup-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-arrow-up-from-bracket"></i>Sign Up</button></Link>}
                 {!isUsersPage && <Link to="/login"><button className="mobile-login-btn" onClick={()=>setMobileNav(false)}><i class="fa-solid fa-right-to-bracket"></i>Sign In</button></Link>}
             </div>

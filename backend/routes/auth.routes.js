@@ -87,6 +87,29 @@ routes.post("/login",async (req,res)=>{
     }
 })
 
+routes.get("/check-auth",authUser,(req,res)=>{
+    res.status(200).json({message:"Authorized",status:"Authorized"});
+})
 
+routes.get("/:name",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    try{
+        const user=await User.findOne({name:userName});
+        if(!user){
+            res.status(404).json({message:"User Not Found"});
+        }
+        else{
+            res.status(200).json({name:user.name,contact:user.contact});
+        }
+    }
+    catch(error){
+        res.status(500).json({message:"Error fetching user",error:error.message});
+    }
+})
+
+routes.post("/logout",authUser,(req,res)=>{
+    res.clearCookie("login_token");
+    res.status(200).json({message:"Logout Successful"});
+})
 
 export default routes;
