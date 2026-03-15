@@ -1,0 +1,107 @@
+.user-dashboard-page{
+    min-height:100vh;
+    background-color:var(--background_color_primary);
+    color:var(--text_color_1);
+    padding:30px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.dashboard-header-card{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    background-color:var(--card_bg);
+    border:1px solid var(--card_border);
+    border-radius:14px;
+    padding:20px;
+    box-shadow:var(--shadow_sm);
+}
+
+.dashboard-header-card h2{
+    margin:0 0 8px 0;
+}
+
+.dashboard-header-card p{
+    margin:0;
+    color:var(--text_color_2);
+}
+
+.status-pill{
+    background-color:var(--accent_subtle);
+    color:var(--accent);
+    border:1px solid var(--accent);
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:0.9rem;
+    white-space:nowrap;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:16px;
+}
+
+.dashboard-card{
+    background-color:var(--card_bg);
+    border:1px solid var(--card_border);
+    border-radius:14px;
+    padding:18px;
+    box-shadow:var(--shadow_sm);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.dashboard-card h3{
+    margin:0;
+}
+
+.dashboard-card p{
+    margin:0;
+    color:var(--text_color_2);
+    line-height:1.5;
+}
+
+.dashboard-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.dash-btn{
+    border:none;
+    background-color:var(--button_primary_bg);
+    color:var(--button_text_color);
+    padding:10px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:background-color 0.2s ease, transform 0.15s ease;
+}
+
+.dash-btn:hover{
+    background-color:var(--button_primary_hover);
+}
+
+.dash-btn:active{
+    transform:scale(0.98);
+}
+
+.dash-btn.danger{
+    background-color:var(--button_secondary_bg);
+    color:var(--button_secondary_text);
+}
+
+.dash-btn.danger:hover{
+    background-color:var(--background_color_quaternary);
+}
+
+@media screen and (max-width: 768px) {
+    .dashboard-header-card{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}

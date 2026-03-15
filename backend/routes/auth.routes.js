@@ -11,7 +11,7 @@ const routes=express.Router();
 
 function generateTokenAndCookie(id,res){
     const token=jwt.sign({id},process.env.ACCESS_TOKEN_SECRET,{expiresIn:"1d"});
-    res.cookie("token",token,{
+    res.cookie("login_token",token,{
         httpOnly:true,
         secure:process.env.NODE_ENV==="production",
         sameSite:"strict",
@@ -71,6 +71,7 @@ routes.post("/login",async (req,res)=>{
                 res.status(400).json({message:"Incorrect Password Entered"});
             }
             else{
+                generateTokenAndCookie(user._id,res);
                 res.status(200).json({message:"Login Successful"});
             }
         }

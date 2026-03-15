@@ -2,7 +2,6 @@ import { useState,useEffect } from 'react';
 import Lenis from "@studio-freight/lenis";
 import { Routes,Route } from 'react-router-dom';
 import NavBar from './common_components/navbar';
-import UserNav from './common_components/usernav';
 import Footer from "./common_components/footer";
 import Home from './components/Home';
 import About from './components/About';
@@ -22,27 +21,10 @@ import Feedback from './components/Feedback';
 
 function App() {
   const [theme,setTheme]=useState(localStorage.getItem('theme') || 'light');
-  const [navSet,setNavSet]=useState(localStorage.getItem('nav') || 'nav');
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   },[theme]);
-
-  useEffect(() => {
-    localStorage.setItem('nav', navSet);
-  },[navSet]);
-
-  useEffect(() => {
-    const handleNavChange=()=>{
-      setNavSet(localStorage.getItem('nav') || 'nav');
-    };
-    window.addEventListener('storage',handleNavChange);
-    window.addEventListener('nav-change',handleNavChange);
-    return()=>{
-      window.removeEventListener('storage',handleNavChange);
-      window.removeEventListener('nav-change',handleNavChange);
-    };
-  },[]);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -62,13 +44,9 @@ function App() {
     };
   }, []);
 
-  const navChoice=navSet==='usernav'? 
-      <UserNav theme={theme} setTheme={setTheme} />:
-      <NavBar theme={theme} setTheme={setTheme} />;
-
   return (
     <>
-      {navChoice}
+      <NavBar theme={theme} setTheme={setTheme} />
       <Toaster position="bottom-center" />
       <Routes>
         <Route path="/" element={<Home />} />
