@@ -1,0 +1,107 @@
+.browse-page{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    padding:24px;
+    min-height:80vh;
+    background-color:var(--background_color_primary);
+}
+
+.browse-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.search-bar{
+    flex:1;
+    min-width:240px;
+    padding:11px 14px;
+    border:1px solid var(--border_color);
+    border-radius:10px;
+    background-color:var(--background_color_secondary);
+    color:var(--text_color_1);
+    outline:none;
+}
+
+.search-bar:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 2px var(--accent_subtle);
+}
+
+.search-button,
+.refresh-button{
+    padding:10px 16px;
+    border:none;
+    border-radius:10px;
+    background-color:var(--button_primary_bg);
+    color:var(--button_text_color);
+    cursor:pointer;
+    transition:background-color 0.2s ease, transform 0.15s ease;
+}
+
+.search-button:hover,
+.refresh-button:hover{
+    background-color:var(--button_primary_hover);
+    transform:translateY(-1px);
+}
+
+.search-button:active,
+.refresh-button:active{
+    transform:translateY(0);
+}
+
+.product-list{
+    width:100%;
+}
+
+.product-card{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:16px;
+}
+
+.product-item{
+    background-color:var(--card_bg);
+    border:1px solid var(--card_border);
+    border-radius:14px;
+    padding:18px;
+    box-shadow:var(--shadow_sm);
+    transition:transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.product-item:hover{
+    transform:translateY(-2px);
+    box-shadow:var(--shadow_hover);
+    border-color:var(--border_color_strong);
+}
+
+.product-item h3{
+    margin:0 0 10px;
+    font-size:1.125rem;
+    color:var(--text_color_1);
+}
+
+.product-item p{
+    margin:0 0 8px;
+    color:var(--text_color_2);
+    line-height:1.45;
+}
+
+.product-item p:last-child{
+    margin:6px 0 0;
+    color:var(--accent);
+    font-weight:600;
+}
+
+@media screen and (max-width: 768px){
+    .browse-page{
+        padding:16px;
+        gap:18px;
+    }
+
+    .product-card{
+        grid-template-columns:1fr;
+    }
+}

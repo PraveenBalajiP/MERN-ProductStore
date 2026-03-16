@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { time } from "console";
 
 dotenv.config();
 
