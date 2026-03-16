@@ -16,6 +16,11 @@ function Browse(){
         }
     }
 
+    async function navigateProductDetail(productId){
+        const responeProduct=await axios.get(`http://localhost:5000/api/users/${name}/products/${productId}`,{withCredentials:true});
+        navigate(`/users/${name}/products/${productId}`,{state:{product:responseProduct.data}});
+    }
+
     useEffect(()=>{
         fetchProducts();
     },[name])
@@ -29,7 +34,7 @@ function Browse(){
                 <button className="refresh-button" onClick={fetchProducts}>Refresh</button>
             </div>
             <div className="product-list">
-                <div className="product-card">
+                <div className="product-card" onClick={navigateProductDetail(product._id)}>
                     {products.map(product=>{
                         return(
                             <div key={product._id} className="product-item">

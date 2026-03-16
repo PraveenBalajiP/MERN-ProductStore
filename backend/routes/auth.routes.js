@@ -2,8 +2,6 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import User from '../models/users.models.js';
 import Product from '../models/products.models.js';
-import Order from '../models/orders.models.js';
-import Wishlist from '../models/wishlist.models.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import authUser from '../middleware/authUser.js';
@@ -166,94 +164,6 @@ routes.get("/:name/products/:id",authUser,async (req,res)=>{
     }
     catch(error){
         res.status(500).json({message:"Error fetching product",error:error.message});
-    }
-})
-
-// ─── Wishlist ────────────────────────────────────────────────────────────────
-
-routes.get("/:name/wishlist",authUser,async (req,res)=>{
-    try{
-        const items=await Wishlist.find({user:req.id}).populate('product');
-        res.status(200).json(items);
-    }
-    catch(error){
-        res.status(500).json({message:"Error fetching wishlist",error:error.message});
-    }
-})
-
-routes.post("/:name/wishlist/:productId",authUser,async (req,res)=>{
-    const {productId}=req.params;
-    try{
-        const exists=await Wishlist.findOne({user:req.id,product:productId});
-        if(exists){
-            return res.status(400).json({message:"Product already in wishlist"});
-        }
-        const item=new Wishlist({user:req.id,product:productId});
-        await item.save();
-        res.status(201).json({message:"Added to wishlist"});
-    }
-    catch(error){
-        res.status(500).json({message:"Error adding to wishlist",error:error.message});
-    }
-})
-
-routes.delete("/:name/wishlist/:productId",authUser,async (req,res)=>{
-    const {productId}=req.params;
-    try{
-        await Wishlist.findOneAndDelete({user:req.id,product:productId});
-        res.status(200).json({message:"Removed from wishlist"});
-    }
-    catch(error){
-        res.status(500).json({message:"Error removing from wishlist",error:error.message});
-    }
-})
-
-// ─── Orders ──────────────────────────────────────────────────────────────────
-
-routes.get("/:name/orders",authUser,async (req,res)=>{
-    try{
-        const orders=await Order.find({user:req.id}).populate('items.product').sort({createdAt:-1});
-        res.status(200).json(orders);
-    }
-    catch(error){
-        res.status(500).json({message:"Error fetching orders",error:error.message});
-    }
-})
-
-routes.post("/:name/orders",authUser,async (req,res)=>{
-    const {items}=req.body;  // [{productId, quantity}]
-    try{
-        const productIds=items.map(i=>i.productId);
-        const products=await Product.find({_id:{$in:productIds}});
-
-        const orderItems=items.map(i=>{
-            const product=products.find(p=>p._id.toString()===i.productId);
-            if(!product) throw new Error(`Product ${i.productId} not found`);
-            return{product:product._id, name:product.name, price:product.price, quantity:i.quantity||1};
-        });
-
-        const total=orderItems.reduce((sum,i)=>sum+(i.price*i.quantity),0);
-        const order=new Order({user:req.id, items:orderItems, total});
-        await order.save();
-        res.status(201).json({message:"Order placed successfully",order});
-    }
-    catch(error){
-        res.status(500).json({message:"Error placing order",error:error.message});
-    }
-})
-
-routes.patch("/:name/orders/:orderId/cancel",authUser,async (req,res)=>{
-    const {orderId}=req.params;
-    try{
-        const order=await Order.findOne({_id:orderId,user:req.id});
-        if(!order) return res.status(404).json({message:"Order not found"});
-        if(order.status!=='pending') return res.status(400).json({message:"Only pending orders can be cancelled"});
-        order.status='cancelled';
-        await order.save();
-        res.status(200).json({message:"Order cancelled",order});
-    }
-    catch(error){
-        res.status(500).json({message:"Error cancelling order",error:error.message});
     }
 })
 

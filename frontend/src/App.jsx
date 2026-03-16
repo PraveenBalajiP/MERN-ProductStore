@@ -13,6 +13,7 @@ import Wishlist from './components/Wishlist';
 import Profile from './components/Profile';
 import Settings from './components/Settings';
 import Browse from './components/Browse';
+import ProductDetail from './components/ProductDetail';
 import { Toaster } from "react-hot-toast";
 import './css/toast.css';
 
@@ -64,10 +65,10 @@ function App() {
           <Route path="orders" element={<Orders/>}/>
           <Route path="wishlist" element={<Wishlist/>}/>
           <Route path="settings" element={<Settings/>}/>
+          <Route path="products/:id" element={<ProductDetail/>}/>
         </Route>
           {/*
           <Route path="/contact" element={<Contact/>}/>
-          <Route path="/product/:id" element={<ProductDetails/>}/>
           <Route path="/feedback" element={<Feedback/>}/>
           */}
       </Routes>
