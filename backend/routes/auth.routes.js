@@ -1,6 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import User from '../models/users.models.js';
+import Product from '../models/products.models.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import authUser from '../middleware/authUser.js';
@@ -48,15 +49,6 @@ routes.post("/signup",async (req,res)=>{
     }
 })
 
-routes.get("/signup",async (req,res)=>{
-    try{
-        res.send(await User.find());
-    }
-    catch(error){
-        res.json({message:"Error fetching users",error:error.message});
-    }
-})
-
 routes.post("/login",async (req,res)=>{
     const {contact,password}=req.body;
     const user=await User.findOne({contact:contact});
@@ -74,7 +66,7 @@ routes.post("/login",async (req,res)=>{
                 generateTokenAndCookie(user._id,res);
                 console.log({...user,message:"Login Successful"});
                 const userData={
-                    name:user.name.toLowerCase(),
+                    name:user.name,
                     contact:user.contact,
                     message:"Login Successful"
                 }
@@ -110,6 +102,43 @@ routes.get("/:name",authUser,async (req,res)=>{
 routes.post("/logout",authUser,(req,res)=>{
     res.clearCookie("login_token");
     res.status(200).json({message:"Logout Successful"});
+})
+
+routes.get("/:name/profile",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only access your own profile"});
+        }
+        if(!user){
+            res.status(404).json({message:"User Not Found"});
+        }
+        else{
+            res.status(200).json({
+                name:user.name,
+                email:user.contact.includes("@")?user.contact:"",
+                phone:user.contact.match(/^\d{10}$/)?user.contact:"",
+                address:user.address
+            });
+        }
+    }
+    catch(error){
+        res.status(500).json({message:"Error fetching user profile",error:error.message});
+    }
+
+})
+
+routes.post("/:name/browse",(req,res)=>{
+    try{
+        const {name,description,price,category}=req.body;
+        const newProduct=new Product({name,description,price,category});
+        newProduct.save();
+        res.status(201).json({message:"Product added successfully"});
+    }
+    catch(error){
+        res.status(500).json({message:"Error adding product",error:error.message});
+    }
 })
 
 export default routes;

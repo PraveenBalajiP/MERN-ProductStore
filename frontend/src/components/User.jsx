@@ -45,6 +45,7 @@ function User(){
                         <i className="fa-solid fa-bars"></i>}
             </button>
             <div className={`side-board ${sideBoardOpen ? 'open' : 'closed'}`}>
+                <Link to={`/users/${userName}/browse`}><button className="browse-btn"><i className="fa-solid fa-store"></i>Browse</button></Link>
                 <Link to={`/users/${userName}/profile`}><button className="profile-btn"><i className="fa-solid fa-user"></i>Profile</button></Link>
                 <Link to={`/users/${userName}/wishlist`}><button className="wishlist-btn"><i className="fa-solid fa-heart"></i>Wishlist</button></Link>
                 <Link to={`/users/${userName}/orders`}><button className="orders-btn"><i className="fa-solid fa-box"></i>Orders</button></Link>

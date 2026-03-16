@@ -10,6 +10,9 @@ import Login from './components/Login';
 import User from './components/User';
 import Orders from './components/Orders';
 import Wishlist from './components/Wishlist';
+import Profile from './components/Profile';
+import Settings from './components/Settings';
+import Browse from './components/Browse';
 import { Toaster } from "react-hot-toast";
 import './css/toast.css';
 
@@ -56,11 +59,11 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/users/:name" element={<User />}>
-          <Route index element={<div className="user-page"><h1>Profile</h1></div>} />
-          <Route path="profile" element={<div className="user-page"><h1>Profile</h1></div>} />
+          <Route path="browse" element={<Browse/>}/>
+          <Route path="profile" element={<Profile/>}/>
           <Route path="orders" element={<Orders/>}/>
           <Route path="wishlist" element={<Wishlist/>}/>
-          <Route path="settings" element={<div className="user-page"><h1>Settings</h1></div>} />
+          <Route path="settings" element={<Settings/>}/>
         </Route>
           {/*
           <Route path="/contact" element={<Contact/>}/>
