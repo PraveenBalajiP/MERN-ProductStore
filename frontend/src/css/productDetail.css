@@ -1,0 +1,70 @@
+.product-detail{
+	display:flex;
+	flex-direction:column;
+	align-items:flex-start;
+	justify-content:center;
+	gap:14px;
+	width:min(680px, 92vw);
+	margin:56px auto 72px;
+	padding:30px 26px;
+	background-color:var(--card_bg);
+	border:1px solid var(--card_border);
+	border-radius:16px;
+	box-shadow:var(--shadow_md);
+}
+
+.product-detail h2{
+	margin:0;
+	font-size:1.9rem;
+	line-height:1.2;
+	color:var(--text_color_1);
+}
+
+.product-detail p{
+	margin:0;
+	color:var(--text_color_2);
+	font-size:1rem;
+	line-height:1.6;
+}
+
+.add-to-orders,
+.add-to-wishlist{
+	width:100%;
+	max-width:260px;
+	padding:11px 18px;
+	border:none;
+	border-radius:10px;
+	font-size:0.95rem;
+	font-weight:600;
+	cursor:pointer;
+	color:var(--button_text_color);
+	background-color:var(--button_primary_bg);
+	transition:background-color 0.2s ease, transform 0.15s ease;
+}
+
+.add-to-orders:hover,
+.add-to-wishlist:hover{
+	background-color:var(--button_primary_hover);
+	transform:translateY(-1px);
+}
+
+.add-to-orders:active,
+.add-to-wishlist:active{
+	transform:translateY(0);
+}
+
+@media screen and (max-width: 640px){
+	.product-detail{
+		margin:36px auto 56px;
+		padding:24px 16px;
+	}
+
+	.product-detail h2{
+		font-size:1.55rem;
+	}
+
+	.add-to-orders,
+	.add-to-wishlist{
+		max-width:100%;
+	}
+}

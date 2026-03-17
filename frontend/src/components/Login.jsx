@@ -79,7 +79,7 @@ function Login(){
             localStorage.setItem("isLoggedIn","true");
             localStorage.setItem("userName",response.data.name);
             window.dispatchEvent(new Event("auth-change"));
-            navigate(`/users/${response.data.name}`);
+            navigate(`/users/${response.data.name}/browse`);
         }
         catch(error){
             toast.error("Error!!",{className:"toast-error"});

@@ -167,4 +167,98 @@ routes.get("/:name/products/:id",authUser,async (req,res)=>{
     }
 })
 
+routes.post("/:name/wishlist/add",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    const {productId}=req.body;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only modify your own wishlist"});
+        }
+        if(!user){
+            res.status(404).json({message:"User Not Found"});
+        }
+        else{
+            if(user.wishlist.includes(productId)){
+                return res.status(400).json({message:"Product already in wishlist"});
+            }
+            else{
+                user.wishlist.push(productId);
+                await user.save();
+                res.status(200).json({message:"Product added to wishlist"});
+            }
+        }
+    }
+    catch(error){
+        res.status(500).json({message:"Error modifying wishlist",error:error.message});
+    }
+})
+
+routes.post("/:name/orders/add",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    const {productId}=req.body;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only modify your own orders"});
+        }
+        if(!user){
+            res.status(404).json({message:"User Not Found"});
+        }
+        else{
+            if(user.orders.includes(productId)){
+                return res.status(400).json({message:"Product already in orders"});
+            }
+            else{
+                user.orders.push(productId);
+                await user.save();
+                res.status(200).json({message:"Product added to orders"});
+            }
+        }
+    }
+    catch(error){
+        res.status(500).json({message:"Error modifying orders",error:error.message});
+    }
+})
+
+routes.get("/:name/orders",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only access your own orders"});
+        }
+        if(!user){
+            res.status(404).json({message:"User Not Found"});
+        }
+        else{
+            const order=await Product.find({_id:{$in:user.orders}});
+            res.status(200).json(order);
+        }
+    }
+    catch(error){
+        res.status(500).json({message:"Error fetching orders",error:error.message});
+    }
+});
+
+routes.get("/:name/wishlist",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only access your own wishlist"});
+        }
+        if(!user){
+            res.status(404).json({message:"User Not Found"});
+        }
+        else{
+            const wishlist=await Product.find({_id:{$in:user.wishlist}});
+            res.status(200).json(wishlist);
+        }
+    }
+    catch(error){
+        res.status(500).json({message:"Error fetching wishlist",error:error.message});
+    }
+})
+
 export default routes;

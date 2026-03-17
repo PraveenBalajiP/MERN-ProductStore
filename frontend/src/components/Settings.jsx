@@ -1,3 +1,5 @@
+import '../css/settings.css';
+
 function Settings(){
     return(
         <div className="settings-page">

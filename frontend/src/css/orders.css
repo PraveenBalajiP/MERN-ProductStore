@@ -1,0 +1,23 @@
+.orders-page{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    min-height:80vh;
+    padding:60px 24px;
+    gap:12px;
+    text-align:center;
+}
+
+.orders-page h1{
+    margin:0;
+    font-size:2rem;
+    color:var(--text_color_1);
+}
+
+.orders-page p{
+    margin:0;
+    max-width:640px;
+    color:var(--text_color_2);
+    font-size:1rem;
+}

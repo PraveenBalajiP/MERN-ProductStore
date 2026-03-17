@@ -1,10 +1,11 @@
 import {useState,useEffect} from 'react';
-import {useParams} from 'react-router-dom';
+import {useParams,useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import '../css/browse.css';
 
 function Browse(){
     const {name}=useParams();
+    const navigate = useNavigate();
     const [products,setProducts] = useState([]);
     async function fetchProducts(){
         try{
@@ -17,7 +18,7 @@ function Browse(){
     }
 
     async function navigateProductDetail(productId){
-        const responeProduct=await axios.get(`http://localhost:5000/api/users/${name}/products/${productId}`,{withCredentials:true});
+        const responseProduct=await axios.get(`http://localhost:5000/api/users/${name}/products/${productId}`,{withCredentials:true});
         navigate(`/users/${name}/products/${productId}`,{state:{product:responseProduct.data}});
     }
 
@@ -34,10 +35,10 @@ function Browse(){
                 <button className="refresh-button" onClick={fetchProducts}>Refresh</button>
             </div>
             <div className="product-list">
-                <div className="product-card" onClick={navigateProductDetail(product._id)}>
+                <div className="product-card">
                     {products.map(product=>{
                         return(
-                            <div key={product._id} className="product-item">
+                            <div key={product._id} className="product-item" onClick={()=>navigateProductDetail(product._id)}>
                                 <h3>{product.name}</h3>
                                 <p>{product.description}</p>
                                 <p>Price: ${product.price}</p>

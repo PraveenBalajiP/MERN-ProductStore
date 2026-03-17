@@ -17,7 +17,17 @@ const userSchema=new mongoose.Schema({
     address:{
         type:String,
         required:true
-    }
+    },
+    wishlist:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Product",
+        unique:true
+    }],
+    orders:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Product",
+        unique:true
+    }]
 },{timestamps:true});
 
 const User=mongoose.model("User",userSchema);
