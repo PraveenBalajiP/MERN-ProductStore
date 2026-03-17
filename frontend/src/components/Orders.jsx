@@ -24,9 +24,11 @@ function Orders(){
     return(
         <>
             <div className="orders-page">
-                <input type="text" placeholder="Search orders..." className="search-bar"/>
-                <button className="search-button">Search</button>
-                <button className="refresh-button" onClick={fetchOrders}>Refresh</button>
+                <div className="orders-header">
+                    <input type="text" placeholder="Search orders..." className="search-bar"/>
+                    <button className="search-button">Search</button>
+                    <button className="refresh-button" onClick={fetchOrders}>Refresh</button>
+                </div>
                 <div className="orders-list">
                     <div className="order-card">
                         {orders.map(order=>{

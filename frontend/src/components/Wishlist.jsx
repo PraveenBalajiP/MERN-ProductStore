@@ -24,9 +24,11 @@ function Wishlist(){
     return(
         <>
             <div className="wishlist-page">
-                <input type="text" placeholder="Search wishlist..." className="search-bar"/>
-                <button className="search-button">Search</button>
-                <button className="refresh-button" onClick={fetchWishlist}>Refresh</button>
+                <div className="wishlist-header">
+                    <input type="text" placeholder="Search wishlist..." className="search-bar"/>
+                    <button className="search-button">Search</button>
+                    <button className="refresh-button" onClick={fetchWishlist}>Refresh</button>
+                </div>
                 <div className="wishlist-list">
                     <div className="wishlist-card">
                         {wishlist.map(item=>{
