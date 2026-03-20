@@ -1,4 +1,4 @@
-import {useState,useEffect} from 'react';
+import {useState,useEffect,useRef} from 'react';
 import {useParams,useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import '../css/browse.css';
@@ -7,6 +7,7 @@ function Browse(){
     const {name}=useParams();
     const navigate = useNavigate();
     const [products,setProducts] = useState([]);
+    const searchRef=useRef();
     async function fetchProducts(){
         try{
             const response=await axios.get(`http://localhost:5000/api/users/${name}/products`,{withCredentials:true});
@@ -26,15 +27,38 @@ function Browse(){
         fetchProducts();
     },[name])
 
-    
+    function searchFeature(){
+        if(searchRef.current.value.trim()===""){
+            fetchProducts();
+            return;
+        }
+        const filteredProducts=products.filter(product=>{
+            return product.name.toLowerCase().includes(searchRef.current.value.toLowerCase());
+        })
+        if(filteredProducts.length>0)
+            setProducts(filteredProducts);
+        else
+            setProducts([]);
+    }
+
+    function refreshFeature(){
+        fetchProducts();
+        searchRef.current.value="";
+    }
+
     return(
         <div className="browse-page">
             <div className="browse-header">
-                <input type="text" placeholder="Search products..." className="search-bar"/>
-                <button className="search-button">Search</button>
-                <button className="refresh-button" onClick={fetchProducts}>Refresh</button>
+                <input  type="text" 
+                        placeholder="Search products..." 
+                        className="search-bar"
+                        ref={searchRef}/>
+                <button className="search-button" onClick={searchFeature}>Search</button>
+                <button className="refresh-button" onClick={refreshFeature}>Refresh</button>
             </div>
-            <div className="product-list">
+            {
+                products.length>0?(
+                    <div className="product-list">
                 <div className="product-card">
                     {products.map(product=>{
                         return(
@@ -47,6 +71,12 @@ function Browse(){
                     })}
                 </div>
             </div>
+                ):(
+                    <div className="no-products">
+                        <p>No products found.</p>
+                    </div>
+                )
+            }
         </div>
     );
 }

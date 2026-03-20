@@ -74,12 +74,16 @@ i{
     margin:0px;
 }
 
+.add-product-btn .fa-solid.fa-plus{
+    margin-right:0;
+}
+
 .home-btn,.about-btn,.browse-btn,.sell-btn{
     display:flex;
     align-items:center;
 }
 
-.nav-links,.theme-link,.user-links,.side-menu,.profile-action{
+.nav-links,.theme-link,.user-links,.side-menu,.profile-action,.logout-link,.add-link{
     border:1px solid var(--border_color);
     border-radius:999px;
     background-color:var(--background_color_tertiary);
@@ -90,7 +94,31 @@ i{
     align-items:center;
 }
 
-.nav-items,.toggle-action,.user-action,.menu-action{
+.add-label{
+    display:inline-block;
+    max-width:0;
+    overflow:hidden;
+    white-space:nowrap;
+    opacity:0;
+    margin-left:0;
+    padding-right:0px;
+    margin-right:0px;
+    vertical-align:middle;
+    transition:max-width 0.5s ease, opacity 0.5s ease, margin-left 0.5s ease;
+}
+
+.add-link:hover .add-label{
+    max-width:12ch;
+    opacity:1;
+    margin-left:6px;
+}
+
+.add-product-btn{
+    display:flex;
+    align-items:center;
+}
+
+.nav-items,.toggle-action,.user-action,.menu-action,.add-link-action{
     border:1px solid transparent;
     border-radius:999px;
     transition:background-color 0.2s ease, color 0.2s ease;
@@ -134,15 +162,12 @@ i{
     background-color:var(--accent_subtle) !important;
 }
 
-
-
 .mobile-nav-items{
-    display:flex;
-    flex-direction:column;
-    gap:20px;
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:10px;
     position:relative;
     top:100px;
-
 }
 
 .mobile-nav{
@@ -154,15 +179,18 @@ i{
 }
 
 .mobile-nav-items button{
-    padding:15px;
-    border-radius:20px;
+    padding:14px 16px;
+    border-radius:14px;
     transition:0.3s;
     width:100%;
     text-align:left;
 }
 
+.mobile-nav-items a{
+    display:block;
+}
+
 .mobile-nav-items{
-    display:flex;
     border:1px solid var(--border_color);
     font-size:1rem;
     background-color:var(--background_color_secondary);
@@ -213,6 +241,33 @@ i{
     transition:0.3s;
 }
 
+.mobile-nav-items i{
+    margin-right:20px;
+    margin-bottom:0;
+    font-size:1rem;
+    padding:0;
+    border-radius:0;
+    background-color:transparent;
+}
+
+.mobile-logout-btn{
+    grid-column:1 / -1;
+}
+
+.navbar-logged-in .nav-links,
+.navbar-logged-in .user-links{
+    display:none;
+}
+
+.navbar-logged-in .side-menu,
+.navbar-logged-in .menu-btn{
+    display:inline;
+}
+
+.navbar-logged-in + .mobile-nav{
+    display:inline;
+}
+
 @media screen and (max-width:1150px){
     .nav-items,.user-links{
         display:none;
@@ -227,14 +282,15 @@ i{
 
 @media screen and (max-width: 768px){
     .mobile-nav-items{
-        width: 50%;
+        width: min(320px, 78vw);
         font-size: 1em;
     }
 }
 
 @media screen and (max-width: 480px){
     .mobile-nav-items{
-        width: 70%;
+        grid-template-columns:1fr;
+        width: 78%;
         font-size: 0.95em;
         padding: 8px;
     }

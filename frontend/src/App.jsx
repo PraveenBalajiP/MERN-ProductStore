@@ -14,6 +14,7 @@ import Profile from './components/Profile';
 import Settings from './components/Settings';
 import Browse from './components/Browse';
 import ProductDetail from './components/ProductDetail';
+import AddProduct from './components/AddProduct';
 import { Toaster } from "react-hot-toast";
 import './css/toast.css';
 
@@ -66,6 +67,7 @@ function App() {
           <Route path="wishlist" element={<Wishlist/>}/>
           <Route path="settings" element={<Settings/>}/>
           <Route path="products/:id" element={<ProductDetail/>}/>
+          <Route path="addProduct" element={<AddProduct/>}/>
         </Route>
           {/*
           <Route path="/contact" element={<Contact/>}/>
