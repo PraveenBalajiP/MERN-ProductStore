@@ -57,6 +57,7 @@ function ProductDetail(){
             setCartAnimation(true);
             setTimeout(() => setCartAnimation(false), 2000);
             toast.success('Product added to orders');
+            await axios.post(`http://localhost:5000/api/users/${name}/products/responses`,{productId},{withCredentials:true});
         }
         catch(error){
             console.error('Error adding to orders:',error);
@@ -120,10 +121,12 @@ function ProductDetail(){
                     Phone: {ownerInfo?.phone || "N/A"}<br/>
                     Address: {ownerInfo?.address || "N/A"}
                 </p>
-                <button className="add-to-orders" onClick={()=>askAction('orders')}>Add to Orders</button>
-                <button className={`add-to-wishlist ${isInWishlist ? 'active' : ''}`} onClick={toggleWishlist}>
+                <div className="buttons">
+                    <button className={`add-to-wishlist ${isInWishlist ? 'active' : ''}`} onClick={toggleWishlist}>
                     <i className={isInWishlist ? 'fas fa-heart' : 'far fa-heart'}></i>
-                </button>
+                    </button>
+                    <button className="add-to-orders" onClick={()=>askAction('orders')}>Add to Orders</button>
+                </div>
             </div>
             {cartAnimation && (
                 <>

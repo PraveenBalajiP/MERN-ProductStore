@@ -53,7 +53,6 @@
 }
 
 .add-to-wishlist{
-	width:100%;
 	max-width:260px;
 	padding:11px 18px;
 	border:none;
@@ -62,7 +61,6 @@
 	font-weight:600;
 	cursor:pointer;
 	color:var(--button_text_color);
-	background-color:var(--button_primary_bg);
 	transition:background-color 0.2s ease, transform 0.15s ease;
 	display:flex;
 	align-items:center;
@@ -80,6 +78,13 @@
 .add-to-wishlist.active i{
 	color:#e74c3c;
 	animation:heartPulse 0.6s ease-in-out;
+}
+
+.buttons{
+	display:flex;
+	gap:12px;
+	flex-wrap:wrap;
+	justify-content:space-between;
 }
 
 @keyframes heartPulse {
@@ -209,8 +214,7 @@
 	transform:translate(-50%, -50%);
 }
 
-.add-to-orders:hover,
-.add-to-wishlist:hover{
+.add-to-orders:hover{
 	background-color:var(--button_primary_hover);
 	transform:translateY(-1px);
 }

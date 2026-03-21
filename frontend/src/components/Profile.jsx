@@ -9,6 +9,7 @@ function Profile(){
     const {name}=useParams();
     const [profileData,setProfileData]=useState({});
     const [addedProducts,setAddedProducts]=useState([]);
+    const [responses,setResponses]=useState([]);
     const [selectedProduct,setSelectedProduct]=useState(null);
 
     async function fetchProfile(){
@@ -37,6 +38,20 @@ function Profile(){
         fetchAddedProducts();
     },[])
 
+    async function fetchResponses(){
+        try{
+            const response=await axios.get(`http://localhost:5000/api/users/${name}/responses`,{withCredentials:true});
+            setResponses(response.data);
+        }
+        catch(error){
+            console.error("Error fetching responses:", error);
+        }
+    }
+
+    useEffect(()=>{
+        fetchResponses();
+    },[])
+
     async function deleteProduct(productId){
         try{
             await axios.delete(`http://localhost:5000/api/users/${name}/deleteProduct`,{
@@ -55,6 +70,15 @@ function Profile(){
         if(!selectedProduct) return;
         await deleteProduct(selectedProduct._id);
         setSelectedProduct(null);
+    }
+
+    function formatResponseDateTime(value){
+        if(!value) return "Unknown time";
+        const parsedDate=new Date(value);
+        if(Number.isNaN(parsedDate.getTime())) return "Unknown time";
+        const datePart=parsedDate.toLocaleDateString();
+        const timePart=parsedDate.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+        return `${datePart}, ${timePart}`;
     }
 
     return(
@@ -93,7 +117,23 @@ function Profile(){
                 })}
             </div>
             <div className="reponses">
-                
+                <h2>Responses</h2>
+                {
+                    responses.length>0 ? (
+                        responses.map((response,index)=>{
+                            return(
+                                <div className="response-card" key={index}>
+                                    <p>{response.message || 'New order update received.'}</p>
+                                    <p>From: {response.fromName || 'Unknown User'}</p>
+                                    <p>Product: {response.productName || 'Unknown Product'}</p>
+                                    <p>Received: {formatResponseDateTime(response.receivedAt)}</p>
+                                </div>
+                            )
+                        })
+                    ) : (
+                        <p>No responses yet.</p>
+                    )
+                }
             </div>
         </div>
     );

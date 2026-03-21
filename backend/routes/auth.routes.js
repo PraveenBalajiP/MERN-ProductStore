@@ -469,4 +469,70 @@ routes.delete("/:name/deleteProduct",authUser,async (req,res)=>{
     }
 })
 
+routes.post("/:name/products/responses",authUser,async (req,res)=>{
+    const {productId}=req.body;
+    try{
+        if(!productId){
+            return res.status(400).json({message:"Product ID is required"});
+        }
+        const product=await Product.findById(productId);
+        if(!product){
+            return res.status(404).json({message:"Product not found"});
+        }
+        const owner=await User.findById(product.owner);
+        if(!owner){
+            return res.status(404).json({message:"Owner not found"});
+        }
+        const orderedUser=await User.findById(req.id);
+        if(!orderedUser){
+            return res.status(404).json({message:"Ordered user not found"});
+        }
+        owner.responses.push({
+            productId,
+            from:orderedUser._id,
+            message:`${orderedUser.name} has ordered your product "${product.name}". Contact them at ${orderedUser.contact}.`
+        });
+        await owner.save();
+        res.status(200).json({message:"Response sent to product owner"});
+    }
+    catch(error){
+        res.status(500).json({message:"Error sending response",error:error.message});
+    }
+})
+
+routes.get("/:name/responses",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only access your own responses"});
+        }
+        if(!user){
+            res.status(404).json({message:"User Not Found"});
+        }
+        else{
+            const validResponses=user.responses.filter((response)=>response && response.from && response.productId);
+            const responsesWithDetails=await Promise.all(validResponses.map(async (response)=>{
+                const fromUser=await User.findById(response.from);
+                const product=await Product.findById(response.productId);
+                const fallbackDate=response?._id
+                    ? new Date(parseInt(response._id.toString().substring(0,8),16) * 1000)
+                    : new Date();
+                return {
+                    ...response.toObject(),
+                    fromName:fromUser ? fromUser.name : "Unknown User",
+                    productName:product ? product.name : "Unknown Product",
+                    message:response.message || `${fromUser ? fromUser.name : "A user"} ordered ${product ? product.name : "your product"}.`,
+                    receivedAt:response.receivedAt || fallbackDate
+                }
+            }));
+            responsesWithDetails.sort((a,b)=>new Date(b.receivedAt)-new Date(a.receivedAt));
+            res.status(200).json(responsesWithDetails);
+        }
+    }
+    catch(error){
+        res.status(500).json({message:"Error fetching responses",error:error.message});
+    }
+})
+
 export default routes;

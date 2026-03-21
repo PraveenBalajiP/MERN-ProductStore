@@ -32,6 +32,26 @@ const userSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Product",
         unique:true
+    }],
+    responses:[{
+        productId:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Product",
+            required:true
+        },
+        from:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"User",
+            required:true
+        },
+        message:{
+            type:String,
+            required:true
+        },
+        receivedAt:{
+            type:Date,
+            default:Date.now
+        }
     }]
 },{timestamps:true});
 
