@@ -19,6 +19,16 @@ const productSchema=new mongoose.Schema({
     category:{
         type:String,
         required:true
+    },
+    imageData:{
+        type:Buffer
+    },
+    imageContentType:{
+        type:String
+    },
+    imageUrl:{
+        type:String,
+        default:""
     }
 },{timestamps:true});
 

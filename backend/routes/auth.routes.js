@@ -5,10 +5,12 @@ import Product from '../models/products.models.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import authUser from '../middleware/authUser.js';
+import multer from 'multer';
 
 dotenv.config();
 
 const routes=express.Router();
+const upload=multer({storage:multer.memoryStorage()});
 
 function generateTokenAndCookie(id,res){
     const token=jwt.sign({id},process.env.ACCESS_TOKEN_SECRET,{expiresIn:"1d"});
@@ -129,11 +131,27 @@ routes.get("/:name/profile",authUser,async (req,res)=>{
 
 })
 
-routes.post("/:name/browse",(req,res)=>{
+routes.post("/:name/browse",authUser,upload.single("image"),async (req,res)=>{
     try{
+        const userName=req.params.name;
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only add product to your own account"});
+        }
+        if(!user){
+            return res.status(404).json({message:"User Not Found"});
+        }
+
         const {name,description,price,category}=req.body;
-        const newProduct=new Product({name,description,price,category});
-        newProduct.save();
+        const newProduct=new Product({
+            name,
+            description,
+            price,
+            category,
+            imageData:req.file?.buffer,
+            imageContentType:req.file?.mimetype
+        });
+        await newProduct.save();
         res.status(201).json({message:"Product added successfully"});
     }
     catch(error){
@@ -144,7 +162,13 @@ routes.post("/:name/browse",(req,res)=>{
 routes.get("/:name/products",authUser,async (req,res)=>{
     try{
         const products=await Product.find();
-        res.status(200).json(products);
+        const productsWithImages=products.map((product)=>({
+            ...product.toObject(),
+            imageUrl:product.imageData && product.imageContentType
+                ?`data:${product.imageContentType};base64,${product.imageData.toString("base64")}`
+                :null
+        }));
+        res.status(200).json(productsWithImages);
     }
     catch(error){
         res.status(500).json({message:"Error fetching products",error:error.message});
@@ -159,7 +183,13 @@ routes.get("/:name/products/:id",authUser,async (req,res)=>{
             res.status(404).json({message:"Product Not Found"});
         }
         else{
-            res.status(200).json(product);
+            const productData={
+                ...product.toObject(),
+                imageUrl:product.imageData && product.imageContentType
+                    ?`data:${product.imageContentType};base64,${product.imageData.toString("base64")}`
+                    :null
+            };
+            res.status(200).json(productData);
         }
     }
     catch(error){
@@ -233,7 +263,13 @@ routes.get("/:name/orders",authUser,async (req,res)=>{
         }
         else{
             const order=await Product.find({_id:{$in:user.orders}});
-            res.status(200).json(order);
+            const ordersWithImages=order.map((product)=>({
+                ...product.toObject(),
+                imageUrl:product.imageData && product.imageContentType
+                    ?`data:${product.imageContentType};base64,${product.imageData.toString("base64")}`
+                    :null
+            }));
+            res.status(200).json(ordersWithImages);
         }
     }
     catch(error){
@@ -253,7 +289,13 @@ routes.get("/:name/wishlist",authUser,async (req,res)=>{
         }
         else{
             const wishlist=await Product.find({_id:{$in:user.wishlist}});
-            res.status(200).json(wishlist);
+            const wishlistWithImages=wishlist.map((product)=>({
+                ...product.toObject(),
+                imageUrl:product.imageData && product.imageContentType
+                    ?`data:${product.imageContentType};base64,${product.imageData.toString("base64")}`
+                    :null
+            }));
+            res.status(200).json(wishlistWithImages);
         }
     }
     catch(error){

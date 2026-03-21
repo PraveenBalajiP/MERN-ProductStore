@@ -1,14 +1,195 @@
+import {useState,useEffect} from 'react';
+import {useNavigate,useParams} from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import '../css/addProduct.css';
+
 function AddProduct(){
+    const {name}=useParams();
+    const navigate=useNavigate();
+    const [isOwner,setIsOwner]=useState(true);
+    const [formData,setFormData]=useState({
+        productName:"",
+        description:"",
+        category:"",
+        price:"",
+        image:null
+    });
+    const [ownerDetails,setOwnerDetails]=useState({
+        name:"",
+        email:"",
+        address:""
+    });
+    const [agentDetails,setAgentDetails]=useState({
+        name:"",
+        email:"",
+        phone:"",
+        address:""
+    });
+
+    async function fetchOwnerDetails(){
+        try{
+            const response=await axios.get(`http://localhost:5000/api/users/${name}/profile`,{withCredentials:true});
+            setOwnerDetails(response.data);
+        }
+        catch(error){
+            console.error("Error fetching owner details:", error);
+        }
+    }
+
+    useEffect(()=>{
+        fetchOwnerDetails();
+    },[name]);
+
+    function updateFormData(event){
+        const {name:valueName,value,files}=event.target;
+        if(valueName==="image"){
+            setFormData((prev)=>({...prev,image:files?.[0] || null}));
+            return;
+        }
+        setFormData((prev)=>({...prev,[valueName]:value}));
+    }
+
+    async function addProductToList(event){
+        event.preventDefault();
+        const payload=new FormData();
+        payload.append("name",formData.productName.trim());
+        payload.append("description",formData.description.trim());
+        payload.append("category",formData.category.trim());
+        payload.append("price",String(Number(formData.price)));
+        if(formData.image){
+            payload.append("image",formData.image);
+        }
+
+        try{
+            const response=await axios.post(`http://localhost:5000/api/users/${name}/browse`,payload,{withCredentials:true});
+            toast.success(response.data.message || "Product added successfully");
+            setFormData({
+                productName:"",
+                description:"",
+                category:"",
+                price:"",
+                image:null
+            });
+            setAgentDetails({name:"",email:"",phone:"",address:""});
+            navigate(`/users/${name}/browse`);
+        }
+        catch(error){
+            toast.error(error?.response?.data?.message || "Error adding product");
+        }
+    }
+
     return(
         <div className="add-product-page">
-            <h1>Add Product Details</h1>
-            <form className="add-product-form">
-                <input type="text" placeholder="Product Name" required/>
-                <textarea placeholder="Product Description" required></textarea>
-                <textarea placeholder="Why are you selling this product?" required></textarea>
-                <input type="number" placeholder="Price" required/>
-                <input type="file" accept="image/*" placeholder="Product Image" required/>
-            </form>
+            <div className="add-product-card">
+                <h1>Add Product Details</h1>
+                <form className="add-product-form" onSubmit={addProductToList}>
+                    <input
+                        type="text"
+                        placeholder="Product Name"
+                        name="productName"
+                        value={formData.productName}
+                        onChange={updateFormData}
+                        required
+                    />
+                    <textarea
+                        className="add-product-description"
+                        placeholder="Product Description"
+                        name="description"
+                        value={formData.description}
+                        onChange={updateFormData}
+                        required
+                    ></textarea>
+                    <textarea
+                        className="add-product-reason"
+                        placeholder="Category"
+                        name="category"
+                        value={formData.category}
+                        onChange={updateFormData}
+                        required
+                    ></textarea>
+                    <input
+                        type="number"
+                        placeholder="Price"
+                        name="price"
+                        value={formData.price}
+                        onChange={updateFormData}
+                        min="1"
+                        required
+                    />
+                    <input
+                        className="add-product-file"
+                        type="file"
+                        accept="image/*"
+                        name="image"
+                        onChange={updateFormData}
+                    />
+                    <button type="submit" className="add-product-submit">Add Product</button>
+                </form>
+                <div className="owner-details">
+                    <h2>Owner Details</h2>
+                    <input
+                        type="radio"
+                        id="owner"
+                        name="owner"
+                        value="own"
+                        checked={isOwner}
+                        onChange={()=>setIsOwner(true)}
+                    />
+                    <label htmlFor="owner">Owner</label>
+                    <input
+                        type="radio"
+                        id="agent"
+                        name="owner"
+                        value="agent"
+                        checked={!isOwner}
+                        onChange={()=>setIsOwner(false)}
+                    />
+                    <label htmlFor="agent">Doing for someone else</label>
+                    {
+                        isOwner?(
+                            <div className="owner-info">
+                                <label htmlFor="owner-name">Name</label>
+                                <input type="text" id="owner-name" value={ownerDetails.name} readOnly/>
+                                <label htmlFor="owner-email">Email</label>
+                                <input type="email" id="owner-email" value={ownerDetails.email} readOnly/>
+                                <label htmlFor="owner-address">Address</label>
+                                <textarea id="owner-address" value={ownerDetails.address} readOnly></textarea>
+                            </div>
+                        ):(
+                            <div className="agent-info">
+                                <input
+                                    type="text"
+                                    placeholder="Name"
+                                    value={agentDetails.name}
+                                    onChange={(e)=>setAgentDetails({...agentDetails,name:e.target.value})}
+                                    required={!isOwner}
+                                />
+                                <input
+                                    type="email"
+                                    placeholder="Email"
+                                    value={agentDetails.email}
+                                    onChange={(e)=>setAgentDetails({...agentDetails,email:e.target.value})}
+                                    required={!isOwner}
+                                />
+                                <input
+                                    type="tel"
+                                    placeholder="Phone"
+                                    value={agentDetails.phone}
+                                    onChange={(e)=>setAgentDetails({...agentDetails,phone:e.target.value})}
+                                    required={!isOwner}
+                                />
+                                <textarea
+                                    placeholder="Address"
+                                    value={agentDetails.address}
+                                    onChange={(e)=>setAgentDetails({...agentDetails,address:e.target.value})}
+                                    required={!isOwner}
+                                ></textarea>
+                            </div>
+                        )
+                    }
+                </div>
+            </div>
         </div>
     );
 }

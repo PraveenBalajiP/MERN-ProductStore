@@ -63,6 +63,13 @@ function Browse(){
                     {products.map(product=>{
                         return(
                             <div key={product._id} className="product-item" onClick={()=>navigateProductDetail(product._id)}>
+                                {
+                                    product.imageUrl?(
+                                        <img src={product.imageUrl} alt={product.name} className="product-image-slot"/>
+                                    ):(
+                                        <div className="product-image-slot" aria-label="Product image placeholder"></div>
+                                    )
+                                }
                                 <h3>{product.name}</h3>
                                 <p>{product.description}</p>
                                 <p>Price: ${product.price}</p>

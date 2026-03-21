@@ -27,6 +27,16 @@
 	line-height:1.6;
 }
 
+.product-detail-image{
+	display:block;
+	width:100%;
+	height:260px;
+	border:1px dashed var(--border_color);
+	border-radius:12px;
+	background:linear-gradient(135deg, var(--background_color_tertiary) 0%, var(--background_color_secondary) 100%);
+	object-fit:cover;
+}
+
 .add-to-orders,
 .add-to-wishlist{
 	width:100%;
