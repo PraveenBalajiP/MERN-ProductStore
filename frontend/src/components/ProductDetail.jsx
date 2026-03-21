@@ -1,18 +1,26 @@
+import {useState} from 'react';
 import {useLocation} from 'react-router-dom';
 import {useParams} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { toast } from "react-hot-toast";
+import ConfirmDialog from '../common_components/ConfirmDialog';
 import '../css/productDetail.css';
 
 function ProductDetail(){
     const location=useLocation();
-    const {name}=useParams();
-    const product=location.state?.product;
+    const navigate=useNavigate();
+    const {name,id}=useParams();
+    const product=location.state?.product || null;
     const ownerInfo=product?.ownerDetails;
+    const [confirmState,setConfirmState]=useState({open:false,type:'orders'});
+    const [isInWishlist,setIsInWishlist]=useState(product?.isInWishlist || false);
+    const [cartAnimation,setCartAnimation]=useState(false);
 
     async function addToWishlist(productId){
         try{
             const response=await axios.post(`http://localhost:5000/api/users/${name}/wishlist/add`,{productId},{withCredentials:true});
+            setIsInWishlist(true);
             toast.success('Product added to wishlist');
         }
         catch(error){
@@ -21,9 +29,33 @@ function ProductDetail(){
         }
     }
 
+    async function removeFromWishlist(productId){
+        try{
+            const response=await axios.post(`http://localhost:5000/api/users/${name}/wishlist/remove`,{productId},{withCredentials:true});
+            setIsInWishlist(false);
+            toast.success('Product removed from wishlist');
+        }
+        catch(error){
+            console.error('Error removing from wishlist:',error);
+            toast.error('Error removing product from wishlist');
+        }
+    }
+
+    async function toggleWishlist(e){
+        e.stopPropagation();
+        if(isInWishlist){
+            await removeFromWishlist(product._id);
+        }
+        else{
+            await addToWishlist(product._id);
+        }
+    }
+
     async function addToOrders(productId){
         try{
             const response=await axios.post(`http://localhost:5000/api/users/${name}/orders/add`,{productId},{withCredentials:true});
+            setCartAnimation(true);
+            setTimeout(() => setCartAnimation(false), 2000);
             toast.success('Product added to orders');
         }
         catch(error){
@@ -32,29 +64,77 @@ function ProductDetail(){
         }
     }
 
+    function askAction(type){
+        setConfirmState({open:true,type});
+    }
+
+    async function confirmAction(){
+        if(!product?._id){
+            setConfirmState({open:false,type:'orders'});
+            return;
+        }
+        if(confirmState.type==='orders'){
+            await addToOrders(product._id);
+        }
+        setConfirmState({open:false,type:'orders'});
+    }
+
+    if(!product){
+        return(
+            <div className="product-detail">
+                <h2>Product details unavailable</h2>
+                <p>Open this page from Browse, Wishlist, or Orders to load product data.</p>
+                <button className="add-to-orders" onClick={()=>navigate(`/users/${name}/browse`)}>Back to Browse</button>
+            </div>
+        );
+    }
+
     return(
-        <div className="product-detail">
-            {
-                product?.imageUrl?(
-                    <img src={product.imageUrl} alt={product?.name} className="product-detail-image"/>
-                ):(
-                    <div className="product-detail-image" aria-label="Product image placeholder"></div>
-                )
-            }
-            <h2>{product?.name}</h2>
-            <p>{product?.description}</p>
-            <p>Category: {product?.category}</p>
-            <p>Price: ${product?.price.toFixed(2)}</p>
-            <p>
-                Owner Type: {product?.ownerType === "agent" ? "Agent" : "Owner"}<br/>
-                Name: {ownerInfo?.name || "N/A"}<br/>
-                Email: {ownerInfo?.email || "N/A"}<br/>
-                Phone: {ownerInfo?.phone || "N/A"}<br/>
-                Address: {ownerInfo?.address || "N/A"}
-            </p>
-            <button className="add-to-orders" onClick={()=>addToOrders(product._id)}>Add to Orders</button>
-            <button className="add-to-wishlist" onClick={()=>addToWishlist(product._id)}>Add to Wishlist</button>
-        </div>
+        <>
+            <ConfirmDialog
+                open={confirmState.open}
+                title={confirmState.type==='orders' ? 'Add to Orders?' : 'Add to Wishlist?'}
+                message={confirmState.type==='orders'
+                    ? 'This product will be added to your orders list.'
+                    : 'This product will be added to your wishlist.'}
+                confirmText={confirmState.type==='orders' ? 'Add to Orders' : 'Add to Wishlist'}
+                onConfirm={confirmAction}
+                onCancel={()=>setConfirmState({open:false,type:'orders'})}
+            />
+            <div className="product-detail">
+                {
+                    product?.imageUrl?(
+                        <img src={product.imageUrl} alt={product?.name} className="product-detail-image"/>
+                    ):(
+                        <div className="product-detail-image" aria-label="Product image placeholder"></div>
+                    )
+                }
+                <h2>{product?.name}</h2>
+                <p>{product?.description}</p>
+                <p>Category: {product?.category}</p>
+                <p>Price: ${Number(product?.price || 0).toFixed(2)}</p>
+                <p>
+                    Owner Type: {product?.ownerType === "agent" ? "Agent" : "Owner"}<br/>
+                    Name: {ownerInfo?.name || "N/A"}<br/>
+                    Email: {ownerInfo?.email || "N/A"}<br/>
+                    Phone: {ownerInfo?.phone || "N/A"}<br/>
+                    Address: {ownerInfo?.address || "N/A"}
+                </p>
+                <button className="add-to-orders" onClick={()=>askAction('orders')}>Add to Orders</button>
+                <button className={`add-to-wishlist ${isInWishlist ? 'active' : ''}`} onClick={toggleWishlist}>
+                    <i className={isInWishlist ? 'fas fa-heart' : 'far fa-heart'}></i>
+                </button>
+            </div>
+            {cartAnimation && (
+                <>
+                    <div className="order-confirmation-overlay"></div>
+                    <div className="cart-animation">
+                        <div className="cart-icon">🛒</div>
+                        <div className="confirmation-tick">✓</div>
+                    </div>
+                </>
+            )}
+        </>
     )
 }
 

@@ -242,6 +242,33 @@ routes.post("/:name/wishlist/add",authUser,async (req,res)=>{
     }
 })
 
+routes.post("/:name/wishlist/remove",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    const {productId}=req.body;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only modify your own wishlist"});
+        }
+        if(!user){
+            res.status(404).json({message:"User Not Found"});
+        }
+        else{
+            if(!user.wishlist.includes(productId)){
+                return res.status(400).json({message:"Product not in wishlist"});
+            }
+            else{
+                user.wishlist=user.wishlist.filter(id=>id.toString()!==productId);
+                await user.save();
+                res.status(200).json({message:"Product removed from wishlist"});
+            }
+        }
+    }
+    catch(error){
+        res.status(500).json({message:"Error modifying wishlist",error:error.message});
+    }
+})
+
 routes.post("/:name/orders/add",authUser,async (req,res)=>{
     const userName=req.params.name;
     const {productId}=req.body;
@@ -261,6 +288,33 @@ routes.post("/:name/orders/add",authUser,async (req,res)=>{
                 user.orders.push(productId);
                 await user.save();
                 res.status(200).json({message:"Product added to orders"});
+            }
+        }
+    }
+    catch(error){
+        res.status(500).json({message:"Error modifying orders",error:error.message});
+    }
+})
+
+routes.post("/:name/orders/remove",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    const {productId}=req.body;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only modify your own orders"});
+        }
+        if(!user){
+            res.status(404).json({message:"User Not Found"});
+        }
+        else{
+            if(!user.orders.includes(productId)){
+                return res.status(400).json({message:"Product not in orders"});
+            }
+            else{
+                user.orders=user.orders.filter(id=>id.toString()!==productId);
+                await user.save();
+                res.status(200).json({message:"Product removed from orders"});
             }
         }
     }

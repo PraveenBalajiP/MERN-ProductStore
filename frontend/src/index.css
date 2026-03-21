@@ -102,6 +102,16 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image:
+    radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 35%),
+    radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 30%);
+}
+
+button,
+input,
+textarea,
+select{
+  transition: all 0.2s ease;
 }
 
 /* Paragraphs: no explicit font-weight rules */

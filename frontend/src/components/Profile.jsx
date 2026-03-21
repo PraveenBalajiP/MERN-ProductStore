@@ -2,12 +2,14 @@ import {useState,useEffect} from "react";
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import ConfirmDialog from "../common_components/ConfirmDialog";
 import "../css/profile.css";
 
 function Profile(){
     const {name}=useParams();
     const [profileData,setProfileData]=useState({});
     const [addedProducts,setAddedProducts]=useState([]);
+    const [selectedProduct,setSelectedProduct]=useState(null);
 
     async function fetchProfile(){
         const response=await axios.get(`http://localhost:5000/api/users/${name}/profile`,{withCredentials:true});
@@ -49,8 +51,23 @@ function Profile(){
         }
     }
 
+    async function confirmDelete(){
+        if(!selectedProduct) return;
+        await deleteProduct(selectedProduct._id);
+        setSelectedProduct(null);
+    }
+
     return(
         <div className="profile-page">
+            <ConfirmDialog
+                open={Boolean(selectedProduct)}
+                title="Delete Product?"
+                message={selectedProduct ? `"${selectedProduct.name}" will be permanently deleted.` : ''}
+                confirmText="Delete"
+                danger={true}
+                onConfirm={confirmDelete}
+                onCancel={()=>setSelectedProduct(null)}
+            />
             <div className="profile-pic">
                 <i className="fa-solid fa-user"></i>
             </div>
@@ -70,10 +87,13 @@ function Profile(){
                             <p>{product.description}</p>
                             <p>Category: {product.category}</p>
                             <p>Price: ${product.price.toFixed(2)}</p>
-                            <button onClick={()=>deleteProduct(product._id)}>Delete Product</button>
+                            <button onClick={()=>setSelectedProduct(product)}>Delete Product</button>
                         </div>
                     )
                 })}
+            </div>
+            <div className="reponses">
+                
             </div>
         </div>
     );

@@ -8,6 +8,7 @@ function Browse(){
     const navigate = useNavigate();
     const [products,setProducts] = useState([]);
     const searchRef=useRef();
+    
     async function fetchProducts(){
         try{
             const response=await axios.get(`http://localhost:5000/api/users/${name}/products`,{withCredentials:true});
@@ -59,7 +60,7 @@ function Browse(){
             {
                 products.length>0?(
                     <div className="product-list">
-                <div className="product-card">
+                    <div className="product-card">
                     {products.map(product=>{
                         return(
                             <div key={product._id} className="product-item" onClick={()=>navigateProductDetail(product._id)}>

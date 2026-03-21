@@ -82,7 +82,7 @@ function Login(){
             navigate(`/users/${response.data.name}/browse`);
         }
         catch(error){
-            toast.error("Error!!",{className:"toast-error"});
+            toast.error(`Error!! ${error.response.data.message}`,{className:"toast-error"});
         }
     }
 

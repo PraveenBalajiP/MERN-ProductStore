@@ -2,11 +2,14 @@ import '../css/orders.css';
 import {useState,useEffect,useRef} from 'react';
 import {useNavigate,useParams} from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import ConfirmDialog from '../common_components/ConfirmDialog';
 
 function Orders(){
     const {name}=useParams();
     const navigate=useNavigate();
     const [orders,setOrders]=useState([]);
+    const [confirmState,setConfirmState]=useState({open:false,orderId:null});
     const searchRef=useRef();
 
     async function fetchOrders(){
@@ -16,7 +19,31 @@ function Orders(){
         }
         catch(error){
             console.error('Error fetching orders:', error);
+            toast.error('Error fetching orders');
         }
+    }
+
+    async function removeFromOrders(productId){
+        try{
+            await axios.post(`http://localhost:5000/api/users/${name}/orders/remove`,{productId},{withCredentials:true});
+            setOrders(orders.filter(order => order._id !== productId));
+            toast.success('Removed from orders');
+        }
+        catch(error){
+            console.error('Error removing from orders:', error);
+            toast.error('Error removing from orders');
+        }
+    }
+
+    function askRemoveOrder(orderId){
+        setConfirmState({open:true,orderId});
+    }
+
+    async function confirmRemoveOrder(){
+        if(confirmState.orderId){
+            await removeFromOrders(confirmState.orderId);
+        }
+        setConfirmState({open:false,orderId:null});
     }
 
     useEffect(()=>{
@@ -49,6 +76,16 @@ function Orders(){
 
     return(
         <>
+            <ConfirmDialog
+                open={confirmState.open}
+                title="Remove order?"
+                message="This order item will be removed from your orders list."
+                confirmText="Remove"
+                cancelText="Cancel"
+                danger={true}
+                onConfirm={confirmRemoveOrder}
+                onCancel={()=>setConfirmState({open:false,orderId:null})}
+            />
             <div className="orders-page">
                 <div className="orders-header">
                     <input type="text" 
@@ -74,6 +111,12 @@ function Orders(){
                                     <p>Product: {order.name}</p>
                                     <p>Price: ${order.price.toFixed(2)}</p>
                                     <p>Status: {order.status}</p>
+                                    <button className="remove-button" onClick={(e) => {
+                                        e.stopPropagation();
+                                        askRemoveOrder(order._id);
+                                    }}>
+                                        <i className="fas fa-trash"></i> Remove
+                                    </button>
                                 </div>
                             );
                         })}

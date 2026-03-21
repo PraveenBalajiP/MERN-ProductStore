@@ -69,7 +69,6 @@ function NavBar({theme,setTheme}){
                     {!isLoggedIn && <Link to="/"><button className="home-btn"><i className="fa-solid fa-house-chimney"></i>Home</button></Link>}
                     {!isLoggedIn && <Link to="/about"><button className="about-btn"><i className="fa-solid fa-address-card"></i>About</button></Link>}
                     {!isLoggedIn && <button className="browse-btn" onClick={navigateUser}><i className="fa-solid fa-cart-shopping"></i>Browse</button>}
-                    {!isLoggedIn && <button className="sell-btn" onClick={navigateUser}><i className="fa-solid fa-circle-check"></i>Sell</button>}
                 </div>
             </div>
             <div className="user-setup">
@@ -116,7 +115,6 @@ function NavBar({theme,setTheme}){
                 <Link to="/"><button className="mobile-home-btn" onClick={()=>setMobileNav(false)}><i className="fa-solid fa-house-chimney"></i>Home</button></Link>
                 <Link to="/about"><button className="mobile-about-btn" onClick={()=>setMobileNav(false)}><i className="fa-solid fa-address-card"></i>About</button></Link>
                 <button className="browse-btn" onClick={navigateUser}><i className="fa-solid fa-cart-shopping"></i>Browse</button>
-                <button className="sell-btn" onClick={navigateUser}><i className="fa-solid fa-circle-check"></i>Sell</button>
                 {isLoggedIn && userName && <Link to={`/users/${userName}/profile`}><button className="mobile-profile-btn" onClick={()=>setMobileNav(false)}><i className="fa-solid fa-user"></i>Profile</button></Link>}
                 {isLoggedIn && userName && <Link to={`/users/${userName}/wishlist`}><button className="mobile-wishlist-btn" onClick={()=>setMobileNav(false)}><i className="fa-solid fa-heart"></i>Wishlist</button></Link>}
                 {isLoggedIn && userName && <Link to={`/users/${userName}/orders`}><button className="mobile-orders-btn" onClick={()=>setMobileNav(false)}><i className="fa-solid fa-box"></i>Orders</button></Link>}

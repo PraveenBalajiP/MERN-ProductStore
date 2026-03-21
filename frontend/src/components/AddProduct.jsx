@@ -2,6 +2,7 @@ import {useState,useEffect} from 'react';
 import {useNavigate,useParams} from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import ConfirmDialog from '../common_components/ConfirmDialog';
 import '../css/addProduct.css';
 
 function AddProduct(){
@@ -27,6 +28,8 @@ function AddProduct(){
         phone:"",
         address:""
     });
+    const [showConfirm,setShowConfirm]=useState(false);
+    const [pendingData,setPendingData]=useState(null);
 
     async function fetchOwnerDetails(){
         try{
@@ -51,21 +54,20 @@ function AddProduct(){
         setFormData((prev)=>({...prev,[valueName]:value}));
     }
 
-    async function addProductToList(event){
-        event.preventDefault();
+    async function submitProduct(dataSnapshot){
         const payload=new FormData();
-        payload.append("name",formData.productName.trim());
-        payload.append("description",formData.description.trim());
-        payload.append("category",formData.category.trim());
-        payload.append("price",String(Number(formData.price)));
-        const activeOwnerDetails=isOwner ? ownerDetails : agentDetails;
-        payload.append("ownerType",isOwner ? "owner" : "agent");
+        payload.append("name",dataSnapshot.formData.productName.trim());
+        payload.append("description",dataSnapshot.formData.description.trim());
+        payload.append("category",dataSnapshot.formData.category.trim());
+        payload.append("price",String(Number(dataSnapshot.formData.price)));
+        const activeOwnerDetails=dataSnapshot.isOwner ? dataSnapshot.ownerDetails : dataSnapshot.agentDetails;
+        payload.append("ownerType",dataSnapshot.isOwner ? "owner" : "agent");
         payload.append("ownerName",activeOwnerDetails.name || "");
         payload.append("ownerEmail",activeOwnerDetails.email || "");
         payload.append("ownerPhone",activeOwnerDetails.phone || "");
         payload.append("ownerAddress",activeOwnerDetails.address || "");
-        if(formData.image){
-            payload.append("image",formData.image);
+        if(dataSnapshot.formData.image){
+            payload.append("image",dataSnapshot.formData.image);
         }
         try{
             const response=await axios.post(`http://localhost:5000/api/users/${name}/browse`,payload,{withCredentials:true});
@@ -90,8 +92,34 @@ function AddProduct(){
         }
     }
 
+    function addProductToList(event){
+        event.preventDefault();
+        setPendingData({
+            formData:{...formData},
+            isOwner,
+            ownerDetails:{...ownerDetails},
+            agentDetails:{...agentDetails}
+        });
+        setShowConfirm(true);
+    }
+
+    async function confirmAddProduct(){
+        if(!pendingData) return;
+        await submitProduct(pendingData);
+        setShowConfirm(false);
+        setPendingData(null);
+    }
+
     return(
         <div className="add-product-page">
+            <ConfirmDialog
+                open={showConfirm}
+                title="Add Product?"
+                message="This will publish the product and add it to your profile list."
+                confirmText="Add Product"
+                onConfirm={confirmAddProduct}
+                onCancel={()=>{setShowConfirm(false);setPendingData(null);}}
+            />
             <div className="add-product-card">
                 <h1>Add Product Details</h1>
                 <form className="add-product-form" onSubmit={addProductToList}>

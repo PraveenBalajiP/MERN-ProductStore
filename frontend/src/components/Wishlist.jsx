@@ -1,6 +1,7 @@
 import {useState,useEffect,useRef} from 'react';
 import {useNavigate,useParams} from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 import '../css/wishlist.css';
 
 function Wishlist(){
@@ -16,6 +17,19 @@ function Wishlist(){
         }
         catch(error){
             console.error('Error fetching wishlist:', error);
+            toast.error('Error fetching wishlist');
+        }
+    }
+
+    async function removeFromWishlist(productId){
+        try{
+            await axios.post(`http://localhost:5000/api/users/${name}/wishlist/remove`,{productId},{withCredentials:true});
+            setWishlist(wishlist.filter(item => item._id !== productId));
+            toast.success('Removed from wishlist');
+        }
+        catch(error){
+            console.error('Error removing from wishlist:', error);
+            toast.error('Error removing from wishlist');
         }
     }
 
@@ -73,6 +87,12 @@ function Wishlist(){
                                     <h2>{item.name}</h2>
                                     <p>{item.description}</p>
                                     <p>Price: ${item.price.toFixed(2)}</p>
+                                    <button className="remove-button" onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeFromWishlist(item._id);
+                                    }}>
+                                        <i className="fas fa-trash"></i> Remove
+                                    </button>
                                 </div>
                             );
                         })}

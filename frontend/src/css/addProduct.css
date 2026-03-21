@@ -12,9 +12,10 @@
     max-width:680px;
     border:1px solid var(--border_color);
     border-radius:16px;
-    background-color:var(--background_color_secondary);
+    background:color-mix(in srgb, var(--background_color_secondary) 86%, transparent);
     box-shadow:var(--shadow_md);
     padding:32px 28px;
+    backdrop-filter:blur(8px);
 }
 
 .add-product-card h1{
@@ -94,7 +95,7 @@
     margin-top:26px;
     border:1px solid var(--border_color);
     border-radius:14px;
-    background-color:var(--background_color_secondary);
+    background:color-mix(in srgb, var(--background_color_secondary) 90%, transparent);
     padding:18px 16px;
 }
 
