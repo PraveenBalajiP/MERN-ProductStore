@@ -18,6 +18,7 @@ function AddProduct(){
     const [ownerDetails,setOwnerDetails]=useState({
         name:"",
         email:"",
+        phone:"",
         address:""
     });
     const [agentDetails,setAgentDetails]=useState({
@@ -57,19 +58,29 @@ function AddProduct(){
         payload.append("description",formData.description.trim());
         payload.append("category",formData.category.trim());
         payload.append("price",String(Number(formData.price)));
+        const activeOwnerDetails=isOwner ? ownerDetails : agentDetails;
+        payload.append("ownerType",isOwner ? "owner" : "agent");
+        payload.append("ownerName",activeOwnerDetails.name || "");
+        payload.append("ownerEmail",activeOwnerDetails.email || "");
+        payload.append("ownerPhone",activeOwnerDetails.phone || "");
+        payload.append("ownerAddress",activeOwnerDetails.address || "");
         if(formData.image){
             payload.append("image",formData.image);
         }
-
         try{
             const response=await axios.post(`http://localhost:5000/api/users/${name}/browse`,payload,{withCredentials:true});
+            await axios.post(
+                `http://localhost:5000/api/users/${name}/addedProducts`,
+                {productId:response.data.productId},
+                {withCredentials:true}
+            );
             toast.success(response.data.message || "Product added successfully");
             setFormData({
                 productName:"",
                 description:"",
                 category:"",
                 price:"",
-                image:null
+                image:null,
             });
             setAgentDetails({name:"",email:"",phone:"",address:""});
             navigate(`/users/${name}/browse`);
@@ -153,6 +164,8 @@ function AddProduct(){
                                 <input type="text" id="owner-name" value={ownerDetails.name} readOnly/>
                                 <label htmlFor="owner-email">Email</label>
                                 <input type="email" id="owner-email" value={ownerDetails.email} readOnly/>
+                                <label htmlFor="owner-phone">Phone</label>
+                                <input type="text" id="owner-phone" value={ownerDetails.phone} readOnly/>
                                 <label htmlFor="owner-address">Address</label>
                                 <textarea id="owner-address" value={ownerDetails.address} readOnly></textarea>
                             </div>

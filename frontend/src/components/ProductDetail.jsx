@@ -8,6 +8,7 @@ function ProductDetail(){
     const location=useLocation();
     const {name}=useParams();
     const product=location.state?.product;
+    const ownerInfo=product?.ownerDetails;
 
     async function addToWishlist(productId){
         try{
@@ -42,7 +43,15 @@ function ProductDetail(){
             }
             <h2>{product?.name}</h2>
             <p>{product?.description}</p>
+            <p>Category: {product?.category}</p>
             <p>Price: ${product?.price.toFixed(2)}</p>
+            <p>
+                Owner Type: {product?.ownerType === "agent" ? "Agent" : "Owner"}<br/>
+                Name: {ownerInfo?.name || "N/A"}<br/>
+                Email: {ownerInfo?.email || "N/A"}<br/>
+                Phone: {ownerInfo?.phone || "N/A"}<br/>
+                Address: {ownerInfo?.address || "N/A"}
+            </p>
             <button className="add-to-orders" onClick={()=>addToOrders(product._id)}>Add to Orders</button>
             <button className="add-to-wishlist" onClick={()=>addToWishlist(product._id)}>Add to Wishlist</button>
         </div>

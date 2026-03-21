@@ -1,10 +1,11 @@
 import {useState,useEffect,useRef} from 'react';
-import {useParams} from 'react-router-dom';
+import {useNavigate,useParams} from 'react-router-dom';
 import axios from 'axios';
 import '../css/wishlist.css';
 
 function Wishlist(){
     const {name}=useParams();
+    const navigate=useNavigate();
     const [wishlist,setWishlist]=useState([]);
     const searchRef=useRef();
 
@@ -41,6 +42,11 @@ function Wishlist(){
         searchRef.current.value="";
     }
 
+    async function navigateProductDetail(productId){
+        const responseProduct=await axios.get(`http://localhost:5000/api/users/${name}/products/${productId}`,{withCredentials:true});
+        navigate(`/users/${name}/products/${productId}`,{state:{product:responseProduct.data}});
+    }
+
     return(
         <>
             <div className="wishlist-page">
@@ -54,7 +60,9 @@ function Wishlist(){
                     <div className="wishlist-card">
                         {wishlist.map(item=>{
                             return(
-                                <div key={item._id} className="wishlist-item">
+                                <div    key={item._id} 
+                                        className="wishlist-item"
+                                        onClick={()=>navigateProductDetail(item._id)}>
                                     {
                                         item.imageUrl?(
                                             <img src={item.imageUrl} alt={item.name} className="wishlist-image-slot"/>

@@ -29,6 +29,34 @@ const productSchema=new mongoose.Schema({
     imageUrl:{
         type:String,
         default:""
+    },
+    owner:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        required:true
+    },
+    ownerType:{
+        type:String,
+        enum:["owner","agent"],
+        default:"owner"
+    },
+    ownerDetails:{
+        name:{
+            type:String,
+            default:""
+        },
+        email:{
+            type:String,
+            default:""
+        },
+        phone:{
+            type:String,
+            default:""
+        },
+        address:{
+            type:String,
+            default:""
+        }
     }
 },{timestamps:true});
 

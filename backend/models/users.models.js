@@ -27,6 +27,11 @@ const userSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Product",
         unique:true
+    }],
+    addedProducts:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Product",
+        unique:true
     }]
 },{timestamps:true});
 

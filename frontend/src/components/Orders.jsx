@@ -1,10 +1,11 @@
 import '../css/orders.css';
 import {useState,useEffect,useRef} from 'react';
-import {useParams} from 'react-router-dom';
+import {useNavigate,useParams} from 'react-router-dom';
 import axios from 'axios';
 
 function Orders(){
     const {name}=useParams();
+    const navigate=useNavigate();
     const [orders,setOrders]=useState([]);
     const searchRef=useRef();
 
@@ -41,6 +42,11 @@ function Orders(){
         searchRef.current.value="";
     }
 
+    async function navigateProductDetail(productId){
+        const responseProduct=await axios.get(`http://localhost:5000/api/users/${name}/products/${productId}`,{withCredentials:true});
+        navigate(`/users/${name}/products/${productId}`,{state:{product:responseProduct.data}});
+    }
+
     return(
         <>
             <div className="orders-page">
@@ -54,7 +60,9 @@ function Orders(){
                     <div className="order-card">
                         {orders.map(order=>{
                             return(
-                                <div key={order._id} className="order-item">
+                                <div    key={order._id} 
+                                        className="order-item"
+                                        onClick={()=>navigateProductDetail(order._id)}>
                                     {
                                         order.imageUrl?(
                                             <img src={order.imageUrl} alt={order.name} className="order-image-slot"/>

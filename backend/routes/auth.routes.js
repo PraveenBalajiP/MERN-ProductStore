@@ -142,17 +142,35 @@ routes.post("/:name/browse",authUser,upload.single("image"),async (req,res)=>{
             return res.status(404).json({message:"User Not Found"});
         }
 
-        const {name,description,price,category}=req.body;
+        const {
+            name,
+            description,
+            price,
+            category,
+            ownerType,
+            ownerName,
+            ownerEmail,
+            ownerPhone,
+            ownerAddress
+        }=req.body;
         const newProduct=new Product({
             name,
             description,
             price,
             category,
+            owner:user._id,
+            ownerType:ownerType || "owner",
+            ownerDetails:{
+                name:ownerName || "",
+                email:ownerEmail || "",
+                phone:ownerPhone || "",
+                address:ownerAddress || ""
+            },
             imageData:req.file?.buffer,
             imageContentType:req.file?.mimetype
         });
         await newProduct.save();
-        res.status(201).json({message:"Product added successfully"});
+        res.status(201).json({message:"Product added successfully",productId:newProduct._id});
     }
     catch(error){
         res.status(500).json({message:"Error adding product",error:error.message});
@@ -300,6 +318,100 @@ routes.get("/:name/wishlist",authUser,async (req,res)=>{
     }
     catch(error){
         res.status(500).json({message:"Error fetching wishlist",error:error.message});
+    }
+})
+
+routes.post("/:name/addedProducts",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    const {productId}=req.body;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only access your own products"});
+        }
+        if(!user){
+            return res.status(404).json({message:"User Not Found"});
+        }
+        if(!productId){
+            return res.status(400).json({message:"Product ID is required"});
+        }
+        if(user.addedProducts.includes(productId)){
+            return res.status(200).json({message:"Product already in your products"});
+        }
+        user.addedProducts.push(productId);
+        await user.save();
+        res.status(200).json({message:"Product added to your products"});
+    }
+    catch(error){
+        res.status(500).json({message:"Error adding product",error:error.message});
+    }
+})
+
+routes.get("/:name/addedProducts",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only access your own products"});
+        }
+        if(!user){
+            res.status(404).json({message:"User Not Found"});
+        }
+        else{
+           const addedProducts=await Product.find({_id:{$in:user.addedProducts}});
+           const productsWithImages=addedProducts.map((product)=>({
+            ...product.toObject(),
+            imageUrl:product.imageData && product.imageContentType
+                ?`data:${product.imageContentType};base64,${product.imageData.toString("base64")}`
+                :null
+        }));
+            res.status(200).json(productsWithImages);
+        }
+    }
+    catch(error){
+        res.status(500).json({message:"Error fetching products",error:error.message});
+    }
+})
+
+routes.delete("/:name/deleteProduct",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    const {productId}=req.body;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only delete your own products"});
+        }
+        if(!user){
+            res.status(404).json({message:"User Not Found"});
+        }
+        if(!productId){
+            return res.status(400).json({message:"Product ID is required"});
+        }
+
+        const deletedProduct=await Product.findById(productId);
+        if(!deletedProduct){
+            return res.status(404).json({message:"Product not found"});
+        }
+
+        if(deletedProduct.owner.toString()!==user._id.toString()){
+            return res.status(403).json({message:"Forbidden: You can only delete your own products"});
+        }
+
+        await Product.deleteOne({_id:productId});
+        await User.updateMany(
+            {},
+            {
+                $pull:{
+                    addedProducts:productId,
+                    orders:productId,
+                    wishlist:productId
+                }
+            }
+        );
+        res.status(200).json({message:"Product deleted successfully"});
+    }
+    catch(error){
+        res.status(500).json({message:"Error deleting product",error:error.message});
     }
 })
 
