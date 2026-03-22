@@ -12,7 +12,10 @@ function Browse(){
     async function fetchProducts(){
         try{
             const response=await axios.get(`http://localhost:5000/api/users/${name}/products`,{withCredentials:true});
-            setProducts(response.data);
+            const visibleProducts=Array.isArray(response.data)
+                ? response.data.filter((product)=>product?.dealStatus !== "sold")
+                : [];
+            setProducts(visibleProducts);
         }
         catch(error){
             console.error('Error fetching products:',error);

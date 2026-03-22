@@ -185,7 +185,7 @@ routes.post("/:name/browse",authUser,upload.single("image"),async (req,res)=>{
 
 routes.get("/:name/products",authUser,async (req,res)=>{
     try{
-        const products=await Product.find();
+        const products=await Product.find({dealStatus:{ $ne:"sold" }});
         const productsWithImages=products.map((product)=>({
             ...product.toObject(),
             imageUrl:product.imageData && product.imageContentType
@@ -627,6 +627,173 @@ routes.patch("/:name/products/:id",authUser,upload.single("image"),async (req,re
     }
     catch(error){
         res.status(500).json({message:"Error updating product",error:error.message});
+    }
+})
+
+routes.post("/:name/:productId/acceptDeal",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    const productId=req.params.productId;
+    const {fromUserId} = req.body;
+    try{
+        const owner=await User.findById(req.id);
+        if(owner && owner.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only accept deals for your own products"});
+        }
+        if(!owner){
+            return res.status(404).json({message:"Owner not found"});
+        }
+        const product=await Product.findById(productId);
+        if(!product){
+            return res.status(404).json({message:"Product not found"});
+        }
+        if(product.owner.toString()!==owner._id.toString()){
+            return res.status(403).json({message:"Forbidden: You can only accept deals for your own products"});
+        }
+        if(product.dealStatus === "sold"){
+            return res.status(400).json({message:"Deal has already been closed for this product"});
+        }
+        const responseIndex=owner.responses.findIndex(
+            r=>r.productId.toString()===productId && r.from.toString()===fromUserId
+        );
+        if(responseIndex===-1){
+            return res.status(404).json({message:"Response not found"});
+        }
+        const response=owner.responses[responseIndex];
+        const dealValue=response.bidValue || product.price;
+        owner.acceptedDeals.push({
+            productId:product._id,
+            withUser:fromUserId,
+            dealValue:dealValue
+        });
+        owner.responses.splice(responseIndex,1);
+        await owner.save();
+        const buyer=await User.findById(fromUserId);
+        if(buyer){
+            buyer.acceptedDeals.push({
+                productId:product._id,
+                withUser:owner._id,
+                dealValue:dealValue
+            });
+            await buyer.save();
+        }
+        product.dealStatus="pending";
+        await product.save();
+        res.status(200).json({message:"Deal accepted successfully"});
+    }
+    catch(error){
+        res.status(500).json({message:"Error accepting deal",error:error.message});
+    }
+})
+
+routes.post("/:name/:productId/closeDeal",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    const productId=req.params.productId;
+    try{
+        const owner=await User.findById(req.id);
+        if(owner && owner.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only close deals for your own products"});
+        }
+        if(!owner){
+            return res.status(404).json({message:"Owner not found"});
+        }
+        const product=await Product.findById(productId);
+        if(!product){
+            return res.status(404).json({message:"Product not found"});
+        }
+        if(product.owner.toString()!==owner._id.toString()){
+            return res.status(403).json({message:"Forbidden: You can only close deals for your own products"});
+        }
+        const acceptedDealIndex=owner.acceptedDeals.findIndex(
+            d=>d.productId.toString()===productId
+        );
+        if(acceptedDealIndex===-1){
+            return res.status(404).json({message:"No accepted deal found for this product"});
+        }
+        const acceptedDeal=owner.acceptedDeals[acceptedDealIndex];
+        const buyer=await User.findById(acceptedDeal.withUser);
+        owner.pastDeals.push({
+            productId:product._id,
+            withUser:acceptedDeal.withUser,
+            dealValue:acceptedDeal.dealValue
+        });
+        owner.acceptedDeals.splice(acceptedDealIndex,1);
+        await owner.save();
+        if(buyer){
+            const buyerAcceptedDealIndex=buyer.acceptedDeals.findIndex(
+                d=>d.productId.toString()===productId
+            );
+            if(buyerAcceptedDealIndex!==-1){
+                const buyerAcceptedDeal=buyer.acceptedDeals[buyerAcceptedDealIndex];
+                buyer.pastDeals.push({
+                    productId:product._id,
+                    withUser:owner._id,
+                    dealValue:buyerAcceptedDeal.dealValue
+                });
+                buyer.acceptedDeals.splice(buyerAcceptedDealIndex,1);
+                await buyer.save();
+            }
+        }
+        product.dealStatus="sold";
+        await product.save();
+        res.status(200).json({message:"Deal closed successfully"});
+    }
+    catch(error){
+        res.status(500).json({message:"Error closing deal",error:error.message});
+    }
+})
+
+routes.get("/:name/acceptedDeals",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only access your own accepted deals"});
+        }
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+        const dealsWithDetails=await Promise.all(user.acceptedDeals.map(async (deal)=>{
+            const withUser=await User.findById(deal.withUser);
+            const product=await Product.findById(deal.productId);
+            return {
+                ...deal.toObject(),
+                withUserName:withUser ? withUser.name : "Unknown User",
+                productName:product ? product.name : "Unknown Product",
+                productDescription:product ? product.description : ""
+            }
+        }));
+        res.status(200).json(dealsWithDetails);
+    }
+    catch(error){
+        res.status(500).json({message:"Error fetching accepted deals",error:error.message});
+    }
+})
+
+routes.get("/:name/pastDeals",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only access your own past deals"});
+        }
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+        const dealsWithDetails=await Promise.all(user.pastDeals.map(async (deal)=>{
+            const withUser=await User.findById(deal.withUser);
+            const product=await Product.findById(deal.productId);
+            return {
+                ...deal.toObject(),
+                withUserName:withUser ? withUser.name : "Unknown User",
+                productName:product ? product.name : "Unknown Product",
+                productDescription:product ? product.description : ""
+            }
+        }));
+        dealsWithDetails.sort((a,b)=>new Date(b.dealDate)-new Date(a.dealDate));
+        res.status(200).json(dealsWithDetails);
+    }
+    catch(error){
+        res.status(500).json({message:"Error fetching past deals",error:error.message});
     }
 })
 

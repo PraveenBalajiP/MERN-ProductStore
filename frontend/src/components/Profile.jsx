@@ -11,6 +11,8 @@ function Profile(){
     const [profileData,setProfileData]=useState({});
     const [addedProducts,setAddedProducts]=useState([]);
     const [responses,setResponses]=useState([]);
+    const [acceptedDeals,setAcceptedDeals]=useState([]);
+    const [pastDeals,setPastDeals]=useState([]);
     const [selectedProduct,setSelectedProduct]=useState(null);
 
     async function fetchProfile(){
@@ -53,6 +55,35 @@ function Profile(){
         fetchResponses();
     },[])
 
+    async function fetchAcceptedDeals(){
+        try{
+            const response=await axios.get(`http://localhost:5000/api/users/${name}/acceptedDeals`,{withCredentials:true});
+            setAcceptedDeals(response.data);
+        }
+        catch(error){
+            console.error("Error fetching accepted deals:", error);
+        }
+    }
+
+    useEffect(()=>{
+        fetchAcceptedDeals();
+    },[])
+
+    async function fetchPastDeals(){
+        try{
+            const response=await axios.get(`http://localhost:5000/api/users/${name}/pastDeals`,{withCredentials:true});
+            setPastDeals(response.data);
+        }
+        catch(error){
+            console.error("Error fetching past deals:", error);
+        }
+    }
+
+    useEffect(()=>{
+        fetchPastDeals();
+    },[])
+
+
     async function deleteProduct(productId){
         try{
             await axios.delete(`http://localhost:5000/api/users/${name}/deleteProduct`,{
@@ -86,6 +117,32 @@ function Profile(){
         navigate(`/users/${name}/editProduct/${productId}`);
     }
 
+    async function acceptDeal(productId,fromUserId){
+        try{
+            const responseDeal=await axios.post(`http://localhost:5000/api/users/${name}/${productId}/acceptDeal`,{fromUserId},{withCredentials:true});
+            toast.success(responseDeal.data.message || "Deal accepted successfully");
+            fetchResponses();
+            fetchAcceptedDeals();
+            fetchAddedProducts();
+        }
+        catch(error){
+            toast.error(error?.response?.data?.message || "Error accepting deal");
+        }
+    }
+
+    async function closeDeal(productId){
+        try{
+            const response=await axios.post(`http://localhost:5000/api/users/${name}/${productId}/closeDeal`,{},{withCredentials:true});
+            toast.success(response.data.message || "Deal closed successfully");
+            fetchAcceptedDeals();
+            fetchPastDeals();
+            fetchAddedProducts();
+        }
+        catch(error){
+            toast.error(error?.response?.data?.message || "Error closing deal");
+        }
+    }
+
     return(
         <div className="profile-page">
             <ConfirmDialog
@@ -109,36 +166,82 @@ function Profile(){
             </div>
             <div className="products">
                 <h2>Added Products</h2>
-                {addedProducts.map(product=>{
-                    return(
-                        <div className="product-card" key={product._id}>
-                            <h3>{product.name}</h3>
-                            <p>{product.description}</p>
-                            <p>Category: {product.category}</p>
-                            <p>Price: ${product.price.toFixed(2)}</p>
-                            <button onClick={()=>editProduct(product._id)}>Edit Product</button>
-                            <button onClick={()=>setSelectedProduct(product)}>Delete Product</button>
-                        </div>
+                {
+                    addedProducts.length>0 ?(
+                        addedProducts.map(product=>{
+                        return(
+                            <div className="product-card" key={product._id}>
+                                <h3>{product.name}</h3>
+                                <p>{product.description}</p>
+                                <p>Category: {product.category}</p>
+                                <p>Price: ${product.price.toFixed(2)}</p>
+                                <button onClick={()=>editProduct(product._id)}>Edit Product</button>
+                                <button onClick={()=>setSelectedProduct(product._id)}>Delete Product</button>
+                            </div>
+                            )
+                        })
+                    ):(
+                        <p>No products added yet.</p>
                     )
-                })}
+                }
             </div>
             <div className="reponses">
                 <h2>Responses</h2>
                 {
                     responses.length>0 ? (
-                        responses.map((response,index)=>{
+                        responses.map((response)=>{
                             return(
-                                <div className="response-card" key={index}>
+                                <div className="response-card" key={response._id}>
                                     <p>{response.message || 'New order update received.'}</p>
                                     <p>From: {response.fromName || 'Unknown User'}</p>
                                     <p>Product: {response.productName || 'Unknown Product'}</p>
                                     {response.bidValue!==null && response.bidValue!==undefined ? <p>Bid Value: ${Number(response.bidValue).toFixed(2)}</p> : null}
                                     <p>Received: {formatResponseDateTime(response.receivedAt)}</p>
+                                    <button onClick={()=>acceptDeal(response.productId,response.from)}>Accept Deal</button>
                                 </div>
                             )
                         })
                     ) : (
                         <p>No responses yet.</p>
+                    )
+                }
+            </div>
+            <div className="accepted-deals">
+                <h2>Accepted Deals</h2>
+                {
+                    acceptedDeals.length>0 ? (
+                        acceptedDeals.map((deal)=>{
+                            return(
+                                <div className="deal-card" key={deal._id}>
+                                    <p><strong>Product:</strong> {deal.productName || 'Unknown'}</p>
+                                    <p><strong>With:</strong> {deal.withUserName || 'Unknown User'}</p>
+                                    <p><strong>Deal Value:</strong> ${Number(deal.dealValue).toFixed(2)}</p>
+                                    <p><strong>Accepted:</strong> {formatResponseDateTime(deal.acceptedAt)}</p>
+                                    <button onClick={()=>closeDeal(deal.productId)}>Close Deal</button>
+                                </div>
+                            )
+                        })
+                    ) : (
+                        <p>No accepted deals yet.</p>
+                    )
+                }
+            </div>
+            <div className="past-deals">
+                <h2>Past Deals</h2>
+                {
+                    pastDeals.length>0 ? (
+                        pastDeals.map((deal)=>{
+                            return(
+                                <div className="deal-card" key={deal._id}>
+                                    <p><strong>Product:</strong> {deal.productName || 'Unknown'}</p>
+                                    <p><strong>With:</strong> {deal.withUserName || 'Unknown User'}</p>
+                                    <p><strong>Deal Value:</strong> ${Number(deal.dealValue).toFixed(2)}</p>
+                                    <p><strong>Completed:</strong> {formatResponseDateTime(deal.dealDate)}</p>
+                                </div>
+                            )
+                        })
+                    ) : (
+                        <p>No past deals yet.</p>
                     )
                 }
             </div>

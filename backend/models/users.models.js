@@ -56,7 +56,47 @@ const userSchema=new mongoose.Schema({
             type:Date,
             default:Date.now
         }
-    }]
+    }],
+    pastDeals:[{
+        productId:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Product",
+            required:true
+        },
+        withUser:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"User",
+            required:true
+        },
+        dealValue:{
+            type:Number,
+            required:true
+        },
+        dealDate:{
+            type:Date,
+            default:Date.now
+        }
+    }],
+    acceptedDeals:[{
+        productId:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Product",
+            required:true
+        },
+        withUser:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"User",
+            required:true
+        },
+        dealValue:{
+            type:Number,
+            required:true
+        },
+        acceptedAt:{
+            type:Date,
+            default:Date.now
+        }
+    }],
 },{timestamps:true});
 
 const User=mongoose.model("User",userSchema);

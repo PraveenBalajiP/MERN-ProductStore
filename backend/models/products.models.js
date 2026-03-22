@@ -85,6 +85,11 @@ const productSchema=new mongoose.Schema({
             type:String,
             default:""
         }
+    },
+    dealStatus:{
+        type:String,
+        enum:["active","pending","sold"],
+        default:"active"
     }
 },{timestamps:true});
 
