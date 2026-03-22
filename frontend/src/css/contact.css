@@ -1,0 +1,112 @@
+.contact-page{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:80vh;
+    padding:26px 16px 34px;
+    animation:fadeUp 0.55s ease both;
+}
+
+.contact-card{
+    width:min(760px, 100%);
+    border:1px solid color-mix(in srgb, var(--border_color) 80%, transparent);
+    border-radius:20px;
+    background:color-mix(in srgb, var(--background_color_secondary) 90%, transparent);
+    box-shadow:var(--shadow_md);
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.contact-card h1{
+    margin:0;
+    color:var(--text_color_1);
+    font-size:clamp(1.6rem, 2.6vw, 2.05rem);
+}
+
+.contact-card p{
+    margin:0;
+    color:var(--text_color_2);
+}
+
+.contact-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    color:var(--text_color_1);
+    font-weight:500;
+}
+
+.contact-meta span{
+    display:inline-flex;
+    align-items:center;
+    border:1px solid color-mix(in srgb, var(--border_color) 78%, transparent);
+    border-radius:999px;
+    padding:6px 12px;
+    background:color-mix(in srgb, var(--background_color_tertiary) 85%, transparent);
+}
+
+.contact-meta i{
+    margin-right:8px;
+}
+
+.contact-form{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.contact-field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.contact-field label{
+    color:var(--text_color_1);
+    font-weight:600;
+}
+
+.contact-field input,
+.contact-field textarea{
+    border:1px solid var(--border_color);
+    border-radius:10px;
+    background-color:var(--background_color_tertiary);
+    color:var(--text_color_1);
+    padding:10px 12px;
+    outline:none;
+}
+
+.contact-field textarea{
+    min-height:130px;
+    resize:vertical;
+}
+
+.contact-submit-btn{
+    margin-top:6px;
+    border:none;
+    border-radius:10px;
+    padding:11px 14px;
+    font-weight:600;
+    background-color:var(--button_primary_bg);
+    color:var(--button_text_color);
+    cursor:pointer;
+    transition:transform 0.16s ease, background-color 0.2s ease;
+}
+
+.contact-submit-btn:hover{
+    background-color:var(--button_primary_hover);
+    transform:translateY(-1px);
+}
+
+@media screen and (max-width: 640px){
+    .contact-card{
+        padding:16px;
+    }
+
+    .contact-meta{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}

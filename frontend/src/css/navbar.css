@@ -298,7 +298,7 @@ i{
 
 @media screen and (max-width: 768px){
     .mobile-nav-items{
-        width: min(320px, 78vw);
+        width: min(340px, 82vw);
         font-size: 1em;
     }
 }
@@ -306,7 +306,7 @@ i{
 @media screen and (max-width: 480px){
     .mobile-nav-items{
         grid-template-columns:1fr;
-        width: 78%;
+        width: 82%;
         font-size: 0.95em;
         padding: 8px;
     }

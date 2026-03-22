@@ -16,16 +16,10 @@ import Browse from './components/Browse';
 import ProductDetail from './components/ProductDetail';
 import AddProduct from './components/AddProduct';
 import EditProduct from './components/EditProduct';
+import Contact from './components/Contact';
+import Feedback from './components/Feedback';
 import { Toaster } from "react-hot-toast";
 import './css/toast.css';
-
-/*
-import Contact from './components/Contact';
-import AddProduct from './components/AddProduct';
-import ProductDetails from './components/ProductDetails';
-import Cart from './components/Cart';
-import Feedback from './components/Feedback';
-*/
 
 function App() {
   const [theme,setTheme]=useState(localStorage.getItem('theme') || 'light');
@@ -91,11 +85,9 @@ function App() {
           <Route path="products/:id" element={<ProductDetail/>}/>
           <Route path="addProduct" element={<AddProduct/>}/>
           <Route path="editProduct/:id" element={<EditProduct/>}/>
+          <Route path="contact" element={<Contact/>}/>
+          <Route path="feedback" element={<Feedback/>}/>
         </Route>
-          {/*
-          <Route path="/contact" element={<Contact/>}/>
-          <Route path="/feedback" element={<Feedback/>}/>
-          */}
       </Routes>
       <Footer/>
     </>

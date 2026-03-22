@@ -119,6 +119,8 @@ function NavBar({theme,setTheme}){
                 {isLoggedIn && userName && <Link to={`/users/${userName}/wishlist`}><button className="mobile-wishlist-btn" onClick={()=>setMobileNav(false)}><i className="fa-solid fa-heart"></i>Wishlist</button></Link>}
                 {isLoggedIn && userName && <Link to={`/users/${userName}/orders`}><button className="mobile-orders-btn" onClick={()=>setMobileNav(false)}><i className="fa-solid fa-box"></i>Orders</button></Link>}
                 {isLoggedIn && userName && <Link to={`/users/${userName}/settings`}><button className="mobile-settings-btn" onClick={()=>setMobileNav(false)}><i className="fa-solid fa-gear"></i>Settings</button></Link>}
+                {isLoggedIn && userName && <Link to={`/users/${userName}/feedback`}><button className="mobile-feedback-btn" onClick={()=>setMobileNav(false)}><i className="fa-solid fa-paper-plane"></i>Feedback</button></Link>}
+                {isLoggedIn && userName && <Link to={`/users/${userName}/contact`}><button className="mobile-contact-btn" onClick={()=>setMobileNav(false)}><i className="fa-solid fa-envelope"></i>Contact</button></Link>}
                 {!isLoggedIn && <Link to="/signup"><button className="mobile-signup-btn" onClick={()=>setMobileNav(false)}><i className="fa-solid fa-arrow-up-from-bracket"></i>Sign Up</button></Link>}
                 {!isLoggedIn && <Link to="/login"><button className="mobile-login-btn" onClick={()=>setMobileNav(false)}><i className="fa-solid fa-right-to-bracket"></i>Sign In</button></Link>}
                 {isLoggedIn && <button className="mobile-logout-btn" onClick={handleLogout}><i className="fa-solid fa-right-from-bracket"></i>Logout</button>}
