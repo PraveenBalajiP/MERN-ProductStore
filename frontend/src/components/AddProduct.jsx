@@ -9,6 +9,7 @@ function AddProduct(){
     const {name}=useParams();
     const navigate=useNavigate();
     const [isOwner,setIsOwner]=useState(true);
+    const [bid,setBid]=useState("fixed value");
     const [formData,setFormData]=useState({
         productName:"",
         description:"",
@@ -60,6 +61,7 @@ function AddProduct(){
         payload.append("description",dataSnapshot.formData.description.trim());
         payload.append("category",dataSnapshot.formData.category.trim());
         payload.append("price",String(Number(dataSnapshot.formData.price)));
+        payload.append("bid",dataSnapshot.bid);
         const activeOwnerDetails=dataSnapshot.isOwner ? dataSnapshot.ownerDetails : dataSnapshot.agentDetails;
         payload.append("ownerType",dataSnapshot.isOwner ? "owner" : "agent");
         payload.append("ownerName",activeOwnerDetails.name || "");
@@ -84,6 +86,7 @@ function AddProduct(){
                 price:"",
                 image:null,
             });
+            setBid("fixed value");
             setAgentDetails({name:"",email:"",phone:"",address:""});
             navigate(`/users/${name}/browse`);
         }
@@ -96,11 +99,16 @@ function AddProduct(){
         event.preventDefault();
         setPendingData({
             formData:{...formData},
+            bid,
             isOwner,
             ownerDetails:{...ownerDetails},
             agentDetails:{...agentDetails}
         });
         setShowConfirm(true);
+    }
+
+    function toggleSwitch(){
+        setBid((previousState)=>previousState === "bid" ? "fixed value" : "bid");
     }
 
     async function confirmAddProduct(){
@@ -156,13 +164,27 @@ function AddProduct(){
                         min="1"
                         required
                     />
-                    <input
-                        className="add-product-file"
-                        type="file"
-                        accept="image/*"
-                        name="image"
-                        onChange={updateFormData}
-                    />
+                    <div className="add-toggle">
+                        <input
+                            className="add-product-file"
+                            type="file"
+                            accept="image/*"
+                            name="image"
+                            onChange={updateFormData}
+                        />
+                        <div className="toggle-bid" role="group" aria-label="Select pricing mode">
+                            <span className={`toggle-bid-text ${bid === "fixed value" ? 'active' : ''}`}>Fixed Value</span>
+                            <label className="bid-switch" aria-label="Toggle Bid">
+                                <input
+                                    type="checkbox"
+                                    checked={bid === "bid"}
+                                    onChange={toggleSwitch}
+                                />
+                                <span className="bid-slider"></span>
+                            </label>
+                            <span className={`toggle-bid-text ${bid === "bid" ? 'active' : ''}`}>Bid</span>
+                        </div>
+                    </div>
                     <button type="submit" className="add-product-submit">Add Product</button>
                 </form>
                 <div className="owner-details">

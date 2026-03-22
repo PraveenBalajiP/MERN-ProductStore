@@ -49,6 +49,16 @@
     box-shadow:0 0 0 3px var(--accent_subtle);
 }
 
+.add-toggle{
+    display:flex;
+    align-items:center;
+    gap:80px;
+}
+
+.toggle-bid{
+    width:100%;
+}
+
 .add-product-form textarea{
     resize:vertical;
     min-height:110px;
@@ -89,6 +99,72 @@
 
 .add-product-submit:active{
     transform:translateY(0);
+}
+
+.toggle-bid{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.toggle-bid-text{
+    font-size:0.95rem;
+    color:var(--text_color_2);
+    font-weight:500;
+    transition:color 0.2s ease;
+}
+
+.toggle-bid-text.active{
+    color:var(--text_color_1);
+    font-weight:600;
+}
+
+.bid-switch{
+    position:relative;
+    display:inline-block;
+    width:52px;
+    height:30px;
+}
+
+.bid-switch input{
+    opacity:0;
+    width:0;
+    height:0;
+    position:absolute;
+}
+
+.bid-slider{
+    position:absolute;
+    cursor:pointer;
+    inset:0;
+    background-color:#767577;
+    transition:0.25s;
+    border-radius:999px;
+}
+
+.bid-slider::before{
+    content:"";
+    position:absolute;
+    height:24px;
+    width:24px;
+    left:3px;
+    top:3px;
+    background-color:#f4f3f4;
+    transition:0.25s;
+    border-radius:50%;
+}
+
+.bid-switch input:checked + .bid-slider{
+    background-color:#81b0ff;
+}
+
+.bid-switch input:checked + .bid-slider::before{
+    transform:translateX(22px);
+    background-color:#f5dd4b;
+}
+
+.bid-switch input:focus + .bid-slider{
+    box-shadow:0 0 0 3px var(--accent_subtle);
 }
 
 .owner-details{

@@ -73,7 +73,10 @@ function Browse(){
                                 }
                                 <h3>{product.name}</h3>
                                 <p>{product.description}</p>
-                                <p>Price: ${product.price}</p>
+                                <div className="details">
+                                    <span className="price">Price: ${product.price}</span>
+                                    <span className="bid-type">{product.bid==="bid"?"Bidding":"Fixed Price"}</span>
+                                </div>
                             </div>
                         )
                     })}

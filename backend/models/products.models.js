@@ -20,6 +20,11 @@ const productSchema=new mongoose.Schema({
         type:String,
         required:true
     },
+    bid:{
+        type:String,
+        enum:["fixed value","bid"],
+        default:"fixed value"
+    },
     imageData:{
         type:Buffer
     },

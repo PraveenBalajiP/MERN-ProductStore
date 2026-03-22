@@ -147,6 +147,7 @@ routes.post("/:name/browse",authUser,upload.single("image"),async (req,res)=>{
             description,
             price,
             category,
+            bid,
             ownerType,
             ownerName,
             ownerEmail,
@@ -158,6 +159,7 @@ routes.post("/:name/browse",authUser,upload.single("image"),async (req,res)=>{
             description,
             price,
             category,
+            bid:bid === "bid" ? "bid" : "fixed value",
             owner:user._id,
             ownerType:ownerType || "owner",
             ownerDetails:{
@@ -532,6 +534,68 @@ routes.get("/:name/responses",authUser,async (req,res)=>{
     }
     catch(error){
         res.status(500).json({message:"Error fetching responses",error:error.message});
+    }
+})
+
+routes.patch("/:name/products/:id",authUser,upload.single("image"),async (req,res)=>{
+    const userName=req.params.name;
+    const productId=req.params.id;
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only edit your own products"});
+        }
+        if(!user){
+            return res.status(404).json({message:"User Not Found"});
+        }
+        const product=await Product.findById(productId);
+        if(!product){
+            return res.status(404).json({message:"Product Not Found"});
+        }
+        if(product.owner.toString()!==user._id.toString()){
+            return res.status(403).json({message:"Forbidden: You can only edit your own products"});
+        }
+        const {
+            name,
+            description,
+            price,
+            category,
+            bid,
+            ownerType,
+            ownerName,
+            ownerEmail,
+            ownerPhone,
+            ownerAddress
+        }=req.body;
+        if(name) 
+            product.name=name;
+        if(description) 
+            product.description=description;
+        if(price) 
+            product.price=price;
+        if(category) 
+            product.category=category;
+        if(bid) 
+            product.bid=bid;
+        if(ownerType) 
+            product.ownerType=ownerType;
+        if(ownerName) 
+            product.ownerName=ownerName;
+        if(ownerEmail) 
+            product.ownerEmail=ownerEmail;
+        if(ownerPhone) 
+            product.ownerPhone=ownerPhone;
+        if(ownerAddress) 
+            product.ownerAddress=ownerAddress;
+        if(req.file){
+            product.imageData=req.file.buffer;
+            product.imageContentType=req.file.mimetype;
+        }
+        await product.save();
+        res.status(200).json({message:"Product updated successfully",product});
+    }
+    catch(error){
+        res.status(500).json({message:"Error updating product",error:error.message});
     }
 })
 

@@ -1,5 +1,5 @@
 import {useState,useEffect} from "react";
-import {useParams} from "react-router-dom";
+import {useParams,useNavigate} from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import ConfirmDialog from "../common_components/ConfirmDialog";
@@ -7,6 +7,7 @@ import "../css/profile.css";
 
 function Profile(){
     const {name}=useParams();
+    const navigate=useNavigate();
     const [profileData,setProfileData]=useState({});
     const [addedProducts,setAddedProducts]=useState([]);
     const [responses,setResponses]=useState([]);
@@ -81,6 +82,10 @@ function Profile(){
         return `${datePart}, ${timePart}`;
     }
 
+    async function editProduct(productId){
+        navigate(`/users/${name}/editProduct/${productId}`);
+    }
+
     return(
         <div className="profile-page">
             <ConfirmDialog
@@ -111,6 +116,7 @@ function Profile(){
                             <p>{product.description}</p>
                             <p>Category: {product.category}</p>
                             <p>Price: ${product.price.toFixed(2)}</p>
+                            <button onClick={()=>editProduct(product._id)}>Edit Product</button>
                             <button onClick={()=>setSelectedProduct(product)}>Delete Product</button>
                         </div>
                     )

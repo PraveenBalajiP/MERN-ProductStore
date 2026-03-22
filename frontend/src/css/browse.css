@@ -67,6 +67,8 @@
 }
 
 .product-item{
+    display:flex;
+    flex-direction:column;
     background:color-mix(in srgb, var(--card_bg) 90%, transparent);
     border:1px solid var(--card_border);
     border-radius:14px;
@@ -74,6 +76,7 @@
     box-shadow:var(--shadow_md);
     transition:transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     backdrop-filter:blur(7px);
+    justify-content:space-between;
 }
 
 .product-image-slot{
@@ -85,6 +88,18 @@
     background:linear-gradient(135deg, var(--background_color_tertiary) 0%, var(--background_color_secondary) 100%);
     margin-bottom:12px;
     object-fit:cover;
+}
+
+.details{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.bid-type{
+    font-size:0.85rem;
+    color:grey;
+    font-weight:600;
 }
 
 .product-item:hover{
