@@ -32,6 +32,33 @@
     line-height:1.5;
 }
 
+.confirm-extra{
+    margin-top:12px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.confirm-extra label{
+    color:var(--text_color_1);
+    font-size:0.92rem;
+}
+
+.confirm-extra input{
+    border:1px solid var(--border_color);
+    border-radius:10px;
+    background-color:var(--background_color_tertiary);
+    color:var(--text_color_1);
+    font-size:0.95rem;
+    padding:10px 12px;
+    outline:none;
+}
+
+.confirm-extra input:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 2px var(--accent_subtle);
+}
+
 .confirm-actions{
     display:flex;
     justify-content:flex-end;

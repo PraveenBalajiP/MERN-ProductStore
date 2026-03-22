@@ -154,12 +154,16 @@ routes.post("/:name/browse",authUser,upload.single("image"),async (req,res)=>{
             ownerPhone,
             ownerAddress
         }=req.body;
+        const numericPrice=Number(price);
+        const normalizedBidMode=bid === "bid" ? "bid" : "fixed value";
         const newProduct=new Product({
             name,
             description,
-            price,
+            price:numericPrice,
             category,
-            bid:bid === "bid" ? "bid" : "fixed value",
+            bid:normalizedBidMode,
+            highestBid:normalizedBidMode === "bid" ? numericPrice : null,
+            lowestBid:normalizedBidMode === "bid" ? numericPrice : null,
             owner:user._id,
             ownerType:ownerType || "owner",
             ownerDetails:{
@@ -472,7 +476,7 @@ routes.delete("/:name/deleteProduct",authUser,async (req,res)=>{
 })
 
 routes.post("/:name/products/responses",authUser,async (req,res)=>{
-    const {productId}=req.body;
+    const {productId,bidValue}=req.body;
     try{
         if(!productId){
             return res.status(400).json({message:"Product ID is required"});
@@ -489,10 +493,27 @@ routes.post("/:name/products/responses",authUser,async (req,res)=>{
         if(!orderedUser){
             return res.status(404).json({message:"Ordered user not found"});
         }
+        let normalizedBidValue=null;
+        if(product.bid === "bid"){
+            normalizedBidValue=Number(bidValue);
+            if(Number.isNaN(normalizedBidValue) || normalizedBidValue <= 0){
+                return res.status(400).json({message:"Valid bid value is required for bidding products"});
+            }
+            if(normalizedBidValue < Number(product.price)){
+                return res.status(400).json({message:"Your bid should be at least the owner bid value"});
+            }
+            product.bidHistory.push({user:orderedUser._id,amount:normalizedBidValue});
+            product.highestBid=product.highestBid===null ? normalizedBidValue : Math.max(Number(product.highestBid),normalizedBidValue);
+            product.lowestBid=product.lowestBid===null ? normalizedBidValue : Math.min(Number(product.lowestBid),normalizedBidValue);
+            await product.save();
+        }
         owner.responses.push({
             productId,
             from:orderedUser._id,
-            message:`${orderedUser.name} has ordered your product "${product.name}". Contact them at ${orderedUser.contact}.`
+            message:product.bid === "bid"
+                ? `${orderedUser.name} has placed a bid of $${normalizedBidValue} on your product "${product.name}". Contact them at ${orderedUser.contact}.`
+                : `${orderedUser.name} has ordered your product "${product.name}". Contact them at ${orderedUser.contact}.`,
+            bidValue:product.bid === "bid" ? normalizedBidValue : null
         });
         await owner.save();
         res.status(200).json({message:"Response sent to product owner"});
@@ -567,6 +588,7 @@ routes.patch("/:name/products/:id",authUser,upload.single("image"),async (req,re
             ownerPhone,
             ownerAddress
         }=req.body;
+        const normalizedBidMode=bid === "bid" ? "bid" : "fixed value";
         if(name) 
             product.name=name;
         if(description) 
@@ -575,8 +597,17 @@ routes.patch("/:name/products/:id",authUser,upload.single("image"),async (req,re
             product.price=price;
         if(category) 
             product.category=category;
-        if(bid) 
-            product.bid=bid;
+        product.bid=normalizedBidMode;
+        if(product.bid === "fixed value"){
+            product.highestBid=null;
+            product.lowestBid=null;
+            product.bidHistory=[];
+        }
+        else if(product.bid === "bid" && product.bidHistory.length===0){
+            const baselineBid=Number(product.price);
+            product.highestBid=baselineBid;
+            product.lowestBid=baselineBid;
+        }
         if(ownerType) 
             product.ownerType=ownerType;
         if(ownerName) 

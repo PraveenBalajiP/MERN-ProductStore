@@ -25,6 +25,29 @@ const productSchema=new mongoose.Schema({
         enum:["fixed value","bid"],
         default:"fixed value"
     },
+    highestBid:{
+        type:Number,
+        default:null
+    },
+    lowestBid:{
+        type:Number,
+        default:null
+    },
+    bidHistory:[{
+        user:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"User",
+            required:true
+        },
+        amount:{
+            type:Number,
+            required:true
+        },
+        createdAt:{
+            type:Date,
+            default:Date.now
+        }
+    }],
     imageData:{
         type:Buffer
     },

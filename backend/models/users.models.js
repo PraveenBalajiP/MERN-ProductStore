@@ -48,6 +48,10 @@ const userSchema=new mongoose.Schema({
             type:String,
             required:true
         },
+        bidValue:{
+            type:Number,
+            default:null
+        },
         receivedAt:{
             type:Date,
             default:Date.now

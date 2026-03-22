@@ -102,6 +102,19 @@
     font-weight:600;
 }
 
+.bid-range{
+    margin-top:8px;
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+}
+
+.bid-range span{
+    font-size:0.84rem;
+    color:var(--text_color_2);
+    font-weight:600;
+}
+
 .product-item:hover{
     transform:translateY(-2px);
     box-shadow:var(--shadow_hover);

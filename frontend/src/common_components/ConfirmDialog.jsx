@@ -8,7 +8,8 @@ function ConfirmDialog({
     cancelText='Cancel',
     onConfirm,
     onCancel,
-    danger=false
+    danger=false,
+    children
 }){
     if(!open) return null;
 
@@ -16,7 +17,8 @@ function ConfirmDialog({
         <div className="confirm-overlay" role="dialog" aria-modal="true" aria-label={title || 'Confirmation dialog'}>
             <div className="confirm-dialog">
                 <h3>{title}</h3>
-                <p>{message}</p>
+                {message ? <p>{message}</p> : null}
+                {children}
                 <div className="confirm-actions">
                     <button type="button" className="confirm-cancel" onClick={onCancel}>{cancelText}</button>
                     <button

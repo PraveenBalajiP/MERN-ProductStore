@@ -132,6 +132,7 @@ function Profile(){
                                     <p>{response.message || 'New order update received.'}</p>
                                     <p>From: {response.fromName || 'Unknown User'}</p>
                                     <p>Product: {response.productName || 'Unknown Product'}</p>
+                                    {response.bidValue!==null && response.bidValue!==undefined ? <p>Bid Value: ${Number(response.bidValue).toFixed(2)}</p> : null}
                                     <p>Received: {formatResponseDateTime(response.receivedAt)}</p>
                                 </div>
                             )

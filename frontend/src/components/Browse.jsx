@@ -77,6 +77,12 @@ function Browse(){
                                     <span className="price">Price: ${product.price}</span>
                                     <span className="bid-type">{product.bid==="bid"?"Bidding":"Fixed Price"}</span>
                                 </div>
+                                {product.bid === "bid" ? (
+                                    <div className="bid-range">
+                                        <span>Highest: ${Number(product.highestBid ?? product.price).toFixed(2)}</span>
+                                        <span>Lowest: ${Number(product.lowestBid ?? product.price).toFixed(2)}</span>
+                                    </div>
+                                ) : null}
                             </div>
                         )
                     })}

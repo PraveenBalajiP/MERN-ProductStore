@@ -16,6 +16,7 @@ function ProductDetail(){
     const [confirmState,setConfirmState]=useState({open:false,type:'orders'});
     const [isInWishlist,setIsInWishlist]=useState(product?.isInWishlist || false);
     const [cartAnimation,setCartAnimation]=useState(false);
+    const [bidValue,setBidValue]=useState('');
 
     async function addToWishlist(productId){
         try{
@@ -51,13 +52,17 @@ function ProductDetail(){
         }
     }
 
-    async function addToOrders(productId){
+    async function addToOrders(productId,offeredBidValue){
         try{
             const response=await axios.post(`http://localhost:5000/api/users/${name}/orders/add`,{productId},{withCredentials:true});
             setCartAnimation(true);
             setTimeout(() => setCartAnimation(false), 2000);
             toast.success('Product added to orders');
-            await axios.post(`http://localhost:5000/api/users/${name}/products/responses`,{productId},{withCredentials:true});
+            await axios.post(
+                `http://localhost:5000/api/users/${name}/products/responses`,
+                {productId,bidValue:offeredBidValue},
+                {withCredentials:true}
+            );
         }
         catch(error){
             console.error('Error adding to orders:',error);
@@ -66,6 +71,9 @@ function ProductDetail(){
     }
 
     function askAction(type){
+        if(type==='orders' && product?.bid === 'bid'){
+            setBidValue(String(Number(product?.price || 0)));
+        }
         setConfirmState({open:true,type});
     }
 
@@ -75,8 +83,23 @@ function ProductDetail(){
             return;
         }
         if(confirmState.type==='orders'){
-            await addToOrders(product._id);
+            let offeredBidValue=null;
+            if(product?.bid === 'bid'){
+                const numericBid=Number(bidValue);
+                const ownerBid=Number(product?.price || 0);
+                if(Number.isNaN(numericBid) || numericBid <= 0){
+                    toast.error('Please enter a valid bid value');
+                    return;
+                }
+                if(numericBid < ownerBid){
+                    toast.error(`Your bid must be at least $${ownerBid.toFixed(2)}`);
+                    return;
+                }
+                offeredBidValue=numericBid;
+            }
+            await addToOrders(product._id,offeredBidValue);
         }
+        setBidValue('');
         setConfirmState({open:false,type:'orders'});
     }
 
@@ -96,12 +119,30 @@ function ProductDetail(){
                 open={confirmState.open}
                 title={confirmState.type==='orders' ? 'Add to Orders?' : 'Add to Wishlist?'}
                 message={confirmState.type==='orders'
-                    ? 'This product will be added to your orders list.'
+                    ? product?.bid === 'bid'
+                        ? 'Enter your bid value to confirm the order request.'
+                        : 'This product will be added to your orders list.'
                     : 'This product will be added to your wishlist.'}
                 confirmText={confirmState.type==='orders' ? 'Add to Orders' : 'Add to Wishlist'}
                 onConfirm={confirmAction}
-                onCancel={()=>setConfirmState({open:false,type:'orders'})}
-            />
+                onCancel={()=>{setBidValue('');setConfirmState({open:false,type:'orders'});}}
+            >
+                {confirmState.type==='orders' && product?.bid === 'bid' ? (
+                    <div className="confirm-extra">
+                        <p>Owner Bid Value: ${Number(product?.price || 0).toFixed(2)}</p>
+                        <label htmlFor="bid-value">Your Bid Value</label>
+                        <input
+                            id="bid-value"
+                            type="number"
+                            min={Number(product?.price || 0)}
+                            step="0.01"
+                            value={bidValue}
+                            onChange={(event)=>setBidValue(event.target.value)}
+                            placeholder="Enter your bid"
+                        />
+                    </div>
+                ) : null}
+            </ConfirmDialog>
             <div className="product-detail">
                 {
                     product?.imageUrl?(
@@ -121,6 +162,7 @@ function ProductDetail(){
                     Phone: {ownerInfo?.phone || "N/A"}<br/>
                     Address: {ownerInfo?.address || "N/A"}
                 </p>
+                <p className="bid-info">{product?.bid === "bid" ? "This product is open for BIDDING." : "This product has a FIXED PRICE."}</p>
                 <div className="buttons">
                     <button className={`add-to-wishlist ${isInWishlist ? 'active' : ''}`} onClick={toggleWishlist}>
                     <i className={isInWishlist ? 'fas fa-heart' : 'far fa-heart'}></i>
