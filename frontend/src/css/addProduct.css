@@ -9,7 +9,7 @@
 
 .add-product-card{
     width:100%;
-    max-width:680px;
+    max-width:1000px;
     border:1px solid var(--border_color);
     border-radius:16px;
     background:color-mix(in srgb, var(--background_color_secondary) 86%, transparent);
@@ -51,12 +51,13 @@
 
 .add-toggle{
     display:flex;
-    align-items:center;
-    gap:80px;
+    gap:10%;
 }
 
 .toggle-bid{
     width:100%;
+    display:flex;
+    align-items:center;
 }
 
 .add-product-form textarea{
@@ -79,8 +80,8 @@
 }
 
 .add-product-submit{
-    width:76%;
-    margin-top:30px;
+    width:100%;
+    margin:20px auto 0;
     border:none;
     border-radius:12px;
     padding:12px 18px;

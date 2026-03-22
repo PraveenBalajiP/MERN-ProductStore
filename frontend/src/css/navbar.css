@@ -48,6 +48,7 @@
 .user-setup{
     display:flex;
     gap:15px;
+    align-items:center;
 }
 
 i{
@@ -55,7 +56,7 @@ i{
 }
 
 .fa-solid.fa-house-chimney{
-    margin-bottom:4px;
+    margin-bottom:0;
 }
 
 .fa-solid.fa-moon,.fa-solid.fa-sun{
@@ -73,6 +74,7 @@ i{
 
 .fa-solid.fa-bars{
     margin:0px;
+    font-size:16px;
 }
 
 .add-product-btn .fa-solid.fa-plus{
@@ -116,6 +118,16 @@ i{
 }
 
 .add-product-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:38px;
+}
+
+.add-link,
+.side-menu,
+.menu-action,
+.toggle-action{
     display:flex;
     align-items:center;
 }

@@ -7,9 +7,6 @@ import { toast } from "react-hot-toast";
 import "../css/signup.css";
 
 function Signup(){
-    const [contact,setContact]=useState("select");
-    const [placeholder,setPlaceholder]=useState("Please select Email/Phone Number");
-
     const [name,setName]=useState("");
     const [phone,setPhone]=useState("");
     const [email,setEmail]=useState("");
@@ -26,8 +23,10 @@ function Signup(){
     const [confirmPassword,setConfirmPassword]=useState("");
     const [matchedPassword,setMatchedPassword]=useState(false);
     const [confirmPasswordError,setConfirmPasswordError]=useState("");
-    const [inputContactError,setInputContactError]=useState("");
-    const errorContact=useRef();
+    const [emailError,setEmailError]=useState("");
+    const [phoneError,setPhoneError]=useState("");
+    const emailRef=useRef();
+    const phoneRef=useRef();
     const password_Error=useRef();
     const confirmPassword_Error=useRef();
 
@@ -45,23 +44,39 @@ function Signup(){
     },[])
 
     async function SignUp(){
+        const trimmedEmail=email.trim();
+        const trimmedPhone=phone.trim();
+
+        if(!trimmedEmail || !trimmedPhone){
+            toast.error("Email and phone number are required",{className:"toast-error"});
+            return;
+        }
+        if(!validator.isEmail(trimmedEmail)){
+            toast.error("Please enter a valid email",{className:"toast-error"});
+            return;
+        }
+        const phoneValidation=validatePhone(trimmedPhone,users_list);
+        if(!phoneValidation.valid){
+            toast.error(phoneValidation.message,{className:"toast-error"});
+            return;
+        }
+        if(passwordError || confirmPasswordError || !matchedPassword){
+            toast.error("Please fix password validation errors",{className:"toast-error"});
+            return;
+        }
+
         try{
-            const response=await axios.post("http://localhost:5000/api/users/signup",userData);
+            const response=await axios.post("http://localhost:5000/api/users/signup",{
+                ...userData,
+                email:trimmedEmail,
+                phone:trimmedPhone
+            });
             toast.success(`${response.data.message}`,{className:"toast-success"});
         }
         catch(error){
-            toast.error(`${error.response.data.message}`,{className:"toast-error"});
+            toast.error(`${error?.response?.data?.message || "Signup failed"}`,{className:"toast-error"});
         }
     }
-
-    useEffect(()=>{
-        if(contact==="email"){
-            setPlaceholder("Please Enter your Email");
-        }
-        else if(contact==="phone"){
-            setPlaceholder("Please Enter your Phone Number");
-        }
-    },[contact]);
 
     useEffect(()=>{
         setFullAddress(`${addressNo}, ${city} - ${zip}`);
@@ -70,7 +85,8 @@ function Signup(){
     useEffect(()=>{
         setUserData({
             name:name,
-            contact:contact==="email"?email:phone,
+            email:email,
+            phone:phone,
             password:password,
             address:fullAddress,
             consent:checkBox
@@ -78,44 +94,52 @@ function Signup(){
     },[name,phone,email,password,fullAddress,checkBox]);
 
     useEffect(()=>{
-        if(!users_list.length || contact==="select") return;
-        if(contact==="email"){
-            if(!validator.isEmail(email)){
-                errorContact.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
-            }
-            else{
-                const result=validateEmail(email,users_list);
-                if(result.valid===false){
-                    errorContact.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
-                    setInputContactError(result.message);
-                }
-                else{
-                    errorContact.current.style.borderColor="var(--background_color_tertiary)";
-                    setInputContactError("");
-                }
-            }
-        }
-        else if(contact==="phone"){
-            const result=validatePhone(phone,users_list);
-            if(!result.valid){
-                errorContact.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
-                setInputContactError(result.message);
-            }
-            else{
-                errorContact.current.style.borderColor="var(--background_color_tertiary)";
-                setInputContactError("");
-            }
-        }
-    },[phone,email,contact,users_list]);
+        if(!emailRef.current) return;
 
-    useEffect(()=>{
-        if(contact==="select"){
-            errorContact.current.style.visibility="hidden";
+        const trimmedEmail=email.trim();
+        if(trimmedEmail.length===0){
+            emailRef.current.style.borderColor="var(--border_color)";
+            setEmailError("");
+            return;
+        }
+
+        if(!validator.isEmail(trimmedEmail)){
+            emailRef.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+            setEmailError("Invalid email format");
+            return;
+        }
+
+        const result=validateEmail(trimmedEmail,users_list);
+        if(result.valid===false){
+            emailRef.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+            setEmailError(result.message);
         }
         else{
-            errorContact.current.style.visibility="visible";
+            emailRef.current.style.borderColor="var(--border_color)";
+            setEmailError("");
         }
-    },[contact])
+    },[email,users_list]);
+
+    useEffect(()=>{
+        if(!phoneRef.current) return;
+
+        const trimmedPhone=phone.trim();
+        if(trimmedPhone.length===0){
+            phoneRef.current.style.borderColor="var(--border_color)";
+            setPhoneError("");
+            return;
+        }
+
+        const result=validatePhone(trimmedPhone,users_list);
+        if(!result.valid){
+            phoneRef.current.style.borderColor="hsla(0, 77%, 58%, 0.753)";
+            setPhoneError(result.message);
+        }
+        else{
+            phoneRef.current.style.borderColor="var(--border_color)";
+            setPhoneError("");
+        }
+    },[phone,users_list]);
 
 
     useEffect(()=>{
@@ -179,7 +203,7 @@ function Signup(){
                 ))}
             </div>  
             <div className="form">
-                <form className="signup-form" onSubmit={(event)=>event.preventDefault()}>
+                <form id="signup-form" className="signup-form" onSubmit={(event)=>{event.preventDefault(); SignUp();}}>
                 <h3>Personal Details</h3>
                 <section id="personal">
                     <label htmlFor="name">Name</label>
@@ -189,27 +213,24 @@ function Signup(){
                             value={name}
                             onChange={(event)=>setName(event.target.value)}
                             required/>
-                    <label htmlFor="choice">Choose Email/Phone Number</label>
-                    <div className="email-phone">
-                        <select id="choice" 
-                                name="choice" 
-                                value={contact}
-                                onChange={(event)=>setContact(event.target.value)}>
-                            <option value="select">--Select--</option>
-                            <option value="email">Email</option>
-                            <option value="phone">Phone Number</option>
-                        </select>
-                        <div className="input-contact">
-                            <input  id="sel-choice" 
-                                    type={contact==="email"?"email":"tel"} 
-                                    placeholder={placeholder} 
-                                    value={contact==="email"?email:phone}
-                                    onChange={(event)=>contact==="email"?setEmail(event.target.value):setPhone(event.target.value)}
-                                    ref={errorContact}
-                                    required/>
-                            <p>{inputContactError}</p>
-                        </div>
-                    </div>
+                    <label htmlFor="email">Email</label>
+                    <input id="email" 
+                           type="text" 
+                           placeholder="Enter your Email" 
+                           value={email}
+                           onChange={(event)=>setEmail(event.target.value)}
+                           ref={emailRef}
+                           required/>
+                    <p className="error-message">{emailError}</p>
+                    <label htmlFor="phone">Phone Number</label>
+                    <input id="phone" 
+                           type="text" 
+                           placeholder="Enter your Phone Number (10 digits)" 
+                           value={phone}
+                           onChange={(event)=>setPhone(event.target.value)}
+                           ref={phoneRef}
+                           required/>
+                    <p className="error-message">{phoneError}</p>
                 </section>
                 <h3>Security</h3>
                 <section id="security">
@@ -222,8 +243,8 @@ function Signup(){
                             ref={password_Error}
                             required/>
                     <span className="error-password">{passwordError}</span>
-                    <label htmlFor="password">Confirm Password</label>
-                    <input  id="password" 
+                        <label htmlFor="confirmPassword">Confirm Password</label>
+                        <input  id="confirmPassword" 
                             type="password" 
                             placeholder="Enter Password Again to Confirm" 
                             value={confirmPassword}
@@ -267,9 +288,10 @@ function Signup(){
                     </label>
                 </section>
             </form>
-            <button type="submit" 
+                <button type="submit" 
+                    form="signup-form"
                     className="submit-btn"
-                    onClick={SignUp}>Sign Up</button>
+                    >Sign Up</button>
             </div>
         </div>
     );

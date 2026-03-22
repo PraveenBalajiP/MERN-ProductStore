@@ -73,11 +73,6 @@ function AddProduct(){
         }
         try{
             const response=await axios.post(`http://localhost:5000/api/users/${name}/browse`,payload,{withCredentials:true});
-            await axios.post(
-                `http://localhost:5000/api/users/${name}/addedProducts`,
-                {productId:response.data.productId},
-                {withCredentials:true}
-            );
             toast.success(response.data.message || "Product added successfully");
             setFormData({
                 productName:"",
@@ -130,7 +125,7 @@ function AddProduct(){
             />
             <div className="add-product-card">
                 <h1>Add Product Details</h1>
-                <form className="add-product-form" onSubmit={addProductToList}>
+                <form id="add-product-form" className="add-product-form" onSubmit={addProductToList}>
                     <input
                         type="text"
                         placeholder="Product Name"
@@ -185,7 +180,6 @@ function AddProduct(){
                             <span className={`toggle-bid-text ${bid === "bid" ? 'active' : ''}`}>Bid</span>
                         </div>
                     </div>
-                    <button type="submit" className="add-product-submit">Add Product</button>
                 </form>
                 <div className="owner-details">
                     <h2>Owner Details</h2>
@@ -221,6 +215,7 @@ function AddProduct(){
                             </div>
                         ):(
                             <div className="agent-info">
+                                <label htmlFor="agent-name">Name</label>
                                 <input
                                     type="text"
                                     placeholder="Name"
@@ -228,6 +223,7 @@ function AddProduct(){
                                     onChange={(e)=>setAgentDetails({...agentDetails,name:e.target.value})}
                                     required={!isOwner}
                                 />
+                                <label htmlFor="agent-email">Email</label>
                                 <input
                                     type="email"
                                     placeholder="Email"
@@ -235,6 +231,7 @@ function AddProduct(){
                                     onChange={(e)=>setAgentDetails({...agentDetails,email:e.target.value})}
                                     required={!isOwner}
                                 />
+                                <label htmlFor="agent-phone">Phone</label>
                                 <input
                                     type="tel"
                                     placeholder="Phone"
@@ -242,6 +239,7 @@ function AddProduct(){
                                     onChange={(e)=>setAgentDetails({...agentDetails,phone:e.target.value})}
                                     required={!isOwner}
                                 />
+                                <label htmlFor="agent-address">Address</label>
                                 <textarea
                                     placeholder="Address"
                                     value={agentDetails.address}
@@ -252,6 +250,7 @@ function AddProduct(){
                         )
                     }
                 </div>
+                <button type="submit" form="add-product-form" className="add-product-submit">Add Product</button>
             </div>
         </div>
     );

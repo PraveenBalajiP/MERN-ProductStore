@@ -1,8 +1,9 @@
-import {useState} from 'react';
+import {useEffect,useState} from 'react';
 import {useLocation} from 'react-router-dom';
 import {useParams} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import {FiCheckCircle,FiShoppingCart} from 'react-icons/fi';
 import { toast } from "react-hot-toast";
 import ConfirmDialog from '../common_components/ConfirmDialog';
 import '../css/productDetail.css';
@@ -30,6 +31,23 @@ function ProductDetail(){
         }
     }
 
+    async function syncWishlistStatus(){
+        if(!product?._id) return;
+        try{
+            const response=await axios.get(`http://localhost:5000/api/users/${name}/wishlist`,{withCredentials:true});
+            const wishlistItems=Array.isArray(response.data) ? response.data : [];
+            const existsInWishlist=wishlistItems.some((item)=>String(item?._id)===String(product._id));
+            setIsInWishlist(existsInWishlist);
+        }
+        catch(error){
+            console.error('Error syncing wishlist status:',error);
+        }
+    }
+
+    useEffect(()=>{
+        syncWishlistStatus();
+    },[name,product?._id]);
+
     async function removeFromWishlist(productId){
         try{
             const response=await axios.post(`http://localhost:5000/api/users/${name}/wishlist/remove`,{productId},{withCredentials:true});
@@ -54,19 +72,18 @@ function ProductDetail(){
 
     async function addToOrders(productId,offeredBidValue){
         try{
-            const response=await axios.post(`http://localhost:5000/api/users/${name}/orders/add`,{productId},{withCredentials:true});
-            setCartAnimation(true);
-            setTimeout(() => setCartAnimation(false), 2000);
-            toast.success('Product added to orders');
-            await axios.post(
-                `http://localhost:5000/api/users/${name}/products/responses`,
+            const response=await axios.post(
+                `http://localhost:5000/api/users/${name}/orders/add`,
                 {productId,bidValue:offeredBidValue},
                 {withCredentials:true}
             );
+            setCartAnimation(true);
+            setTimeout(() => setCartAnimation(false), 2000);
+            toast.success(response?.data?.message || 'Product added to orders');
         }
         catch(error){
             console.error('Error adding to orders:',error);
-            toast.error('Error adding product to orders');
+            toast.error(error?.response?.data?.message || 'Error adding product to orders');
         }
     }
 
@@ -86,13 +103,8 @@ function ProductDetail(){
             let offeredBidValue=null;
             if(product?.bid === 'bid'){
                 const numericBid=Number(bidValue);
-                const ownerBid=Number(product?.price || 0);
                 if(Number.isNaN(numericBid) || numericBid <= 0){
                     toast.error('Please enter a valid bid value');
-                    return;
-                }
-                if(numericBid < ownerBid){
-                    toast.error(`Your bid must be at least $${ownerBid.toFixed(2)}`);
                     return;
                 }
                 offeredBidValue=numericBid;
@@ -134,7 +146,7 @@ function ProductDetail(){
                         <input
                             id="bid-value"
                             type="number"
-                            min={Number(product?.price || 0)}
+                            min="0.01"
                             step="0.01"
                             value={bidValue}
                             onChange={(event)=>setBidValue(event.target.value)}
@@ -174,8 +186,9 @@ function ProductDetail(){
                 <>
                     <div className="order-confirmation-overlay"></div>
                     <div className="cart-animation">
-                        <div className="cart-icon">🛒</div>
-                        <div className="confirmation-tick">✓</div>
+                        <div className="cart-icon"><FiShoppingCart aria-hidden="true"/></div>
+                        <div className="confirmation-tick" aria-hidden="true"><FiCheckCircle/></div>
+                        <div className="confirmation-label">Order Confirmed</div>
                     </div>
                 </>
             )}

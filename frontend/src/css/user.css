@@ -1,13 +1,14 @@
 .user-content{
-    width:min(1200px, 94%);
-    margin:24px auto 0;
+    width:100%;
+    margin:24px 0 0;
+    padding:0 14px;
     min-height:75vh;
     animation:fadeUp 0.45s ease both;
 }
 
 @media screen and (max-width: 768px){
     .user-content{
-        width:95%;
+        padding:0 10px;
         margin-top:14px;
     }
 }

@@ -7,8 +7,8 @@
     padding:18px 0 28px;
     gap:8px;
     text-align:center;
-    width:min(1180px, 98%);
-    margin:0 auto;
+    width:100%;
+    margin:0;
 }
 
 .wishlist-page h1{
@@ -29,7 +29,7 @@
     align-items:center;
     gap:12px;
     flex-wrap:wrap;
-    width:min(1100px, 100%);
+    width:100%;
 }
 
 .wishlist-page .search-bar{
@@ -72,7 +72,7 @@
 }
 
 .wishlist-list{
-    width:min(1120px, 100%);
+    width:100%;
     margin-top:10px;
 }
 
@@ -161,8 +161,7 @@
 
 @media screen and (max-width: 640px){
     .wishlist-page{
-        width:99%;
-        padding:12px 0 24px;
+        padding:12px 12px 24px;
     }
 
     .wishlist-header{

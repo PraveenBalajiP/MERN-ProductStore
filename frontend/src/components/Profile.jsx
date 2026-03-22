@@ -15,10 +15,24 @@ function Profile(){
     const [pastDeals,setPastDeals]=useState([]);
     const [selectedProduct,setSelectedProduct]=useState(null);
 
+    function getErrorMessage(error,fallbackMessage){
+        return (
+            error?.response?.data?.message ||
+            error?.response?.data?.error ||
+            error?.message ||
+            fallbackMessage
+        );
+    }
+
     async function fetchProfile(){
-        const response=await axios.get(`http://localhost:5000/api/users/${name}/profile`,{withCredentials:true});
-        setProfileData(response.data);
-        console.log(response.data);
+        try{
+            const response=await axios.get(`http://localhost:5000/api/users/${name}/profile`,{withCredentials:true});
+            setProfileData(response.data);
+            console.log(response.data);
+        }
+        catch(error){
+            toast.error(getErrorMessage(error,"Unable to fetch profile"));
+        }
     }
 
     useEffect(()=>{
@@ -34,6 +48,7 @@ function Profile(){
         }
         catch(error){
             console.error("Error fetching added products:", error);
+            toast.error(getErrorMessage(error,"Unable to fetch added products"));
         }
     }
 
@@ -48,12 +63,21 @@ function Profile(){
         }
         catch(error){
             console.error("Error fetching responses:", error);
+            toast.error(getErrorMessage(error,"Unable to fetch responses"));
         }
     }
 
     useEffect(()=>{
         fetchResponses();
     },[])
+
+    useEffect(()=>{
+        const intervalId=setInterval(()=>{
+            fetchResponses();
+        },8000);
+
+        return ()=>clearInterval(intervalId);
+    },[name]);
 
     async function fetchAcceptedDeals(){
         try{
@@ -62,6 +86,7 @@ function Profile(){
         }
         catch(error){
             console.error("Error fetching accepted deals:", error);
+            toast.error(getErrorMessage(error,"Unable to fetch accepted deals"));
         }
     }
 
@@ -76,6 +101,7 @@ function Profile(){
         }
         catch(error){
             console.error("Error fetching past deals:", error);
+            toast.error(getErrorMessage(error,"Unable to fetch past deals"));
         }
     }
 
@@ -94,7 +120,7 @@ function Profile(){
             toast.success("Product deleted successfully");
         }
         catch(error){
-            toast.error(error?.response?.data?.message || "Error deleting product");
+            toast.error(getErrorMessage(error,"Error deleting product"));
         }
     }
 
@@ -126,7 +152,7 @@ function Profile(){
             fetchAddedProducts();
         }
         catch(error){
-            toast.error(error?.response?.data?.message || "Error accepting deal");
+            toast.error(getErrorMessage(error,"Error accepting deal"));
         }
     }
 
@@ -139,7 +165,7 @@ function Profile(){
             fetchAddedProducts();
         }
         catch(error){
-            toast.error(error?.response?.data?.message || "Error closing deal");
+            toast.error(getErrorMessage(error,"Error closing deal"));
         }
     }
 
@@ -175,8 +201,10 @@ function Profile(){
                                 <p>{product.description}</p>
                                 <p>Category: {product.category}</p>
                                 <p>Price: ${product.price.toFixed(2)}</p>
-                                <button onClick={()=>editProduct(product._id)}>Edit Product</button>
-                                <button onClick={()=>setSelectedProduct(product._id)}>Delete Product</button>
+                                <div className="product-actions">
+                                    <button className="product-edit-btn" onClick={()=>editProduct(product._id)}>Edit Product</button>
+                                    <button className="product-delete-btn" onClick={()=>setSelectedProduct(product)}>Delete Product</button>
+                                </div>
                             </div>
                             )
                         })
@@ -187,6 +215,7 @@ function Profile(){
             </div>
             <div className="reponses">
                 <h2>Responses</h2>
+                <button type="button" onClick={fetchResponses}>Refresh Responses</button>
                 {
                     responses.length>0 ? (
                         responses.map((response)=>{
@@ -194,6 +223,7 @@ function Profile(){
                                 <div className="response-card" key={response._id}>
                                     <p>{response.message || 'New order update received.'}</p>
                                     <p>From: {response.fromName || 'Unknown User'}</p>
+                                    <p>Contact: {response.fromContact || 'Not available'}</p>
                                     <p>Product: {response.productName || 'Unknown Product'}</p>
                                     {response.bidValue!==null && response.bidValue!==undefined ? <p>Bid Value: ${Number(response.bidValue).toFixed(2)}</p> : null}
                                     <p>Received: {formatResponseDateTime(response.receivedAt)}</p>

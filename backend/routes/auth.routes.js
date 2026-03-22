@@ -11,6 +11,93 @@ dotenv.config();
 
 const routes=express.Router();
 const upload=multer({storage:multer.memoryStorage()});
+const badUserIndexNames=["responses_1","wishlist_1","orders_1","addedProducts_1","acceptedDeals_1","pastDeals_1"];
+let userIndexesNormalized=false;
+
+async function normalizeUserIndexes(force=false){
+    if(userIndexesNormalized && !force) return;
+    try{
+        const indexes=await User.collection.indexes();
+        for(const indexName of badUserIndexNames){
+            const exists=indexes.some((index)=>index.name===indexName);
+            if(exists){
+                await User.collection.dropIndex(indexName);
+                console.log(`Dropped invalid users index from route layer: ${indexName}`);
+            }
+        }
+        userIndexesNormalized=true;
+    }
+    catch(error){
+        console.error("User index normalization warning:",error?.message || error);
+    }
+}
+
+async function saveUserWithIndexRecovery(userDoc){
+    try{
+        await userDoc.save();
+    }
+    catch(error){
+        if(error?.name==="ValidationError"){
+            await userDoc.save({validateBeforeSave:false});
+            return;
+        }
+        if(error?.code===11000){
+            await normalizeUserIndexes(true);
+            try{
+                await userDoc.save();
+            }
+            catch(retryError){
+                if(retryError?.name==="ValidationError"){
+                    await userDoc.save({validateBeforeSave:false});
+                    return;
+                }
+                throw retryError;
+            }
+            return;
+        }
+        throw error;
+    }
+}
+
+async function pushOwnerResponseWithRecovery(ownerId,responsePayload){
+    try{
+        const exists=await User.exists({
+            _id:ownerId,
+            responses:{
+                $elemMatch:{
+                    productId:responsePayload.productId,
+                    from:responsePayload.from
+                }
+            }
+        });
+        if(exists) return {inserted:false,reason:"already-exists"};
+
+        const updateResult=await User.updateOne(
+            {_id:ownerId},
+            {$push:{responses:responsePayload}}
+        );
+
+        if(updateResult.matchedCount===0){
+            return {inserted:false,reason:"owner-not-found"};
+        }
+
+        return {inserted:true,reason:"inserted"};
+    }
+    catch(error){
+        if(error?.code===11000){
+            await normalizeUserIndexes(true);
+            const retryResult=await User.updateOne(
+                {_id:ownerId},
+                {$push:{responses:responsePayload}}
+            );
+            if(retryResult.matchedCount===0){
+                return {inserted:false,reason:"owner-not-found"};
+            }
+            return {inserted:true,reason:"inserted-after-recovery"};
+        }
+        throw error;
+    }
+}
 
 function generateTokenAndCookie(id,res){
     const token=jwt.sign({id},process.env.ACCESS_TOKEN_SECRET,{expiresIn:"1d"});
@@ -23,13 +110,22 @@ function generateTokenAndCookie(id,res){
 }
 
 routes.post("/signup",async (req,res)=>{
-    const {name,contact,password,address}=req.body;
+    const {name,email,phone,password,address}=req.body;
+
+    const normalizedEmail=String(email || "").trim().toLowerCase();
+    const normalizedPhone=String(phone || "").trim();
+
+    if(!name || !normalizedEmail || !normalizedPhone || !password || !address){
+        return res.status(400).json({message:"Name, email, phone, password and address are required"});
+    }
 
     const salt=await bcrypt.genSalt(10);
     const hashedPassword=await bcrypt.hash(password,salt);
     const userData={
         name,
-        contact,
+        email:normalizedEmail,
+        phone:normalizedPhone,
+        contact:normalizedEmail,
         password:hashedPassword,
         address
     };
@@ -37,8 +133,15 @@ routes.post("/signup",async (req,res)=>{
     const savedData=new User(userData);
     console.log(savedData);
     try{
-        if(await User.findOne({contact:contact})){
-            res.status(400).json({message:"User already exists with this contact"});
+        const existingUser=await User.findOne({
+            $or:[
+                {email:normalizedEmail},
+                {phone:normalizedPhone},
+                {contact:normalizedEmail}
+            ]
+        });
+        if(existingUser){
+            res.status(400).json({message:"User already exists with this email or phone"});
         }
         else{
             await savedData.save();
@@ -51,9 +154,26 @@ routes.post("/signup",async (req,res)=>{
     }
 })
 
+routes.get("/signup",async (req,res)=>{
+    try{
+        const users=await User.find({},"email phone contact");
+        return res.status(200).json(users);
+    }
+    catch(error){
+        return res.status(500).json({message:"Error fetching users",error:error.message});
+    }
+})
+
 routes.post("/login",async (req,res)=>{
     const {contact,password}=req.body;
-    const user=await User.findOne({contact:contact});
+    const normalizedContact=String(contact || "").trim().toLowerCase();
+    const user=await User.findOne({
+        $or:[
+            {contact:normalizedContact},
+            {email:normalizedContact},
+            {phone:String(contact || "").trim()}
+        ]
+    });
     console.log(user);
     try{
         if(!user){
@@ -69,7 +189,7 @@ routes.post("/login",async (req,res)=>{
                 console.log({...user,message:"Login Successful"});
                 const userData={
                     name:user.name,
-                    contact:user.contact,
+                    contact:user.contact || user.email || user.phone,
                     message:"Login Successful"
                 }
                 res.status(200).json(userData);
@@ -90,10 +210,10 @@ routes.get("/:name",authUser,async (req,res)=>{
     try{
         const user=await User.findOne({name:userName});
         if(!user){
-            res.status(404).json({message:"User Not Found"});
+            return res.status(404).json({message:"User Not Found"});
         }
         else{
-            res.status(200).json({name:user.name,contact:user.contact});
+            res.status(200).json({name:user.name,contact:user.contact || user.email || user.phone});
         }
     }
     catch(error){
@@ -119,8 +239,8 @@ routes.get("/:name/profile",authUser,async (req,res)=>{
         else{
             res.status(200).json({
                 name:user.name,
-                email:user.contact.includes("@")?user.contact:"",
-                phone:user.contact.match(/^\d{10}$/)?user.contact:"",
+                email:user.email || (user.contact && user.contact.includes("@") ? user.contact : ""),
+                phone:user.phone || (user.contact && user.contact.match(/^\d{10}$/) ? user.contact : ""),
                 address:user.address
             });
         }
@@ -176,6 +296,16 @@ routes.post("/:name/browse",authUser,upload.single("image"),async (req,res)=>{
             imageContentType:req.file?.mimetype
         });
         await newProduct.save();
+        try{
+            const hasProduct=user.addedProducts.some((id)=>String(id)===String(newProduct._id));
+            if(!hasProduct){
+                user.addedProducts.push(newProduct._id);
+                await user.save();
+            }
+        }
+        catch(linkError){
+            console.error("Failed to link product to user.addedProducts:",linkError?.message || linkError);
+        }
         res.status(201).json({message:"Product added successfully",productId:newProduct._id});
     }
     catch(error){
@@ -230,10 +360,11 @@ routes.post("/:name/wishlist/add",authUser,async (req,res)=>{
             return res.status(403).json({message:"Forbidden: You can only modify your own wishlist"});
         }
         if(!user){
-            res.status(404).json({message:"User Not Found"});
+            return res.status(404).json({message:"User Not Found"});
         }
         else{
-            if(user.wishlist.includes(productId)){
+            const alreadyInWishlist=user.wishlist.some((id)=>id.toString()===String(productId));
+            if(alreadyInWishlist){
                 return res.status(400).json({message:"Product already in wishlist"});
             }
             else{
@@ -257,17 +388,12 @@ routes.post("/:name/wishlist/remove",authUser,async (req,res)=>{
             return res.status(403).json({message:"Forbidden: You can only modify your own wishlist"});
         }
         if(!user){
-            res.status(404).json({message:"User Not Found"});
+            return res.status(404).json({message:"User Not Found"});
         }
         else{
-            if(!user.wishlist.includes(productId)){
-                return res.status(400).json({message:"Product not in wishlist"});
-            }
-            else{
-                user.wishlist=user.wishlist.filter(id=>id.toString()!==productId);
-                await user.save();
-                res.status(200).json({message:"Product removed from wishlist"});
-            }
+            user.wishlist=user.wishlist.filter((id)=>id.toString()!==String(productId));
+            await user.save();
+            res.status(200).json({message:"Product removed from wishlist"});
         }
     }
     catch(error){
@@ -276,26 +402,63 @@ routes.post("/:name/wishlist/remove",authUser,async (req,res)=>{
 })
 
 routes.post("/:name/orders/add",authUser,async (req,res)=>{
-    const userName=req.params.name;
-    const {productId}=req.body;
+    const {productId,bidValue}=req.body;
     try{
+        await normalizeUserIndexes();
         const user=await User.findById(req.id);
-        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
-            return res.status(403).json({message:"Forbidden: You can only modify your own orders"});
-        }
         if(!user){
-            res.status(404).json({message:"User Not Found"});
+            return res.status(404).json({message:"User Not Found"});
         }
-        else{
-            if(user.orders.includes(productId)){
-                return res.status(400).json({message:"Product already in orders"});
-            }
-            else{
-                user.orders.push(productId);
-                await user.save();
-                res.status(200).json({message:"Product added to orders"});
-            }
+        if(!productId){
+            return res.status(400).json({message:"Product ID is required"});
         }
+
+        const product=await Product.findById(productId);
+        if(!product){
+            return res.status(404).json({message:"Product not found"});
+        }
+
+        if(String(product.owner)===String(user._id)){
+            return res.status(400).json({message:"You cannot order your own product"});
+        }
+
+        const alreadyInOrders=user.orders.some((id)=>String(id)===String(productId));
+        if(alreadyInOrders){
+            return res.status(400).json({message:"Product already in orders"});
+        }
+
+        let normalizedBidValue=null;
+        if(product.bid === "bid"){
+            normalizedBidValue=Number(bidValue);
+            if(Number.isNaN(normalizedBidValue) || normalizedBidValue <= 0){
+                return res.status(400).json({message:"Valid bid value is required for bidding products"});
+            }
+            product.bidHistory.push({user:user._id,amount:normalizedBidValue});
+            product.highestBid=product.highestBid===null ? normalizedBidValue : Math.max(Number(product.highestBid),normalizedBidValue);
+            product.lowestBid=product.lowestBid===null ? normalizedBidValue : Math.min(Number(product.lowestBid),normalizedBidValue);
+            await product.save();
+        }
+
+        user.orders.push(productId);
+        await saveUserWithIndexRecovery(user);
+
+        const ownerResponsePayload={
+            productId,
+            from:user._id,
+            fromName:user.name || "",
+            fromContact:user.email || user.phone || user.contact || "",
+            message:product.bid === "bid"
+                ? `${user.name} has placed a bid of $${normalizedBidValue} on your product "${product.name}". Contact: ${user.email || user.contact || "N/A"}${user.phone ? `, ${user.phone}` : ""}.`
+                : `${user.name} has ordered your product "${product.name}". Contact: ${user.email || user.contact || "N/A"}${user.phone ? `, ${user.phone}` : ""}.`,
+            bidValue:product.bid === "bid" ? normalizedBidValue : null
+        };
+
+        const ownerResponseResult=await pushOwnerResponseWithRecovery(product.owner,ownerResponsePayload);
+        if(ownerResponseResult.reason==="owner-not-found"){
+            return res.status(200).json({message:"Product added to orders, but owner account was not found for response update."});
+        }
+
+        return res.status(200).json({message:"Product added to orders and owner notified"});
     }
     catch(error){
         res.status(500).json({message:"Error modifying orders",error:error.message});
@@ -303,25 +466,20 @@ routes.post("/:name/orders/add",authUser,async (req,res)=>{
 })
 
 routes.post("/:name/orders/remove",authUser,async (req,res)=>{
-    const userName=req.params.name;
     const {productId}=req.body;
     try{
         const user=await User.findById(req.id);
-        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
-            return res.status(403).json({message:"Forbidden: You can only modify your own orders"});
-        }
         if(!user){
-            res.status(404).json({message:"User Not Found"});
+            return res.status(404).json({message:"User Not Found"});
         }
         else{
-            if(!user.orders.includes(productId)){
+            const existsInOrders=user.orders.some((id)=>String(id)===String(productId));
+            if(!existsInOrders){
                 return res.status(400).json({message:"Product not in orders"});
             }
-            else{
-                user.orders=user.orders.filter(id=>id.toString()!==productId);
-                await user.save();
-                res.status(200).json({message:"Product removed from orders"});
-            }
+            user.orders=user.orders.filter((id)=>String(id)!==String(productId));
+            await user.save();
+            res.status(200).json({message:"Product removed from orders"});
         }
     }
     catch(error){
@@ -330,14 +488,10 @@ routes.post("/:name/orders/remove",authUser,async (req,res)=>{
 })
 
 routes.get("/:name/orders",authUser,async (req,res)=>{
-    const userName=req.params.name;
     try{
         const user=await User.findById(req.id);
-        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
-            return res.status(403).json({message:"Forbidden: You can only access your own orders"});
-        }
         if(!user){
-            res.status(404).json({message:"User Not Found"});
+            return res.status(404).json({message:"User Not Found"});
         }
         else{
             const order=await Product.find({_id:{$in:user.orders}});
@@ -363,7 +517,7 @@ routes.get("/:name/wishlist",authUser,async (req,res)=>{
             return res.status(403).json({message:"Forbidden: You can only access your own wishlist"});
         }
         if(!user){
-            res.status(404).json({message:"User Not Found"});
+            return res.status(404).json({message:"User Not Found"});
         }
         else{
             const wishlist=await Product.find({_id:{$in:user.wishlist}});
@@ -415,16 +569,38 @@ routes.get("/:name/addedProducts",authUser,async (req,res)=>{
             return res.status(403).json({message:"Forbidden: You can only access your own products"});
         }
         if(!user){
-            res.status(404).json({message:"User Not Found"});
+            return res.status(404).json({message:"User Not Found"});
         }
         else{
-           const addedProducts=await Product.find({_id:{$in:user.addedProducts}});
-           const productsWithImages=addedProducts.map((product)=>({
-            ...product.toObject(),
-            imageUrl:product.imageData && product.imageContentType
-                ?`data:${product.imageContentType};base64,${product.imageData.toString("base64")}`
-                :null
-        }));
+            let addedProducts=[];
+
+            if(Array.isArray(user.addedProducts) && user.addedProducts.length>0){
+                addedProducts=await Product.find({_id:{$in:user.addedProducts}});
+            }
+
+            if(!addedProducts.length){
+                addedProducts=await Product.find({owner:user._id});
+
+                if(addedProducts.length){
+                    try{
+                        user.addedProducts=addedProducts.map((product)=>product._id);
+                        await user.save();
+                    }
+                    catch(backfillError){
+                        console.error("Failed to backfill user.addedProducts:",backfillError?.message || backfillError);
+                    }
+                }
+            }
+
+            const productsWithImages=addedProducts.map((product)=>(
+                {
+                    ...product.toObject(),
+                    imageUrl:product.imageData && product.imageContentType
+                        ?`data:${product.imageContentType};base64,${product.imageData.toString("base64")}`
+                        :null
+                }
+            ));
+
             res.status(200).json(productsWithImages);
         }
     }
@@ -442,7 +618,7 @@ routes.delete("/:name/deleteProduct",authUser,async (req,res)=>{
             return res.status(403).json({message:"Forbidden: You can only delete your own products"});
         }
         if(!user){
-            res.status(404).json({message:"User Not Found"});
+            return res.status(404).json({message:"User Not Found"});
         }
         if(!productId){
             return res.status(400).json({message:"Product ID is required"});
@@ -499,23 +675,28 @@ routes.post("/:name/products/responses",authUser,async (req,res)=>{
             if(Number.isNaN(normalizedBidValue) || normalizedBidValue <= 0){
                 return res.status(400).json({message:"Valid bid value is required for bidding products"});
             }
-            if(normalizedBidValue < Number(product.price)){
-                return res.status(400).json({message:"Your bid should be at least the owner bid value"});
-            }
             product.bidHistory.push({user:orderedUser._id,amount:normalizedBidValue});
             product.highestBid=product.highestBid===null ? normalizedBidValue : Math.max(Number(product.highestBid),normalizedBidValue);
             product.lowestBid=product.lowestBid===null ? normalizedBidValue : Math.min(Number(product.lowestBid),normalizedBidValue);
             await product.save();
         }
-        owner.responses.push({
+        const ownerResponsePayload={
             productId,
             from:orderedUser._id,
+            fromName:orderedUser.name || "",
+            fromContact:orderedUser.email || orderedUser.phone || orderedUser.contact || "",
             message:product.bid === "bid"
                 ? `${orderedUser.name} has placed a bid of $${normalizedBidValue} on your product "${product.name}". Contact them at ${orderedUser.contact}.`
                 : `${orderedUser.name} has ordered your product "${product.name}". Contact them at ${orderedUser.contact}.`,
             bidValue:product.bid === "bid" ? normalizedBidValue : null
-        });
-        await owner.save();
+        };
+        const ownerResponseResult=await pushOwnerResponseWithRecovery(product.owner,ownerResponsePayload);
+        if(ownerResponseResult.reason==="already-exists"){
+            return res.status(200).json({message:"Response already recorded"});
+        }
+        if(ownerResponseResult.reason==="owner-not-found"){
+            return res.status(404).json({message:"Owner not found"});
+        }
         res.status(200).json({message:"Response sent to product owner"});
     }
     catch(error){
@@ -531,7 +712,7 @@ routes.get("/:name/responses",authUser,async (req,res)=>{
             return res.status(403).json({message:"Forbidden: You can only access your own responses"});
         }
         if(!user){
-            res.status(404).json({message:"User Not Found"});
+            return res.status(404).json({message:"User Not Found"});
         }
         else{
             const validResponses=user.responses.filter((response)=>response && response.from && response.productId);
@@ -541,11 +722,14 @@ routes.get("/:name/responses",authUser,async (req,res)=>{
                 const fallbackDate=response?._id
                     ? new Date(parseInt(response._id.toString().substring(0,8),16) * 1000)
                     : new Date();
+                const resolvedFromName=response.fromName || (fromUser ? fromUser.name : "Unknown User");
+                const resolvedFromContact=response.fromContact || fromUser?.email || fromUser?.phone || fromUser?.contact || "";
                 return {
                     ...response.toObject(),
-                    fromName:fromUser ? fromUser.name : "Unknown User",
+                    fromName:resolvedFromName,
+                    fromContact:resolvedFromContact,
                     productName:product ? product.name : "Unknown Product",
-                    message:response.message || `${fromUser ? fromUser.name : "A user"} ordered ${product ? product.name : "your product"}.`,
+                    message:response.message || `${resolvedFromName || "A user"} ordered ${product ? product.name : "your product"}.`,
                     receivedAt:response.receivedAt || fallbackDate
                 }
             }));
@@ -631,14 +815,16 @@ routes.patch("/:name/products/:id",authUser,upload.single("image"),async (req,re
 })
 
 routes.post("/:name/:productId/acceptDeal",authUser,async (req,res)=>{
-    const userName=req.params.name;
     const productId=req.params.productId;
     const {fromUserId} = req.body;
     try{
-        const owner=await User.findById(req.id);
-        if(owner && owner.name.toLowerCase()!==userName.toLowerCase()){
-            return res.status(403).json({message:"Forbidden: You can only accept deals for your own products"});
+        await normalizeUserIndexes();
+        const fromUserIdString=String(fromUserId || "");
+        if(!fromUserIdString){
+            return res.status(400).json({message:"Buyer id is required"});
         }
+
+        const owner=await User.findById(req.id);
         if(!owner){
             return res.status(404).json({message:"Owner not found"});
         }
@@ -653,7 +839,7 @@ routes.post("/:name/:productId/acceptDeal",authUser,async (req,res)=>{
             return res.status(400).json({message:"Deal has already been closed for this product"});
         }
         const responseIndex=owner.responses.findIndex(
-            r=>r.productId.toString()===productId && r.from.toString()===fromUserId
+            r=>String(r.productId)===String(productId) && String(r.from)===fromUserIdString
         );
         if(responseIndex===-1){
             return res.status(404).json({message:"Response not found"});
@@ -662,37 +848,35 @@ routes.post("/:name/:productId/acceptDeal",authUser,async (req,res)=>{
         const dealValue=response.bidValue || product.price;
         owner.acceptedDeals.push({
             productId:product._id,
-            withUser:fromUserId,
+            withUser:fromUserIdString,
             dealValue:dealValue
         });
         owner.responses.splice(responseIndex,1);
-        await owner.save();
-        const buyer=await User.findById(fromUserId);
+        await saveUserWithIndexRecovery(owner);
+        const buyer=await User.findById(fromUserIdString);
         if(buyer){
             buyer.acceptedDeals.push({
                 productId:product._id,
                 withUser:owner._id,
                 dealValue:dealValue
             });
-            await buyer.save();
+            await saveUserWithIndexRecovery(buyer);
         }
         product.dealStatus="pending";
         await product.save();
         res.status(200).json({message:"Deal accepted successfully"});
     }
     catch(error){
-        res.status(500).json({message:"Error accepting deal",error:error.message});
+        console.error("acceptDeal failure:",error);
+        res.status(500).json({message:error?.message || "Error accepting deal"});
     }
 })
 
 routes.post("/:name/:productId/closeDeal",authUser,async (req,res)=>{
-    const userName=req.params.name;
     const productId=req.params.productId;
     try{
+        await normalizeUserIndexes();
         const owner=await User.findById(req.id);
-        if(owner && owner.name.toLowerCase()!==userName.toLowerCase()){
-            return res.status(403).json({message:"Forbidden: You can only close deals for your own products"});
-        }
         if(!owner){
             return res.status(404).json({message:"Owner not found"});
         }
@@ -717,7 +901,7 @@ routes.post("/:name/:productId/closeDeal",authUser,async (req,res)=>{
             dealValue:acceptedDeal.dealValue
         });
         owner.acceptedDeals.splice(acceptedDealIndex,1);
-        await owner.save();
+        await saveUserWithIndexRecovery(owner);
         if(buyer){
             const buyerAcceptedDealIndex=buyer.acceptedDeals.findIndex(
                 d=>d.productId.toString()===productId
@@ -730,7 +914,7 @@ routes.post("/:name/:productId/closeDeal",authUser,async (req,res)=>{
                     dealValue:buyerAcceptedDeal.dealValue
                 });
                 buyer.acceptedDeals.splice(buyerAcceptedDealIndex,1);
-                await buyer.save();
+                await saveUserWithIndexRecovery(buyer);
             }
         }
         product.dealStatus="sold";
@@ -738,7 +922,8 @@ routes.post("/:name/:productId/closeDeal",authUser,async (req,res)=>{
         res.status(200).json({message:"Deal closed successfully"});
     }
     catch(error){
-        res.status(500).json({message:"Error closing deal",error:error.message});
+        console.error("closeDeal failure:",error);
+        res.status(500).json({message:error?.message || "Error closing deal"});
     }
 })
 

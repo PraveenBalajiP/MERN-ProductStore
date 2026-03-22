@@ -134,6 +134,15 @@ section{
     letter-spacing:1px;
 }
 
+.error-message{
+    color:hsla(0, 77%, 58%, 0.753);
+    font-size:0.9em;
+    margin-top:5px;
+    margin-bottom:10px;
+    text-indent:20px;
+    letter-spacing:1px;
+}
+
 .email-phone{
     display:flex;
     flex-direction:row;

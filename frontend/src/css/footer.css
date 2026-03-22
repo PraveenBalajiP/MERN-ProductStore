@@ -73,9 +73,9 @@
     padding-top:10px;
     font-size:1.5rem;
     cursor:pointer;
-    border:1px solid color-mix(in srgb, var(--border_color) 70%, transparent);
-    border-radius:12px;
-    background:color-mix(in srgb, var(--background_color_secondary) 86%, transparent);
+    border:none;
+    border-radius:0;
+    background:transparent;
     margin-right:8px;
 }
 

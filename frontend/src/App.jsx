@@ -1,6 +1,6 @@
 import { useState,useEffect } from 'react';
 import Lenis from "@studio-freight/lenis";
-import { Routes,Route } from 'react-router-dom';
+import { Routes,Route,useLocation } from 'react-router-dom';
 import NavBar from './common_components/navbar';
 import Footer from "./common_components/footer";
 import Home from './components/Home';
@@ -29,6 +29,7 @@ import Feedback from './components/Feedback';
 
 function App() {
   const [theme,setTheme]=useState(localStorage.getItem('theme') || 'light');
+  const location=useLocation();
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -51,6 +52,10 @@ function App() {
       lenis.destroy();
     };
   }, []);
+
+  useEffect(()=>{
+    window.scrollTo({top:0,left:0,behavior:'auto'});
+  },[location.pathname]);
 
   return (
     <>

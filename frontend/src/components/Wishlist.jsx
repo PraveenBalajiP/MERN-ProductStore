@@ -24,7 +24,8 @@ function Wishlist(){
     async function removeFromWishlist(productId){
         try{
             await axios.post(`http://localhost:5000/api/users/${name}/wishlist/remove`,{productId},{withCredentials:true});
-            setWishlist(wishlist.filter(item => item._id !== productId));
+            setWishlist((prev)=>prev.filter((item)=>String(item._id)!==String(productId)));
+            await fetchWishlist();
             toast.success('Removed from wishlist');
         }
         catch(error){

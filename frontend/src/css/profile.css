@@ -6,8 +6,8 @@
     padding:20px 0 30px;
     min-height:80vh;
     gap:20px;
-    width:min(1180px, 98%);
-    margin:0 auto;
+    width:100%;
+    margin:0;
     animation:fadeUp 0.6s ease both;
 }
 
@@ -91,13 +91,15 @@
 }
 
 .products{
-    width:min(1120px, 100%);
+    width:100%;
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
     gap:18px;
 }
 
 .products .product-card{
+    display:flex;
+    flex-direction:column;
     background:color-mix(in srgb, var(--card_bg) 88%, transparent);
     border:1px solid var(--card_border);
     border-radius:18px;
@@ -112,19 +114,43 @@
     color:var(--text_color_1);
 }
 
-.products .product-card button{
-    margin-top:10px;
+.products .product-card .product-edit-btn,
+.products .product-card .product-delete-btn{
+    margin-top:0;
     border:none;
     border-radius:10px;
     padding:10px 12px;
-    background-color:#dc2626;
-    color:#fff;
     cursor:pointer;
+    transition:background-color 0.2s ease, transform 0.18s ease;
+    width:100%;
+    min-height:40px;
+    font-weight:600;
 }
 
-.products .product-card button:hover{
+.products .product-card .product-actions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.products .product-card .product-edit-btn{
+    background-color:var(--button_primary_bg);
+    color:var(--button_text_color);
+}
+
+.products .product-card .product-delete-btn{
+    background-color:#dc2626;
+    color:#fff;
+}
+
+.products .product-card .product-edit-btn:hover{
+    background-color:var(--button_primary_hover);
     transform:translateY(-1px);
-    filter:brightness(1.05);
+}
+
+.products .product-card .product-delete-btn:hover{
+    background-color:#b91c1c;
+    transform:translateY(-1px);
 }
 
 .products .product-card:hover{
@@ -154,7 +180,7 @@
 }
 
 .reponses{
-    width:min(1120px, 100%);
+    width:100%;
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
     gap:18px;
@@ -162,7 +188,7 @@
 
 .accepted-deals,
 .past-deals{
-    width:min(1120px, 100%);
+    width:100%;
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
     gap:18px;
@@ -212,8 +238,7 @@
 }
 
 .response-card button,
-.deal-card button,
-.products .product-card button{
+.deal-card button{
     margin-top:10px;
     border:none;
     border-radius:10px;
@@ -225,8 +250,7 @@
 }
 
 .response-card button:hover,
-.deal-card button:hover,
-.products .product-card button:hover{
+.deal-card button:hover{
     background-color:var(--button_primary_hover);
     transform:translateY(-1px);
 }
@@ -280,8 +304,7 @@
 
 @media screen and (max-width: 768px){
     .profile-page{
-        width:99%;
-        padding:14px 0 24px;
+        padding:14px 8px 24px;
     }
 
     .profile-info{
@@ -295,6 +318,10 @@
     .products{
         grid-template-columns:1fr;
         gap:14px;
+    }
+
+    .products .product-card .product-actions{
+        grid-template-columns:1fr;
     }
 
     .reponses{

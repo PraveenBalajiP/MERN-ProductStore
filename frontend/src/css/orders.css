@@ -7,8 +7,8 @@
     padding:18px 0 28px;
     gap:12px;
     text-align:center;
-    width:min(1180px, 98%);
-    margin:0 auto;
+    width:100%;
+    margin:0;
     animation:fadeUp 0.55s ease both;
 }
 
@@ -30,7 +30,7 @@
     align-items:center;
     gap:12px;
     flex-wrap:wrap;
-    width:min(1100px, 100%);
+    width:100%;
     padding:10px;
     border:1px solid color-mix(in srgb, var(--border_color) 80%, transparent);
     background:color-mix(in srgb, var(--background_color_secondary) 85%, transparent);
@@ -79,7 +79,7 @@
 }
 
 .orders-list{
-    width:min(1120px, 100%);
+    width:100%;
     margin-top:10px;
 }
 
@@ -168,8 +168,7 @@
 
 @media screen and (max-width: 640px){
     .orders-page{
-        width:99%;
-        padding:12px 0 24px;
+        padding:12px 12px 24px;
     }
 
     .orders-header{

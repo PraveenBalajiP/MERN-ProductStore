@@ -8,7 +8,22 @@ const userSchema=new mongoose.Schema({
     contact:{
         type:String,
         required:true,
-        unique:true
+        unique:true,
+        trim:true,
+        lowercase:true
+    },
+    email:{
+        type:String,
+        required:true,
+        unique:true,
+        trim:true,
+        lowercase:true
+    },
+    phone:{
+        type:String,
+        required:true,
+        unique:true,
+        trim:true
     },
     password:{
         type:String,
@@ -20,18 +35,15 @@ const userSchema=new mongoose.Schema({
     },
     wishlist:[{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Product",
-        unique:true
+        ref:"Product"
     }],
     orders:[{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Product",
-        unique:true
+        ref:"Product"
     }],
     addedProducts:[{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Product",
-        unique:true
+        ref:"Product"
     }],
     responses:[{
         productId:{
@@ -43,6 +55,14 @@ const userSchema=new mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:"User",
             required:true
+        },
+        fromName:{
+            type:String,
+            default:""
+        },
+        fromContact:{
+            type:String,
+            default:""
         },
         message:{
             type:String,

@@ -4,7 +4,7 @@
 	align-items:stretch;
 	justify-content:center;
 	gap:14px;
-	width:min(700px, 96vw);
+	width:min(760px, 100%);
 	margin:24px auto 40px;
 	padding:22px 18px;
 	background:color-mix(in srgb, var(--card_bg) 88%, transparent);
@@ -128,21 +128,21 @@
 		opacity:1;
 	}
 	45% {
-		left:66%;
-		top:34%;
-		transform:translate(-50%, -50%) scale(1.08) rotate(6deg);
+		left:62%;
+		top:40%;
+		transform:translate(-50%, -50%) scale(1.07) rotate(5deg);
 		opacity:1;
 	}
 	70% {
-		left:75%;
-		top:28%;
-		transform:translate(-50%, -50%) scale(1.12) rotate(8deg);
+		left:72%;
+		top:34%;
+		transform:translate(-50%, -50%) scale(1.05) rotate(10deg);
 		opacity:1;
 	}
 	100% {
-		left:85%;
-		top:12%;
-		transform:translate(-50%, -50%) scale(0.45) rotate(20deg);
+		left:80%;
+		top:26%;
+		transform:translate(-50%, -50%) scale(0.35) rotate(18deg);
 		opacity:0;
 	}
 }
@@ -150,14 +150,14 @@
 @keyframes tickAppear {
 	0% {
 		opacity:0;
-		transform:scale(0);
+		transform:scale(0.2);
 	}
-	50% {
+	40% {
 		opacity:0;
 	}
-	70% {
+	62% {
 		opacity:1;
-		transform:scale(1.2);
+		transform:scale(1.12);
 	}
 	100% {
 		opacity:1;
@@ -193,7 +193,7 @@
 		opacity:0.42;
 	}
 	100%{
-		transform:translate(-50%, -50%) scale(1.5);
+		transform:translate(-50%, -50%) scale(1.85);
 		opacity:0;
 	}
 }
@@ -220,7 +220,7 @@
 	width:100%;
 	height:100%;
 	pointer-events:none;
-	z-index:999;
+	z-index:1999;
 	animation:greenFlash 2s ease-in-out forwards;
 }
 
@@ -246,28 +246,61 @@
 	position:fixed;
 	left:50%;
 	top:50%;
-	z-index:1000;
+	z-index:2000;
 	display:flex;
 	align-items:center;
 	justify-content:center;
 }
 
 .cart-icon {
-	font-size:3.5rem;
+	font-size:3.2rem;
 	animation:cartToRight 2s ease-in-out forwards;
 	filter:drop-shadow(0 8px 16px rgba(2, 6, 23, 0.28));
+	color:var(--text_color_1);
 }
 
 .confirmation-tick {
 	position:absolute;
-	font-size:3rem;
+	font-size:4rem;
 	color:#22c55e;
-	font-weight:bold;
 	animation:tickAppear 2s ease-in-out forwards, tickPop 520ms 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 	left:50%;
 	top:50%;
 	transform:translate(-50%, -50%);
 	text-shadow:0 10px 26px rgba(22, 163, 74, 0.45);
+}
+
+.confirmation-label{
+	position:absolute;
+	left:50%;
+	top:calc(50% + 54px);
+	transform:translateX(-50%);
+	padding:8px 14px;
+	border-radius:999px;
+	font-size:0.86rem;
+	font-weight:600;
+	letter-spacing:0.3px;
+	color:#ecfdf3;
+	background:rgba(22, 163, 74, 0.88);
+	border:1px solid rgba(255, 255, 255, 0.35);
+	box-shadow:0 8px 24px rgba(22, 163, 74, 0.36);
+	opacity:0;
+	animation:labelReveal 2s ease-in-out forwards;
+}
+
+@keyframes labelReveal{
+	0%,55%{
+		opacity:0;
+		transform:translate(-50%, 6px);
+	}
+	75%{
+		opacity:1;
+		transform:translate(-50%, 0);
+	}
+	100%{
+		opacity:1;
+		transform:translate(-50%, 0);
+	}
 }
 
 .add-to-orders:hover{
