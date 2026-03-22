@@ -9,7 +9,8 @@
     backdrop-filter:blur(16px);
     -webkit-backdrop-filter:blur(16px);
     background-color:var(--nav_bg);
-    border-bottom:1px solid var(--border_color);
+    border-bottom:1px solid color-mix(in srgb, var(--border_color) 75%, transparent);
+    box-shadow:0 8px 24px color-mix(in srgb, var(--accent) 10%, transparent);
     z-index:100;
     font-size:0.9375rem;
     max-width:100%;
@@ -84,9 +85,10 @@ i{
 }
 
 .nav-links,.theme-link,.user-links,.side-menu,.profile-action,.logout-link,.add-link{
-    border:1px solid var(--border_color);
+    border:1px solid color-mix(in srgb, var(--border_color) 80%, transparent);
     border-radius:999px;
-    background-color:var(--background_color_tertiary);
+    background-color:color-mix(in srgb, var(--background_color_tertiary) 88%, transparent);
+    backdrop-filter:blur(6px);
 }
 
 .user-links{
@@ -135,12 +137,14 @@ i{
     color:var(--text_color_1);
     background:transparent;
     border:none;
+    font-weight:500;
 }
 
 .nav-items button:hover,.user-setup button:hover{
     background-color:var(--accent_subtle);
     color:var(--accent);
-    transition:background-color 0.2s ease, color 0.2s ease;
+    transition:background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    transform:translateY(-1px);
 }
 
 .login-btn{
@@ -202,7 +206,7 @@ i{
     z-index:999;
     width:min(320px, 85%);
     right:12px;
-    border-radius:12px;
+    border-radius:16px;
     padding:12px;
     max-width:100%;
     transform:translateX(100%);

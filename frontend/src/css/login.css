@@ -4,12 +4,14 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 scroll-behavior:smooth;
+min-height:80vh;
+padding:24px 0;
+animation:fadeUp 0.6s ease both;
 }
 
 .login-page h2{
-font-size:2rem;
-padding:30px;
-padding-bottom:40px;
+font-size:clamp(1.8rem, 3vw, 2.25rem);
+padding:10px 20px 22px;
 color:var(--text_color_1);
 }
 
@@ -42,8 +44,10 @@ justify-content:center;
 border:1px solid var(--border_color);
 padding:24px;
 margin:30px 0;
-border-radius:12px;
-background-color:var(--background_color_secondary);
+border-radius:16px;
+background:color-mix(in srgb, var(--background_color_secondary) 88%, transparent);
+box-shadow:var(--shadow_md);
+backdrop-filter:blur(8px);
 }
 
 #choice{
@@ -88,14 +92,14 @@ background-color:var(--button_primary_bg);
 color:var(--button_text_color);
 cursor:pointer;
 transition:background-color 0.2s ease, transform 0.15s ease;
-margin-top:50px;
+margin-top:28px;
 margin-bottom:20px;
 }
 
 .form{
 display:flex;
 flex-direction:column;
-width:60%;
+width:min(680px, 92%);
 margin-bottom:50px;
 }
 

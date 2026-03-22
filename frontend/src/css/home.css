@@ -5,6 +5,7 @@
     justify-content:center;
     background-color:var(--background_color_primary);
     min-height:100vh;
+    animation:fadeUp 0.7s ease both;
 }
 
 .home-bg{
@@ -50,8 +51,8 @@
     align-items:center;
     justify-content:center;
     flex-direction:column;
-    min-height:90vh;
-    gap:100px;
+    min-height:82vh;
+    gap:72px;
 }
 
 .start-section{
@@ -67,7 +68,7 @@
 
 .para-1{
     text-align:center;
-    font-size:3.5rem;
+    font-size:clamp(2.1rem, 5vw, 3.7rem);
     line-height:1.2em;
     padding:5% 10% 0 10%;
     color:var(--text_color_1);
@@ -75,7 +76,7 @@
 
 .para-2{
     text-align:center;
-    font-size:3.5rem;
+    font-size:clamp(2rem, 5vw, 3.5rem);
     line-height:1.2em;
     padding:0% 10% 0% 10%;
 }
@@ -110,6 +111,7 @@
     border:2px solid var(--accent);
     border-radius:999px;
     background-color:var(--button_primary_bg);
+    box-shadow:0 12px 28px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 .start-btn{
@@ -131,8 +133,8 @@
 
 .home-reason{
     font-size:3rem;
-    margin-top:50px;
-    background-color:var(--background_color_secondary);
+    margin-top:30px;
+    background:color-mix(in srgb, var(--background_color_secondary) 88%, transparent);
     max-width: 100%;
     overflow: hidden;
     display:flex;
@@ -143,7 +145,7 @@
 .home-how{
     font-size:3rem;
     margin-top:0px;
-    background-color:var(--background_color_primary);
+    background:color-mix(in srgb, var(--background_color_primary) 92%, transparent);
     max-width: 100%;
     overflow: hidden;
     display:flex;
@@ -153,7 +155,7 @@
 
 .home-reason > p,.home-how > p{
     line-height:1.5em;
-    padding:20px;
+    padding:20px 20px 4px;
     color:var(--text_color_1);
 }
 
@@ -172,7 +174,7 @@
 .reason-cards{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(400px,1fr));
-    gap:30px;
+    gap:22px;
     padding:20px;
     margin:10px;
     max-width: 100%;
@@ -192,7 +194,7 @@
 .work-cards{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(600px,1fr));
-    gap:30px;
+    gap:22px;
     padding:30px;
     margin:10px;
     max-width: 100%;

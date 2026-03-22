@@ -55,7 +55,23 @@ function App() {
   return (
     <>
       <NavBar theme={theme} setTheme={setTheme} />
-      <Toaster position="bottom-center" />
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          className:"toast-default",
+          duration:3000,
+          success:{
+            className:"toast-success"
+          },
+          error:{
+            className:"toast-error",
+            duration:3800
+          },
+          loading:{
+            className:"toast-loading"
+          }
+        }}
+      />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />

@@ -1,12 +1,13 @@
 .browse-page{
     display:flex;
     flex-direction:column;
-    gap:16px;
-    padding:16px 12px 28px;
+    gap:18px;
+    padding:18px 12px 34px;
     min-height:80vh;
     background-color:var(--background_color_primary);
     width:min(1180px, 98%);
     margin:0 auto;
+    animation:fadeUp 0.6s ease both;
 }
 
 .browse-header{
@@ -14,6 +15,12 @@
     align-items:center;
     gap:12px;
     flex-wrap:wrap;
+    padding:10px;
+    border:1px solid color-mix(in srgb, var(--border_color) 80%, transparent);
+    background:color-mix(in srgb, var(--background_color_secondary) 85%, transparent);
+    border-radius:14px;
+    box-shadow:var(--shadow_sm);
+    backdrop-filter:blur(8px);
 }
 
 .search-bar{
@@ -62,7 +69,7 @@
 .product-card{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:14px;
+    gap:18px;
     align-items:stretch;
 }
 
@@ -71,18 +78,19 @@
     flex-direction:column;
     background:color-mix(in srgb, var(--card_bg) 90%, transparent);
     border:1px solid var(--card_border);
-    border-radius:14px;
-    padding:14px 12px;
+    border-radius:18px;
+    padding:14px;
     box-shadow:var(--shadow_md);
-    transition:transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    transition:transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     backdrop-filter:blur(7px);
     justify-content:space-between;
+    overflow:hidden;
 }
 
 .product-image-slot{
     display:block;
     width:100%;
-    height:160px;
+    height:180px;
     border:1px dashed var(--border_color);
     border-radius:10px;
     background:linear-gradient(135deg, var(--background_color_tertiary) 0%, var(--background_color_secondary) 100%);
@@ -116,14 +124,14 @@
 }
 
 .product-item:hover{
-    transform:translateY(-2px);
+    transform:translateY(-4px) scale(1.01);
     box-shadow:var(--shadow_hover);
     border-color:var(--border_color_strong);
 }
 
 .product-item h3{
     margin:0 0 10px;
-    font-size:1.125rem;
+    font-size:1.2rem;
     color:var(--text_color_1);
 }
 
