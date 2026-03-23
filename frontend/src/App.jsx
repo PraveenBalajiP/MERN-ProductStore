@@ -16,6 +16,8 @@ import Browse from './components/Browse';
 import ProductDetail from './components/ProductDetail';
 import AddProduct from './components/AddProduct';
 import EditProduct from './components/EditProduct';
+import EditProfile from './components/EditProfile';
+import EditPassword from './components/EditPassword';
 import Contact from './components/Contact';
 import Feedback from './components/Feedback';
 import { Toaster } from "react-hot-toast";
@@ -82,6 +84,8 @@ function App() {
           <Route path="orders" element={<Orders/>}/>
           <Route path="wishlist" element={<Wishlist/>}/>
           <Route path="settings" element={<Settings/>}/>
+          <Route path="edit-profile" element={<EditProfile/>}/>
+          <Route path="edit-password" element={<EditPassword/>}/>
           <Route path="products/:id" element={<ProductDetail/>}/>
           <Route path="addProduct" element={<AddProduct/>}/>
           <Route path="editProduct/:id" element={<EditProduct/>}/>

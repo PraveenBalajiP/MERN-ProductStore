@@ -253,6 +253,117 @@ routes.get("/:name/profile",authUser,async (req,res)=>{
 
 })
 
+routes.put("/:name/profile",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    const {
+        name,
+        email,
+        phone,
+        address
+    }=req.body;
+
+    const normalizedName=String(name || "").trim();
+    const normalizedEmail=String(email || "").trim().toLowerCase();
+    const normalizedPhone=String(phone || "").trim();
+    const normalizedAddress=String(address || "").trim();
+
+    if(!normalizedName || !normalizedEmail || !normalizedPhone || !normalizedAddress){
+        return res.status(400).json({message:"Name, email, phone and address are required"});
+    }
+
+    const emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailPattern.test(normalizedEmail)){
+        return res.status(400).json({message:"Invalid email format"});
+    }
+
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only update your own profile"});
+        }
+        if(!user){
+            return res.status(404).json({message:"User Not Found"});
+        }
+
+        const duplicateUser=await User.findOne({
+            _id:{$ne:user._id},
+            $or:[
+                {email:normalizedEmail},
+                {phone:normalizedPhone},
+                {contact:normalizedEmail}
+            ]
+        });
+
+        if(duplicateUser){
+            return res.status(400).json({message:"Another user already exists with this email or phone"});
+        }
+
+        user.name=normalizedName;
+        user.email=normalizedEmail;
+        user.phone=normalizedPhone;
+        user.contact=normalizedEmail;
+        user.address=normalizedAddress;
+
+        await saveUserWithIndexRecovery(user);
+
+        return res.status(200).json({
+            message:"Profile updated successfully",
+            profile:{
+                name:user.name,
+                email:user.email,
+                phone:user.phone,
+                address:user.address
+            }
+        });
+    }
+    catch(error){
+        return res.status(500).json({message:"Error updating user profile",error:error.message});
+    }
+})
+
+routes.put("/:name/password",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    const {currentPassword,newPassword,confirmPassword}=req.body;
+
+    const normalizedCurrentPassword=String(currentPassword || "").trim();
+    const normalizedNewPassword=String(newPassword || "").trim();
+    const normalizedConfirmPassword=String(confirmPassword || "").trim();
+    if(!normalizedCurrentPassword || !normalizedNewPassword || !normalizedConfirmPassword){
+        return res.status(400).json({message:"Current password, new password and confirm password are required"});
+    }
+    if(normalizedNewPassword.length<6){
+        return res.status(400).json({message:"New password must be at least 6 characters long"});
+    }
+    if(normalizedNewPassword!==normalizedConfirmPassword){
+        return res.status(400).json({message:"New password and confirm password do not match"});
+    }
+    try{
+        const user=await User.findById(req.id);
+        if(user && user.name.toLowerCase()!==userName.toLowerCase()){
+            return res.status(403).json({message:"Forbidden: You can only update your own password"});
+        }
+        if(!user){
+            return res.status(404).json({message:"User Not Found"});
+        }
+        const isCurrentPasswordValid=await bcrypt.compare(normalizedCurrentPassword,user.password);
+        if(!isCurrentPasswordValid){
+            return res.status(400).json({message:"Current password is incorrect"});
+        }
+        const isSamePassword=await bcrypt.compare(normalizedNewPassword,user.password);
+        if(isSamePassword){
+            return res.status(400).json({message:"New password must be different from current password"});
+        }
+        const salt=await bcrypt.genSalt(10);
+        const hashedPassword=await bcrypt.hash(normalizedNewPassword,salt);
+        user.password=hashedPassword;
+        await saveUserWithIndexRecovery(user);
+        return res.status(200).json({message:"Password updated successfully"});
+    }
+    catch(error){
+        return res.status(500).json({message:"Error updating password",error:error.message});
+    }
+})
+
 routes.post("/:name/browse",authUser,upload.single("image"),async (req,res)=>{
     try{
         const userName=req.params.name;
@@ -1019,6 +1130,21 @@ routes.post("/:name/contact",authUser,async (req,res)=>{
     }
     catch(error){
         res.status(500).json({message:"Error submitting contact message",error:error.message});
+    }
+})
+
+routes.delete("/:name/deleteAccount",authUser,async (req,res)=>{
+    try{
+        const user=await User.findById(req.id);
+        if(!user){
+            return res.status(404).json({message:"User Not Found"});
+        }
+        await Product.deleteMany({owner:user._id});
+        await User.deleteOne({_id:user._id});
+        res.status(200).json({message:"Account deleted successfully"});
+    }
+    catch(error){
+        res.status(500).json({message:"Error deleting account",error:error.message});
     }
 })
 
