@@ -2,6 +2,8 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import User from '../models/users.models.js';
 import Product from '../models/products.models.js';
+import Contact from '../models/contact.models.js';
+import Feedback from '../models/feedback.models.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import authUser from '../middleware/authUser.js';
@@ -979,6 +981,44 @@ routes.get("/:name/pastDeals",authUser,async (req,res)=>{
     }
     catch(error){
         res.status(500).json({message:"Error fetching past deals",error:error.message});
+    }
+})
+
+routes.post("/:name/feedback",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    const {type,rating,title,message}=req.body;
+    try{
+        const feedback=new Feedback({
+            user:req.id,
+            type:type || "Nil",
+            rating:rating || "0",
+            title:title || "No Title",
+            message:message || "",
+        })
+        await feedback.save();
+        res.status(201).json({message:"Feedback submitted successfully"});
+    }
+    catch(error){
+        res.status(500).json({message:"Error submitting feedback",error:error.message});
+    }
+})
+
+routes.post("/:name/contact",authUser,async (req,res)=>{
+    const userName=req.params.name;
+    const {name,email,subject,message}=req.body;
+    try{
+        const contact=new Contact({
+            user:req.id,
+            name:name || "Anonymous",
+            email:email || "",
+            subject:subject || "No Subject",
+            message:message || ""
+    })
+    await contact.save();
+    res.status(201).json({message:"Contact message submitted successfully"});
+    }
+    catch(error){
+        res.status(500).json({message:"Error submitting contact message",error:error.message});
     }
 })
 

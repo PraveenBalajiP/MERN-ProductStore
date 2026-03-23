@@ -1,5 +1,7 @@
 import {useState} from 'react';
+import {useParams} from 'react-router-dom';
 import {toast} from 'react-hot-toast';
+import axios from 'axios';
 import '../css/feedback.css';
 
 function Feedback(){
@@ -10,20 +12,28 @@ function Feedback(){
 		message:''
 	});
 
+	const {userName}=useParams();
+
 	function updateFeedback(event){
 		const {name,value}=event.target;
 		setFeedbackData((previous)=>({...previous,[name]:value}));
 	}
 
-	function submitFeedback(event){
+	async function submitFeedback(event){
 		event.preventDefault();
-		toast.success('Feedback submitted. Thank you!');
-		setFeedbackData({
-			type:'General',
-			rating:'5',
-			title:'',
-			message:''
-		});
+		try{
+			const response=await axios.post(`http://localhost:5000/api/users/${userName}/feedback`,feedbackData,{withCredentials:true});
+			toast.success(response.data.message || 'Thank you for your feedback!');
+			setFeedbackData({
+				type:'General',
+				rating:'5',
+				title:'',
+				message:''
+			});
+		}
+		catch(error){
+			toast.error(error.response?.data?.message || 'Failed to submit feedback. Please try again later.');
+		}
 	}
 
 	return(

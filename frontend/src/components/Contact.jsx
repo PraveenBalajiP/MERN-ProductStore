@@ -1,5 +1,7 @@
 import {useState} from 'react';
+import {useParams} from 'react-router-dom';
 import {toast} from 'react-hot-toast';
+import axios from 'axios';
 import '../css/contact.css';
 
 function Contact(){
@@ -10,20 +12,28 @@ function Contact(){
 		message:''
 	});
 
+	const {userName}=useParams();
+
 	function updateContact(event){
 		const {name,value}=event.target;
 		setContactData((previous)=>({...previous,[name]:value}));
 	}
 
-	function submitContact(event){
+	async function submitContact(event){
 		event.preventDefault();
-		toast.success('Your message has been sent successfully.');
-		setContactData({
-			name:'',
-			email:'',
-			subject:'',
-			message:''
-		});
+		try{
+			const response=await axios.post(`http://localhost:5000/api/users/${userName}/contact`,contactData,{withCredentials:true});
+			toast.success(response.data.message || 'Your message has been sent! We will get back to you soon.');
+			setContactData({
+				name:'',
+				email:'',
+				subject:'',
+				message:''
+			});
+		}
+		catch(error){
+			toast.error(error.response?.data?.message || 'Failed to send message. Please try again later.');
+		}
 	}
 
 	return(
