@@ -35,7 +35,7 @@ function NavBar({theme,setTheme}){
 
     async function handleLogout(){
         try{
-            await axios.post("http://localhost:5000/api/users/logout",{},{withCredentials:true});
+            await axios.post(`/api/users/logout`,{},{withCredentials:true});
         }
         catch(error){
             console.error("Logout error:", error);

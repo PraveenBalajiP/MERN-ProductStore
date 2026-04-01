@@ -23,7 +23,7 @@ function EditProduct(){
 
     async function fetchProduct(){
         try{
-            const response=await axios.get(`http://localhost:5000/api/users/${name}/products/${id}`,{withCredentials:true});
+            const response=await axios.get(`/api/users/${name}/products/${id}`,{withCredentials:true});
             const product=response.data;
             setFormData({
                 productName:product?.name || '',
@@ -68,7 +68,7 @@ function EditProduct(){
             payload.append('image',formData.image);
         }
         try{
-            await axios.patch(`http://localhost:5000/api/users/${name}/products/${id}`,payload,{withCredentials:true});
+            await axios.patch(`/api/users/${name}/products/${id}`,payload,{withCredentials:true});
             toast.success('Product updated successfully');
             navigate(`/users/${name}/profile`);
         }

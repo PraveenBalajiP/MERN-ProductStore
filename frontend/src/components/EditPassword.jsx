@@ -63,7 +63,7 @@ function EditPassword(){
 			setShowConfirmSave(false);
 			setIsSaving(true);
 			const response=await axios.put(
-				`http://localhost:5000/api/users/${name}/password`,
+				`/api/users/${name}/password`,
 				passwordData,
 				{withCredentials:true}
 			);

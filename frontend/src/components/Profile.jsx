@@ -26,7 +26,7 @@ function Profile(){
 
     async function fetchProfile(){
         try{
-            const response=await axios.get(`http://localhost:5000/api/users/${name}/profile`,{withCredentials:true});
+            const response=await axios.get(`/api/users/${name}/profile`,{withCredentials:true});
             setProfileData(response.data);
             console.log(response.data);
         }
@@ -41,7 +41,7 @@ function Profile(){
 
     async function fetchAddedProducts(){
         try{
-            const response=await axios.get(`http://localhost:5000/api/users/${name}/addedProducts`,{withCredentials:true});
+            const response=await axios.get(`/api/users/${name}/addedProducts`,{withCredentials:true});
             setAddedProducts(response.data);
             console.log(response.data);
 
@@ -58,7 +58,7 @@ function Profile(){
 
     async function fetchResponses(){
         try{
-            const response=await axios.get(`http://localhost:5000/api/users/${name}/responses`,{withCredentials:true});
+            const response=await axios.get(`/api/users/${name}/responses`,{withCredentials:true});
             setResponses(response.data);
         }
         catch(error){
@@ -81,7 +81,7 @@ function Profile(){
 
     async function fetchAcceptedDeals(){
         try{
-            const response=await axios.get(`http://localhost:5000/api/users/${name}/acceptedDeals`,{withCredentials:true});
+            const response=await axios.get(`/api/users/${name}/acceptedDeals`,{withCredentials:true});
             setAcceptedDeals(response.data);
         }
         catch(error){
@@ -96,7 +96,7 @@ function Profile(){
 
     async function fetchPastDeals(){
         try{
-            const response=await axios.get(`http://localhost:5000/api/users/${name}/pastDeals`,{withCredentials:true});
+            const response=await axios.get(`/api/users/${name}/pastDeals`,{withCredentials:true});
             setPastDeals(response.data);
         }
         catch(error){
@@ -112,7 +112,7 @@ function Profile(){
 
     async function deleteProduct(productId){
         try{
-            await axios.delete(`http://localhost:5000/api/users/${name}/deleteProduct`,{
+            await axios.delete(`/api/users/${name}/deleteProduct`,{
                 data:{productId},
                 withCredentials:true
             });
@@ -145,7 +145,7 @@ function Profile(){
 
     async function acceptDeal(productId,fromUserId){
         try{
-            const responseDeal=await axios.post(`http://localhost:5000/api/users/${name}/${productId}/acceptDeal`,{fromUserId},{withCredentials:true});
+            const responseDeal=await axios.post(`/api/users/${name}/${productId}/acceptDeal`,{fromUserId},{withCredentials:true});
             toast.success(responseDeal.data.message || "Deal accepted successfully");
             fetchResponses();
             fetchAcceptedDeals();
@@ -158,7 +158,7 @@ function Profile(){
 
     async function closeDeal(productId){
         try{
-            const response=await axios.post(`http://localhost:5000/api/users/${name}/${productId}/closeDeal`,{},{withCredentials:true});
+            const response=await axios.post(`/api/users/${name}/${productId}/closeDeal`,{},{withCredentials:true});
             toast.success(response.data.message || "Deal closed successfully");
             fetchAcceptedDeals();
             fetchPastDeals();

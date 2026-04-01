@@ -29,7 +29,7 @@ function Settings(){
 
     async function deleteAccount(){
         try{
-            const responseDelete=await axios.delete(`http://localhost:5000/api/users/${name}/deleteAccount`,{withCredentials:true});
+            const responseDelete=await axios.delete(`/api/users/${name}/deleteAccount`,{withCredentials:true});
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userName');
             window.dispatchEvent(new Event('auth-change'));

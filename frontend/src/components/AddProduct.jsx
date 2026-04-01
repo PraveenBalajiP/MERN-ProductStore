@@ -34,7 +34,7 @@ function AddProduct(){
 
     async function fetchOwnerDetails(){
         try{
-            const response=await axios.get(`http://localhost:5000/api/users/${name}/profile`,{withCredentials:true});
+            const response=await axios.get(`/api/users/${name}/profile`,{withCredentials:true});
             setOwnerDetails(response.data);
         }
         catch(error){
@@ -72,7 +72,7 @@ function AddProduct(){
             payload.append("image",dataSnapshot.formData.image);
         }
         try{
-            const response=await axios.post(`http://localhost:5000/api/users/${name}/browse`,payload,{withCredentials:true});
+            const response=await axios.post(`/api/users/${name}/browse`,payload,{withCredentials:true});
             toast.success(response.data.message || "Product added successfully");
             setFormData({
                 productName:"",

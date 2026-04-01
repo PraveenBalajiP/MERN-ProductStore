@@ -74,7 +74,7 @@ function Login(){
             return;
         }
         try {
-            const response=await axios.post("http://localhost:5000/api/users/login",userData,{withCredentials:true});
+            const response=await axios.post(`/api/users/login`,userData,{withCredentials:true});
             toast.success(`${response.data.message}`,{className:"toast-success"});
             localStorage.setItem("isLoggedIn","true");
             localStorage.setItem("userName",response.data.name);
@@ -82,7 +82,8 @@ function Login(){
             navigate(`/users/${response.data.name}/browse`);
         }
         catch(error){
-            toast.error(`Error!! ${error.response.data.message}`,{className:"toast-error"});
+            const errMsg = error.response?.data?.message || error.message;
+            toast.error(`Error!! ${errMsg}`,{className:"toast-error"});
         }
     }
 

@@ -22,7 +22,7 @@ function Contact(){
 	async function submitContact(event){
 		event.preventDefault();
 		try{
-			const response=await axios.post(`http://localhost:5000/api/users/${userName}/contact`,contactData,{withCredentials:true});
+			const response=await axios.post(`/api/users/${userName}/contact`,contactData,{withCredentials:true});
 			toast.success(response.data.message || 'Your message has been sent! We will get back to you soon.');
 			setContactData({
 				name:'',

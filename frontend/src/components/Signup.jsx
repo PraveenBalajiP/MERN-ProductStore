@@ -33,7 +33,7 @@ function Signup(){
     useEffect(()=>{
         async function users(){
         try{
-            const response=await axios.get("http://localhost:5000/api/users/signup");
+            const response=await axios.get(`/api/users/signup`);
             setUsersList(response.data);
         }
         catch(error){
@@ -66,7 +66,7 @@ function Signup(){
         }
 
         try{
-            const response=await axios.post("http://localhost:5000/api/users/signup",{
+            const response=await axios.post(`/api/users/signup`,{
                 ...userData,
                 email:trimmedEmail,
                 phone:trimmedPhone

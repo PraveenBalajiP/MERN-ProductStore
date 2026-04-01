@@ -14,7 +14,7 @@ function Orders(){
 
     async function fetchOrders(){
         try{
-            const response=await axios.get(`http://localhost:5000/api/users/${name}/orders`,{withCredentials:true});
+            const response=await axios.get(`/api/users/${name}/orders`,{withCredentials:true});
             setOrders(response.data);
         }
         catch(error){
@@ -25,7 +25,7 @@ function Orders(){
 
     async function removeFromOrders(productId){
         try{
-            await axios.post(`http://localhost:5000/api/users/${name}/orders/remove`,{productId},{withCredentials:true});
+            await axios.post(`/api/users/${name}/orders/remove`,{productId},{withCredentials:true});
             setOrders(orders.filter(order => order._id !== productId));
             toast.success('Removed from orders');
         }
@@ -70,7 +70,7 @@ function Orders(){
     }
 
     async function navigateProductDetail(productId){
-        const responseProduct=await axios.get(`http://localhost:5000/api/users/${name}/products/${productId}`,{withCredentials:true});
+        const responseProduct=await axios.get(`/api/users/${name}/products/${productId}`,{withCredentials:true});
         navigate(`/users/${name}/products/${productId}`,{state:{product:responseProduct.data}});
     }
 

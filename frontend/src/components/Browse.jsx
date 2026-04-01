@@ -11,7 +11,7 @@ function Browse(){
     
     async function fetchProducts(){
         try{
-            const response=await axios.get(`http://localhost:5000/api/users/${name}/products`,{withCredentials:true});
+            const response=await axios.get(`/api/users/${name}/products`,{withCredentials:true});
             const visibleProducts=Array.isArray(response.data)
                 ? response.data.filter((product)=>product?.dealStatus !== "sold")
                 : [];
@@ -23,7 +23,7 @@ function Browse(){
     }
 
     async function navigateProductDetail(productId){
-        const responseProduct=await axios.get(`http://localhost:5000/api/users/${name}/products/${productId}`,{withCredentials:true});
+        const responseProduct=await axios.get(`/api/users/${name}/products/${productId}`,{withCredentials:true});
         navigate(`/users/${name}/products/${productId}`,{state:{product:responseProduct.data}});
     }
 

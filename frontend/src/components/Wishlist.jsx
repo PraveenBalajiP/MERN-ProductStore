@@ -12,7 +12,7 @@ function Wishlist(){
 
     async function fetchWishlist(){
         try{
-            const response=await axios.get(`http://localhost:5000/api/users/${name}/wishlist`,{withCredentials:true});
+            const response=await axios.get(`/api/users/${name}/wishlist`,{withCredentials:true});
             setWishlist(response.data);
         }
         catch(error){
@@ -23,7 +23,7 @@ function Wishlist(){
 
     async function removeFromWishlist(productId){
         try{
-            await axios.post(`http://localhost:5000/api/users/${name}/wishlist/remove`,{productId},{withCredentials:true});
+            await axios.post(`/api/users/${name}/wishlist/remove`,{productId},{withCredentials:true});
             setWishlist((prev)=>prev.filter((item)=>String(item._id)!==String(productId)));
             await fetchWishlist();
             toast.success('Removed from wishlist');
@@ -58,7 +58,7 @@ function Wishlist(){
     }
 
     async function navigateProductDetail(productId){
-        const responseProduct=await axios.get(`http://localhost:5000/api/users/${name}/products/${productId}`,{withCredentials:true});
+        const responseProduct=await axios.get(`/api/users/${name}/products/${productId}`,{withCredentials:true});
         navigate(`/users/${name}/products/${productId}`,{state:{product:responseProduct.data}});
     }
 

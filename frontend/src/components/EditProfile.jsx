@@ -30,7 +30,7 @@ function EditProfile(){
     async function fetchProfile(){
         try{
             setIsLoading(true);
-            const response=await axios.get(`http://localhost:5000/api/users/${name}/profile`,{withCredentials:true});
+            const response=await axios.get(`/api/users/${name}/profile`,{withCredentials:true});
             setFormData({
                 name:response.data?.name || '',
                 email:response.data?.email || '',
@@ -78,7 +78,7 @@ function EditProfile(){
             setShowConfirmSave(false);
             setIsSaving(true);
             const response=await axios.put(
-                `http://localhost:5000/api/users/${name}/profile`,
+                `/api/users/${name}/profile`,
                 {
                     name:formData.name,
                     email:formData.email,

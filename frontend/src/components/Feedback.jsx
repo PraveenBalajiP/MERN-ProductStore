@@ -22,7 +22,7 @@ function Feedback(){
 	async function submitFeedback(event){
 		event.preventDefault();
 		try{
-			const response=await axios.post(`http://localhost:5000/api/users/${userName}/feedback`,feedbackData,{withCredentials:true});
+			const response=await axios.post(`/api/users/${userName}/feedback`,feedbackData,{withCredentials:true});
 			toast.success(response.data.message || 'Thank you for your feedback!');
 			setFeedbackData({
 				type:'General',

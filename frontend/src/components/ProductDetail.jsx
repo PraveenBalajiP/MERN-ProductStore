@@ -21,7 +21,7 @@ function ProductDetail(){
 
     async function addToWishlist(productId){
         try{
-            const response=await axios.post(`http://localhost:5000/api/users/${name}/wishlist/add`,{productId},{withCredentials:true});
+            const response=await axios.post(`/api/users/${name}/wishlist/add`,{productId},{withCredentials:true});
             setIsInWishlist(true);
             toast.success('Product added to wishlist');
         }
@@ -34,7 +34,7 @@ function ProductDetail(){
     async function syncWishlistStatus(){
         if(!product?._id) return;
         try{
-            const response=await axios.get(`http://localhost:5000/api/users/${name}/wishlist`,{withCredentials:true});
+            const response=await axios.get(`/api/users/${name}/wishlist`,{withCredentials:true});
             const wishlistItems=Array.isArray(response.data) ? response.data : [];
             const existsInWishlist=wishlistItems.some((item)=>String(item?._id)===String(product._id));
             setIsInWishlist(existsInWishlist);
@@ -50,7 +50,7 @@ function ProductDetail(){
 
     async function removeFromWishlist(productId){
         try{
-            const response=await axios.post(`http://localhost:5000/api/users/${name}/wishlist/remove`,{productId},{withCredentials:true});
+            const response=await axios.post(`/api/users/${name}/wishlist/remove`,{productId},{withCredentials:true});
             setIsInWishlist(false);
             toast.success('Product removed from wishlist');
         }
@@ -73,7 +73,7 @@ function ProductDetail(){
     async function addToOrders(productId,offeredBidValue){
         try{
             const response=await axios.post(
-                `http://localhost:5000/api/users/${name}/orders/add`,
+                `/api/users/${name}/orders/add`,
                 {productId,bidValue:offeredBidValue},
                 {withCredentials:true}
             );

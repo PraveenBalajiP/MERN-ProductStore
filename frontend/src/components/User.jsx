@@ -15,7 +15,7 @@ function User(){
                 return;
             }
             try{
-                await axios.get("http://localhost:5000/api/users/check-auth",{withCredentials:true});
+                await axios.get(`/api/users/check-auth`,{withCredentials:true});
             }
             catch(error){
                 localStorage.removeItem("isLoggedIn");
