@@ -1,20 +1,31 @@
 
+
 <div align="center">
   <h1>MERN Product Store</h1>
-  <p><b>A modern, full-stack e-commerce app built with MongoDB, Express, React, and Node.js</b></p>
+  <p><b>A modern, full-stack e-commerce platform built with MongoDB, Express, React, and Node.js</b></p>
   <p>
-	 <img src="https://img.shields.io/badge/stack-MERN-green" alt="MERN Stack" />
-	 <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" />
+    <img src="https://img.shields.io/badge/stack-MERN-green" alt="MERN Stack" />
+    <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" />
   </p>
 </div>
 
+---
+
+## 🛒 About
+MERN Product Store is a scalable, production-ready e-commerce web application. It allows users to browse products, manage their profile, add items to wishlist, provide feedback, and more. The project is split into a robust RESTful backend and a modern, responsive frontend.
+
+---
 
 ## ✨ Features
-- User authentication & profile management
-- Browse, view, and manage products
-- Wishlist, feedback, and contact forms
-- Responsive, modern UI (React + Tailwind + Chakra UI)
-- RESTful API (Express + MongoDB)
+- User authentication (JWT, cookies)
+- Profile management (edit, password change)
+- Product catalog: browse, search, view details
+- Wishlist management
+- Feedback and contact forms
+- Responsive UI (desktop/mobile)
+- Toast notifications, tooltips, and dialogs
+- Admin-ready backend structure
+- Secure API endpoints
 
 ---
 

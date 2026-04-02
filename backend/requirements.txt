@@ -1,0 +1,6 @@
+# Backend Python Requirements
+# (This project is JavaScript-based, but if you use Python scripts for data, add them here)
+
+# Example (uncomment if needed):
+# pymongo
+# requests
